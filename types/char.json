@@ -1,0 +1,19 @@
+{
+	"name": "char",
+	"erdAbbreviation": "<chr>",
+	"dtdAbbreviation": "{ABC}",
+	"parentType": "string",
+	"useSample": true,
+	"default": true,
+	"hiddenOnEntity": "view",
+	"defaultValues": {
+		"primaryKey": false,
+		"relationshipType": "",
+		"parentRelationship": "",
+		"childRelationships": [],
+		"foreignCollection": "",
+		"foreignField": [],
+		"mode": "varchar",
+		"length": 10
+	}
+}

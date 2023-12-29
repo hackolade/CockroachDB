@@ -1,0 +1,47 @@
+{
+    "name": "CockroachDB",
+    "version": "0.0.1",
+    "versionDate": "2023-12-29",
+    "author": "hackolade",
+    "engines": {
+        "hackolade": "6.1.2",
+        "hackoladePlugin": "1.2.0"
+    },
+    "contributes": {
+        "target": {
+            "applicationTarget": "CockroachDB",
+            "title": "CockroachDB",
+            "versions": [
+                "v22.x",
+                "v23.x"
+            ]
+        },
+        "features": {
+            "nestedCollections": false,
+            "disablePatternField": true,
+            "disableMultipleTypes": true,
+            "enableForwardEngineering": true,
+            "disableReverseEngineering": false,
+            "disableChoices": true,
+            "enableJsonType": true,
+            "useJsonTypesWithComplexTypes": true,
+            "reverseSchemaIntoOneColumn": true,
+			"disableDenormalization": true,
+			"enableComplexTypesNormalization": true,
+            "views": {
+                "enabled": true,
+                "viewLevel": "model",
+                "disablePipelines": true
+            },
+            "relationships": {
+                "compositeRelationships": true
+            },
+            "FEScriptCommentsSupported": true,
+            "enableFetchSystemEntitiesCheckbox": true,
+            "discoverRelationships": true
+        }
+    },
+    "description": "Hackolade plugin for CockroachDB",
+    "icon_url": "logo.jpg",
+    "disabled": false
+}

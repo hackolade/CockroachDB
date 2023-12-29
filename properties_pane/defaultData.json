@@ -1,0 +1,61 @@
+{
+	"model": {
+		"modelName": "New model",
+		"dbVersion": "v23.x",
+		"dbVendor": "CockroachDB"
+	},
+	"container": {
+		"name": "New schema"
+	},
+	"collection": {
+		"collectionName": "New table",
+		"memory_optimized": false,
+		"collectionUsers": [],
+		"collation": {}
+	},
+	"field": {
+		"name": "New column",
+		"primaryKey": false,
+		"unique": false
+	},
+	"patternField": {
+		"name": "^[a-zA-Z0-9_.-]+$"
+	},
+	"multipleField": {
+		"primaryKey": true
+	},
+	"subschema": {},
+	"arrayItem": {},
+	"choice": {},
+	"relationship": {
+		"parentCardinality": "1",
+		"childCardinality": "0..n"
+	},
+	"user": {},
+	"view": {
+		"viewOn": "",
+		"pipeline": ""
+	},
+	"UDFs": {
+		"name": "New UDF",
+		"udfID": "",
+		"udfDescription": "",
+		"udfFunction": "",
+		"udfComments": ""
+	},
+	"UDAs": {
+		"name": "New UDA",
+		"udfID": "",
+		"udfDescription": "",
+		"udfFunction": "",
+		"udfComments": ""
+	},
+	"SecIdxs": {
+		"name": "New Secondary Index",
+		"SecIndxKey": "",
+		"SecIndxID": "",
+		"SecIndxDescription": "",
+		"SecIndxFunction": "",
+		"SecIndxComments": ""
+	}
+}

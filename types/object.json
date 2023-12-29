@@ -1,0 +1,35 @@
+{
+	"name": "object",
+	"parentType": "document",
+	"structureType": true,
+	"hiddenOnEntity": "view",
+	"defaultValues": {
+		"subtype": "object",
+		"properties": []
+	},
+	"subtypes": {
+		"object": {
+			"childValueType": [
+				"char",
+				"numeric",
+				"binary",
+				"datetime",
+				"boolean",
+				"range",
+				"geometry",
+				"inet",
+				"uuid",
+				"oid",
+				"xml",
+				"json",
+				"reference",
+				"multiple",
+				"multirange",
+				"enum",
+				"composite",
+				"range_udt",
+				"domain"
+			]
+		}
+	}
+}

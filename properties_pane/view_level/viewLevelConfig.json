@@ -1,0 +1,430 @@
+/*
+* Copyright © 2016-2017 by IntegrIT S.A. dba Hackolade.  All rights reserved.
+*
+* The copyright to the computer software herein is the property of IntegrIT S.A.
+* The software may be used and/or copied only with the written permission of
+* IntegrIT S.A. or in accordance with the terms and conditions stipulated in
+* the agreement/contract under which the software has been supplied.
+In order to define custom properties for any object's properties pane, you may copy/paste from the following,
+making sure that you maintain a proper JSON format.
+
+			{
+				"propertyName": "Simple text",
+				"propertyKeyword": "simpletextProp",
+				"propertyType": "text",
+				"sampleGen": "&containerName|&entityName|&random|<value>"
+			},
+			{
+				"propertyName": "Text area",
+				"propertyKeyword": "textareaProp",
+				"propertyTooltip": "Popup for multi-line text entry",
+				"propertyType": "details",
+				"template": "textarea"
+			},
+			{
+				"propertyName": "Dropdown selection",
+				"propertyKeyword": "dropdownProp",
+				"propertyTooltip": "Select from list of options",
+				"propertyType": "select",
+				"options": [
+					"Option 1",
+					"Option 2",
+					"Option 3",
+					"Option 4"
+				]
+			},
+			{
+				"propertyName": "Numeric",
+				"propertyKeyword": "numericProp",
+				"propertyValidate": true,
+				"propertyType": "numeric",
+				"valueType": "number",
+				"allowNegative": false,
+				"sampleGen": "&containerName|&entityName|&random|<value>"
+			},
+			{
+				"propertyName": "Checkbox",
+				"propertyKeyword": "checkboxProp",
+				"propertyType": "checkbox"
+			},
+			{
+				"propertyName": "Group",
+				"propertyType": "group",
+				"propertyKeyword": "grpProp",
+				"propertyTooltip": "",
+				"structure": [
+					{
+						"propertyName": "Simple Grp Text",
+						"propertyKeyword": "simpleGrpText",
+						"propertyTooltip": "",
+						"propertyType": "text"
+					},
+					{
+						"propertyName": "Group Number",
+						"propertyKeyword": "grpNumber",
+						"propertyType": "numeric",
+						"valueType": "number",
+						"allowNegative": false
+					}
+				]
+			},
+// “groupInput” can have the following states - 0 items, 1 item, and many items.
+// “blockInput” has only 2 states - 0 items or 1 item.
+// This gives us an easy way to represent it as an object and not as an array internally which is beneficial for processing
+// and forward-engineering in particular.
+			{
+				"propertyName": "Block",
+				"propertyType": "block",
+				"propertyKeyword": "grpProp",
+				"propertyTooltip": "",
+				"structure": [
+					{
+						"propertyName": "Simple Grp Text",
+						"propertyKeyword": "simpleGrpText",
+						"propertyTooltip": "",
+						"propertyType": "text"
+					},
+					{
+						"propertyName": "Group Number",
+						"propertyKeyword": "grpNumber",
+						"propertyType": "numeric",
+						"valueType": "number",
+						"allowNegative": false
+					}
+				]
+			},
+			{
+				"propertyName": "Field List",
+				"propertyKeyword": "keyList",
+				"propertyType": "fieldList",
+				"template": "orderedList"
+			},
+			{
+				"propertyName": "List with attribute",
+				"propertyKeyword": "keyListOrder",
+				"propertyType": "fieldList",
+				"template": "orderedList",
+				"attributeList": [
+					"ascending",
+					"descending"
+				]
+			}
+
+*/
+
+[
+	{
+		"lowerTab": "Details",
+		"structure": [
+			{
+				"propertyName": "Comments",
+				"propertyKeyword": "description",
+				"propertyTooltip": "comments",
+				"propertyType": "details",
+				"addTimestampButton": false,
+				"template": "textarea"
+			},
+			{
+				"propertyName": "Or replace",
+				"propertyKeyword": "orReplace",
+				"defaultValue": false,
+				"propertyType": "checkbox"
+			},
+			{
+				"propertyName": "Temporary",
+				"propertyKeyword": "temporary",
+				"propertyType": "checkbox"
+			},
+			{
+				"propertyName": "Recursive",
+				"propertyKeyword": "recursive",
+				"propertyType": "checkbox"
+			},
+			{
+				"propertyName": "View option",
+				"propertyKeyword": "viewOptions",
+				"propertyType": "block",
+				"propertyTooltip": "This clause specifies optional parameters for a view",
+				"structure": [
+					{
+						"propertyName": "Check testing scope",
+						"propertyKeyword": "check_option",
+						"propertyTooltip": "This option controls the behavior of automatically updatable views. When this option is specified, INSERT and UPDATE commands on the view will be checked to ensure that new rows satisfy the view-defining condition (that is, the new rows are checked to ensure that they are visible through the view). If they are not, the update will be rejected.",
+						"propertyType": "select",
+						"options": [
+							"",
+							"local",
+							"cascaded"
+						]
+					},
+					{
+						"propertyName": "Security barrier",
+						"propertyKeyword": "security_barrier",
+						"propertyType": "checkbox",
+						"propertyTooltip": "This should be used if the view is intended to provide row-level security."
+					},
+					{
+						"propertyName": "Security invoker",
+						"propertyKeyword": "security_invoker",
+						"propertyType": "checkbox",
+						"propertyTooltip": "This option causes the underlying base relations to be checked against the privileges of the user of the view rather than the view owner."
+					}
+				]
+			},
+			{
+				"propertyName": "As query",
+				"propertyKeyword": "selectStatement",
+				"propertyType": "details",
+				"propertyTooltip": "A SELECT or VALUES command which will provide the columns and rows of the view.",
+				"template": "textarea",
+				"markdown": false
+			},
+			{
+				"propertyName": "With check option",
+				"propertyKeyword": "withCheckOption",
+				"propertyTooltip": "This clause specifies optional parameters for a view; the following parameters are supported",
+				"propertyType": "checkbox"
+			},
+			{
+				"propertyName": "Check testing scope",
+				"propertyKeyword": "checkTestingScope",
+				"propertyTooltip": "This option controls the behavior of automatically updatable views. When this option is specified, INSERT and UPDATE commands on the view will be checked to ensure that new rows satisfy the view-defining condition (that is, the new rows are checked to ensure that they are visible through the view). If they are not, the update will be rejected.",
+				"propertyType": "select",
+				"options": [
+					"",
+					"LOCAL",
+					"CASCADED"
+				],
+				"dependency": {
+					"type": "or",
+					"values": [{
+						"key": "withCheckOption",
+						"value": true
+					}]
+				}
+			},
+			{
+				"propertyName": "Remarks",
+				"propertyKeyword": "comments",
+				"propertyTooltip": "remarks",
+				"propertyType": "details",
+				"addTimestampButton": true,
+				"markdown": true,
+				"template": "textarea"
+			},
+			{
+				"propertyKeyword": "pipeline",
+				"hidden": true
+			},
+			{
+				"propertyKeyword": "viewOn",
+				"hidden": true
+			}
+		]
+	},
+	{
+		"lowerTab": "Triggers",
+		"structure": [
+			{
+				"propertyName": "Triggers",
+				"propertyType": "group",
+				"propertyKeyword": "triggers",
+				"propertyTooltip": "",
+				"structure": [
+					{
+						"propertyName": "Name",
+						"propertyKeyword": "name",
+						"propertyTooltip": "",
+						"propertyType": "text"
+					},
+					{
+						"propertyName": "Description",
+						"propertyKeyword": "triggerDescription",
+						"propertyTooltip": "description",
+						"propertyType": "details",
+						"template": "textarea"
+					},
+					{
+						"propertyName": "Or replace",
+						"propertyKeyword": "triggerOrReplace",
+						"propertyType": "checkbox",
+						"propertyTooltip": ""
+					},
+					{
+						"propertyName": "Constraint",
+						"propertyKeyword": "triggerConstraint",
+						"propertyType": "checkbox",
+						"propertyTooltip": "When the CONSTRAINT option is specified, this command creates a constraint trigger."
+					},
+					{
+						"propertyName": "Referenced table name",
+						"propertyKeyword": "triggerReferencedTable",
+						"propertyTooltip": "The (possibly schema-qualified) name of another table referenced by the constraint. This option is used for foreign-key constraints and is not recommended for general use.",
+						"propertyType": "selecthashed",
+						"template": "entities",
+						"withEmptyOption": true,
+						"excludeCurrent": false,
+						"dependency": {
+							"key": "triggerConstraint",
+							"value": true
+						}
+					},
+					{
+						"propertyName": "Trigger type",
+						"propertyKeyword": "triggerType",
+						"propertyTooltip": "Determines whether the function is called before, after, or instead of the event.",
+						"propertyType": "select",
+						"options": [
+							"BEFORE",
+							"AFTER",
+							"INSTEAD OF"
+						],
+						"defaultValue": "AFTER"
+					},
+					{
+						"propertyName": "Trigger events",
+						"propertyKeyword": "triggerEvents",
+						"propertyType": "group",
+						"structure": [
+							{
+								"propertyName": "Event",
+								"propertyKeyword": "triggerEvent",
+								"propertyTooltip": "This specifies the event that will fire the trigger",
+								"propertyType": "select",
+								"options": [
+									"INSERT",
+									"UPDATE",
+									"DELETE",
+									"TRUNCATE"
+								]
+							}
+						]
+					},
+					{
+						"propertyName": "Update columns",
+						"propertyKeyword": "triggerUpdateColumns",
+						"propertyType": "fieldList",
+						"template": "orderedList",
+						"disabledItemStrategy": "default",
+						"isCompositeKey": true,
+						"setPrimaryKey": false,
+						"abbr": "",
+						"dependency": {
+							"key": "triggerEvents.*.triggerEvent",
+							"value": "UPDATE"
+						}
+					},
+					{
+						"propertyName": "Deferrable",
+						"propertyKeyword": "triggerDeferrable",
+						"propertyType": "checkbox",
+						"propertyTooltip": "This controls whether the constraint can be deferred. A constraint that is not deferrable will be checked immediately after every command.",
+						"dependency": {
+							"key": "triggerConstraint",
+							"value": true
+						}
+					},
+					{
+						"propertyName": "Deferrable",
+						"propertyKeyword": "triggerTimeConstraintCheck",
+						"propertyType": "select",
+						"options": [
+							"",
+							"INITIALLY IMMEDIATE",
+							"INITIALLY DEFERRED"
+						],
+						"propertyTooltip": "If a constraint is deferrable, this clause specifies the default time to check the constraint. If the constraint is INITIALLY IMMEDIATE, it is checked after each statement. This is the default. If the constraint is INITIALLY DEFERRED, it is checked only at the end of the transaction.",
+						"dependency": {
+							"type": "and",
+							"values": [
+								{
+									"key": "triggerConstraint",
+									"value": true
+								},
+								{
+									"key": "triggerDeferrable",
+									"value": true
+								}
+							]
+						}
+					},
+					{
+						"propertyName": "Referencing",
+						"propertyKeyword": "triggerReferencing",
+						"propertyType": "checkbox",
+						"propertyTooltip": "This keyword immediately precedes the declaration of one or two relation names that provide access to the transition relations of the triggering statement."
+					},
+					{
+						"propertyName": "Before-image transition relation",
+						"propertyKeyword": "triggerBeforeImageTransitionRelation",
+						"propertyType": "text",
+						"propertyTooltip": "Before-image transition relation name (OLD TABLE)",
+						"dependency": {
+							"key": "triggerReferencing",
+							"value": true
+						}
+					},
+					{
+						"propertyName": "After-image transition relation",
+						"propertyKeyword": "triggerAfterImageTransitionRelation",
+						"propertyType": "text",
+						"propertyTooltip": "After-image transition relation name (NEW TABLE)",
+						"dependency": {
+							"key": "triggerReferencing",
+							"value": true
+						}
+					},
+					{
+						"propertyName": "Trigger for each row/statement",
+						"propertyKeyword": "triggerEachRowStatement",
+						"propertyType": "select",
+						"propertyTooltip": "This specifies whether the trigger function should be fired once for every row affected by the trigger event, or just once per SQL statement.",
+						"options": [
+							"FOR EACH STATEMENT",
+							"FOR EACH ROW"
+						],
+						"dependency": {
+							"type": "not",
+							"values": {
+								"type": "or",
+								"values": [
+									{
+										"key": "triggerConstraint",
+										"value": true
+									},
+									{
+										"key": "triggerType",
+										"value": "INSTEAD OF"
+									}
+								]
+							}
+						}
+					},
+					{
+						"propertyName": "Trigger WHEN condition",
+						"propertyKeyword": "triggerCondition",
+						"propertyTooltip": "A Boolean expression that determines whether the trigger function will actually be executed.",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					},
+					{
+						"propertyName": "Function",
+						"propertyKeyword": "triggerFunction",
+						"propertyTooltip": "description",
+						"propertyType": "details",
+						"template": "textarea",
+						"markdown": false
+					},
+					{
+						"propertyName": "Remarks",
+						"propertyKeyword": "triggerComments",
+						"propertyTooltip": "comments",
+						"propertyType": "details",
+						"template": "textarea"
+					}
+				]
+			}
+		]
+	}
+]
