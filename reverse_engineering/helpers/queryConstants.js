@@ -96,35 +96,38 @@ const getGET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL = postgresVersion => {
 
 const queryConstants = {
 	PING: 'SELECT schema_name FROM information_schema.schemata LIMIT 1;',
-	GET_VERSION: 'SELECT version()',
-	GET_VERSION_AS_NUM: 'SHOW server_version_num;',
+
+    GET_VERSION: 'SELECT version()',
+
+    GET_VERSION_AS_NUM: 'SHOW server_version_num;',
+
 	GET_SCHEMA_NAMES: 'SELECT schema_name FROM information_schema.schemata;',
+
 	GET_TABLE_NAMES: `
-        SELECT tables.table_name, tables.table_type FROM information_schema.tables AS tables
-        INNER JOIN 
-        (SELECT
-                pg_class.relname AS table_name,
-                 pg_namespace.nspname AS table_schema
-        FROM pg_catalog.pg_class AS pg_class
-        INNER JOIN pg_catalog.pg_namespace AS pg_namespace 
-                ON (pg_namespace.oid = pg_class.relnamespace)
-        WHERE pg_class.relispartition = false
-                AND pg_class.relkind = ANY('{"r","v","t","m","p"}'))
-        AS catalog_table_data
-        ON (catalog_table_data.table_name = tables.table_name AND catalog_table_data.table_schema = tables.table_schema)
-	LEFT JOIN (SELECT relname AS child_name FROM pg_catalog.pg_inherits AS inherit
-		LEFT JOIN pg_catalog.pg_class AS child ON (child.oid = inherit.inhrelid)) AS inherited_tables
-	ON (inherited_tables.child_name = tables.table_name)
-	WHERE inherited_tables.child_name IS NULL
-        AND tables.table_schema = $1;`,
+		SELECT tables.table_name, tables.table_type
+		FROM information_schema.tables AS tables
+		INNER JOIN (
+			SELECT pg_class.relname AS table_name,
+				   pg_namespace.nspname AS table_schema
+			FROM pg_catalog.pg_class AS pg_class
+				INNER JOIN pg_catalog.pg_namespace AS pg_namespace
+				ON (pg_namespace.oid = pg_class.relnamespace)
+			WHERE (pg_class.relispartition = false OR pg_class.relispartition IS NULL) AND pg_class.relkind = ANY ('{"r","v","t","m","p"}')
+		) AS catalog_table_data
+		ON (catalog_table_data.table_name = tables.table_name AND catalog_table_data.table_schema = tables.table_schema)
+		WHERE tables.table_schema = $1;
+	`,
+
 	GET_NAMESPACE_OID: 'SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = $1',
-	GET_TABLE_LEVEL_DATA: `
+
+    GET_TABLE_LEVEL_DATA: `
         SELECT pc.oid, pc.relpersistence, pc.reloptions, pt.spcname, pg_get_expr(pc.relpartbound, pc.oid) AS partition_expr
             FROM pg_catalog.pg_class AS pc 
             LEFT JOIN pg_catalog.pg_tablespace AS pt 
             ON pc.reltablespace = pt.oid
             WHERE pc.relname = $1 AND pc.relnamespace = $2;`,
-	GET_TABLE_TOAST_OPTIONS: `
+
+    GET_TABLE_TOAST_OPTIONS: `
         SELECT reloptions AS toast_options
         FROM pg_catalog.pg_class
         WHERE oid =
@@ -132,16 +135,19 @@ const queryConstants = {
                  FROM pg_catalog.pg_class
                  WHERE relname=$1 AND relnamespace = $2
                  LIMIT 1)`,
-	GET_TABLE_PARTITION_DATA: `
+
+    GET_TABLE_PARTITION_DATA: `
         SELECT partstrat as partition_method,
 	            partattrs::int2[] as partition_attributes_positions,
 	            pg_catalog.pg_get_expr(partexprs, partrelid) AS expressions
             FROM pg_catalog.pg_partitioned_table
             WHERE partrelid = $1;`,
+
 	GET_TABLE_COLUMNS: `
         SELECT * FROM information_schema.columns
             WHERE table_name = $1 AND table_schema = $2
             ORDER BY ordinal_position`,
+
 	GET_TABLE_COLUMNS_ADDITIONAL_DATA: `
         SELECT pg_attribute.attname AS name,
             pg_attribute.attndims AS number_of_array_dimensions,
@@ -151,18 +157,24 @@ const queryConstants = {
         LEFT JOIN pg_catalog.pg_description AS pg_description ON (pg_description.objsubid=pg_attribute.attnum
                                                                AND pg_description.objoid = pg_attribute.attrelid)
         WHERE pg_attribute.attrelid = $1;`,
+
 	GET_DESCRIPTION_BY_OID: `SELECT obj_description($1)`,
+
 	GET_ROWS_COUNT: fullTableName => `SELECT COUNT(*) AS quantity FROM ${fullTableName};`,
+
 	GET_SAMPLED_DATA: (fullTableName, jsonColumns) => `SELECT ${jsonColumns} FROM ${fullTableName} LIMIT $1;`,
-        GET_SAMPLED_DATA_SIZE: (fullTableName, jsonColumns) => `
+
+    GET_SAMPLED_DATA_SIZE: (fullTableName, jsonColumns) => `
         SELECT sum(pg_column_size(_hackolade_tmp_sampling_tbl.*)) AS _hackolade_tmp_sampling_tbl_size 
         FROM (SELECT ${jsonColumns} FROM ${fullTableName} LIMIT $1) AS _hackolade_tmp_sampling_tbl;`,
-	GET_INHERITS_PARENT_TABLE_NAME: `
+
+    GET_INHERITS_PARENT_TABLE_NAME: `
         SELECT pc.relname AS parent_table_name FROM pg_catalog.pg_inherits AS pi
 	        INNER JOIN pg_catalog.pg_class AS pc
 	        ON pc.oid = pi.inhparent
 	        WHERE pi.inhrelid = $1;`,
-	GET_TABLE_CONSTRAINTS: `
+
+    GET_TABLE_CONSTRAINTS: `
         SELECT pcon.conname AS constraint_name, 
 	            pcon.contype AS constraint_type,
 	            pcon.connoinherit AS no_inherit,
@@ -177,10 +189,14 @@ const queryConstants = {
 	        LEFT JOIN pg_catalog.pg_tablespace AS pt
 	        ON pc.reltablespace = pt.oid
 	        WHERE pcon.conrelid = $1;`,
-	GET_TABLE_INDEXES: getGET_TABLE_INDEXES(),
-	GET_TABLE_INDEXES_V_10: getGET_TABLE_INDEXES(10),
-        GET_TABLE_INDEXES_V_15: getGET_TABLE_INDEXES(15),
-	GET_TABLE_FOREIGN_KEYS: `
+
+    GET_TABLE_INDEXES: getGET_TABLE_INDEXES(),
+
+    GET_TABLE_INDEXES_V_10: getGET_TABLE_INDEXES(10),
+
+    GET_TABLE_INDEXES_V_15: getGET_TABLE_INDEXES(15),
+
+    GET_TABLE_FOREIGN_KEYS: `
         SELECT pcon.conname AS relationship_name, 
                 pcon.conkey AS table_columns_positions,
                 pcon.confdeltype AS relationship_on_delete,
@@ -198,16 +214,20 @@ const queryConstants = {
             LEFT JOIN pg_catalog.pg_class AS pc_foreign_table ON (pcon.confrelid = pc_foreign_table.oid)
             JOIN pg_catalog.pg_namespace AS foreign_table_namespace ON (pc_foreign_table.relnamespace = foreign_table_namespace.oid)
             WHERE pcon.conrelid = $1 AND pcon.contype = 'f';`,
-	GET_VIEW_DATA: `SELECT * FROM information_schema.views WHERE table_name = $1 AND table_schema = $2;`,
-	GET_VIEW_SELECT_STMT_FALLBACK: `SELECT definition FROM pg_views WHERE viewname = $1 AND schemaname = $2;`,
-	GET_VIEW_OPTIONS: `
+
+    GET_VIEW_DATA: `SELECT * FROM information_schema.views WHERE table_name = $1 AND table_schema = $2;`,
+
+    GET_VIEW_SELECT_STMT_FALLBACK: `SELECT definition FROM pg_views WHERE viewname = $1 AND schemaname = $2;`,
+
+    GET_VIEW_OPTIONS: `
         SELECT oid, 
             reloptions AS view_options,
             relpersistence AS persistence,
             obj_description(oid, 'pg_class') AS description
         FROM pg_catalog.pg_class 
         WHERE relname = $1 AND relnamespace = $2;`,
-	GET_FUNCTIONS_WITH_PROCEDURES: `
+
+    GET_FUNCTIONS_WITH_PROCEDURES: `
         SELECT specific_name,
             routine_name AS name,
             routine_type,
@@ -217,7 +237,8 @@ const queryConstants = {
             type_udt_name AS return_data_type
 	    FROM information_schema.routines
 	    WHERE specific_schema=$1;`,
-	GET_FUNCTIONS_WITH_PROCEDURES_ARGS: `
+
+    GET_FUNCTIONS_WITH_PROCEDURES_ARGS: `
         SELECT parameter_name,
             parameter_mode,
             parameter_default,
@@ -226,9 +247,12 @@ const queryConstants = {
         FROM information_schema.parameters
         WHERE specific_name = $1
         ORDER BY ordinal_position;`,
-	GET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL: getGET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL(),
-	GET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL_V_10: getGET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL(10),
-	GET_USER_DEFINED_TYPES: `
+
+    GET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL: getGET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL(),
+
+    GET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL_V_10: getGET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL(10),
+
+    GET_USER_DEFINED_TYPES: `
         SELECT pg_type.typrelid AS pg_class_oid,
             pg_type.typname AS name,
             pg_type.typtype AS type,
@@ -262,7 +286,8 @@ const queryConstants = {
               range_opclass_name,
               range_canonical_proc,
               range_diff_proc;`,
-	GET_COMPOSITE_TYPE_COLUMNS: `
+
+    GET_COMPOSITE_TYPE_COLUMNS: `
         SELECT pg_attribute.attname AS column_name,
            pg_type.typname AS data_type,
            pg_get_expr(pg_attrdef.adbin, pg_attrdef.adrelid) AS columns_default,
@@ -276,11 +301,16 @@ const queryConstants = {
                                                           AND pg_attrdef.adnum = pg_attribute.attnum)
         LEFT JOIN pg_catalog.pg_collation AS pg_collation ON (pg_collation.oid = pg_attribute.attcollation)
         WHERE pg_attribute.attrelid = $1`,
-	GET_DB_NAME: 'SELECT current_database();',
-	GET_DB_ENCODING: 'SHOW SERVER_ENCODING;',
-	GET_DB_COLLATE_NAME: 'SELECT default_collate_name FROM information_schema.character_sets;',
-	GET_DOMAIN_TYPES: 'SELECT * FROM information_schema.domains WHERE domain_schema = $1',
-	GET_DOMAIN_TYPES_CONSTRAINTS: `
+
+    GET_DB_NAME: 'SELECT current_database();',
+
+    GET_DB_ENCODING: 'SHOW SERVER_ENCODING;',
+
+    GET_DB_COLLATE_NAME: 'SELECT default_collate_name FROM information_schema.character_sets;',
+
+    GET_DOMAIN_TYPES: 'SELECT * FROM information_schema.domains WHERE domain_schema = $1',
+
+    GET_DOMAIN_TYPES_CONSTRAINTS: `
         SELECT pg_type.typname AS type_name,
         	pg_type.typnotnull AS not_null,
         	pg_constraint.conname AS constraint_name,
@@ -289,9 +319,11 @@ const queryConstants = {
         LEFT JOIN pg_catalog.pg_constraint AS pg_constraint ON (pg_constraint.contypid = pg_type.oid)
         LEFT JOIN pg_catalog.pg_namespace AS pg_namespace ON (pg_namespace.oid = pg_type.typnamespace)
         WHERE pg_type.typname = $1 AND pg_namespace.nspname = $2 AND pg_constraint.contype = 'c';`,
-	GET_DATABASES:
+
+    GET_DATABASES:
 		'SELECT datname AS database_name FROM pg_catalog.pg_database WHERE datistemplate != TRUE AND datallowconn = TRUE;',
-	GET_TRIGGERS: `
+
+    GET_TRIGGERS: `
         SELECT trigger_name,
                 array_agg(event_manipulation::text) AS trigger_events,
                 event_object_schema,
@@ -351,7 +383,8 @@ const queryConstants = {
                 action_reference_new_table,
                 action_condition,
                 action_statement;`,
-	GET_TRIGGERS_ADDITIONAL_DATA: `
+
+    GET_TRIGGERS_ADDITIONAL_DATA: `
         SELECT
                 pg_catalog.obj_description(pg_trigger.oid, 'pg_trigger') AS description,
         	pg_trigger.tgname AS trigger_name,
@@ -385,7 +418,8 @@ const queryConstants = {
                 description,
                 referenced_table_name,
                 referenced_table_schema;`,
-	GET_PARTITIONS: `
+
+    GET_PARTITIONS: `
         SELECT
         	inher_child.relname AS child_name,
         	inher_parent.relname AS parent_name,
