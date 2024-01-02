@@ -85,12 +85,6 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "text"
 			},
 			{
-				"propertyName": "Tablespace",
-				"propertyKeyword": "tablespace_name",
-				"propertyTooltip": "Enter the name of an existing tablespace location for the database, or pg_default",
-				"propertyType": "text"
-			},
-			{
 				"propertyName": "Encoding",
 				"propertyKeyword": "encoding",
 				"propertyTooltip": "Select from list of options",

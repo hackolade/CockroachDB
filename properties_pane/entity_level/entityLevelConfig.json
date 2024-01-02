@@ -598,12 +598,6 @@ making sure that you maintain a proper JSON format.
 				}
 			},
 			{
-				"propertyName": "Tablespace",
-				"propertyKeyword": "table_tablespace_name",
-				"propertyTooltip": "Enter the name of an existing tablespace location for the database, or pg_default",
-				"propertyType": "text"
-			},
-			{
 				"propertyName": "As Select statement",
 				"propertyKeyword": "selectStatement",
 				"propertyType": "details",
@@ -1185,12 +1179,6 @@ making sure that you maintain a proper JSON format.
 							"key": "index_method",
 							"value": "brin"
 						}
-					},
-					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "index_tablespace_name",
-						"propertyTooltip": "Enter the name of an existing tablespace location for the database, or pg_default",
-						"propertyType": "text"
 					},
 					{
 						"propertyName": "Where constraint",

@@ -121,10 +121,8 @@ const queryConstants = {
 	GET_NAMESPACE_OID: 'SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = $1',
 
     GET_TABLE_LEVEL_DATA: `
-        SELECT pc.oid, pc.relpersistence, pc.reloptions, pt.spcname, pg_get_expr(pc.relpartbound, pc.oid) AS partition_expr
-            FROM pg_catalog.pg_class AS pc 
-            LEFT JOIN pg_catalog.pg_tablespace AS pt 
-            ON pc.reltablespace = pt.oid
+        SELECT pc.oid, pc.relpersistence, pc.reloptions, pg_get_expr(pc.relpartbound, pc.oid) AS partition_expr
+            FROM pg_catalog.pg_class AS pc
             WHERE pc.relname = $1 AND pc.relnamespace = $2;`,
 
     GET_TABLE_TOAST_OPTIONS: `
