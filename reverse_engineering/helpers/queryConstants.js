@@ -166,12 +166,6 @@ const queryConstants = {
         SELECT sum(pg_column_size(_hackolade_tmp_sampling_tbl.*)) AS _hackolade_tmp_sampling_tbl_size 
         FROM (SELECT ${jsonColumns} FROM ${fullTableName} LIMIT $1) AS _hackolade_tmp_sampling_tbl;`,
 
-    GET_INHERITS_PARENT_TABLE_NAME: `
-        SELECT pc.relname AS parent_table_name FROM pg_catalog.pg_inherits AS pi
-	        INNER JOIN pg_catalog.pg_class AS pc
-	        ON pc.oid = pi.inhparent
-	        WHERE pi.inhrelid = $1;`,
-
     GET_TABLE_CONSTRAINTS: `
         SELECT pcon.conname AS constraint_name, 
 	            pcon.contype AS constraint_type,
