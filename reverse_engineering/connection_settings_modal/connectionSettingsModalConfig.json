@@ -12,16 +12,16 @@
 			{
 				"inputLabel": "Host",
 				"inputKeyword": "host",
-				"description": "Specify host IP address or DNS name of PostgreSQL server",
+				"description": "Specify host IP address or DNS name of CockroachDB server",
 				"inputType": "text",
 				"regex": "([^\\s])"
 			},
 			{
 				"inputLabel": "Port",
 				"inputKeyword": "port",
-				"description": "Specify port number of PostgreSQL server",
+				"description": "Specify port number of CockroachDB server",
 				"inputType": "numeric",
-				"defaultValue": 5432
+				"defaultValue": 26257
 			},
 			{
 				"inputLabel": "Maintenance database",

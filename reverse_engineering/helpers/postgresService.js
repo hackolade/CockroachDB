@@ -103,7 +103,7 @@ module.exports = {
 		const versionRow = await db.queryTolerant(queryConstants.GET_VERSION, [], true);
 		const version = versionRow?.version || 'Version not retrieved';
 
-		logger.info(`PostgreSQL version: ${version}`);
+		// logger.info(`CockroachDB version: ${version}`);
 	},
 
 	async getAllSchemasNames() {
