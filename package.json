@@ -1,7 +1,7 @@
 {
     "name": "CockroachDB",
-    "version": "0.0.1",
-    "versionDate": "2023-12-29",
+    "version": "0.1.0",
+    "versionDate": "2024-01-02",
     "author": "hackolade",
     "engines": {
         "hackolade": "6.1.2",
