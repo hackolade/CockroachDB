@@ -43,7 +43,6 @@ const {
 	setViewSuffix,
 	prepareViewData,
 } = require('./postgresHelpers/viewHelper');
-const { setDependencies: setDependenciesInTriggerHelper, getTriggers } = require('./postgresHelpers/triggerHelper');
 const queryConstants = require('./queryConstants');
 const { reorganizeConstraints } = require('./postgresHelpers/reorganizeConstraints');
 
@@ -62,7 +61,6 @@ module.exports = {
 		setViewDependenciesInViewHelper(app);
 		setFunctionHelperDependencies(app);
 		setDependenciesInUserDefinedTypesHelper(app);
-		setDependenciesInTriggerHelper(app);
 	},
 
 	async connect(connectionInfo, specificLogger) {
@@ -148,7 +146,6 @@ module.exports = {
 		entitiesNames,
 		recordSamplingSettings,
 		includePartitions = false,
-		ignoreUdfUdpTriggers = false,
 	) {
 		const userDefinedTypes = await this._retrieveUserDefinedTypes(schemaName);
 		const schemaOidResult = await db.queryTolerant(queryConstants.GET_NAMESPACE_OID, [schemaName], true);
@@ -174,13 +171,12 @@ module.exports = {
 				schemaOid,
 				schemaName,
 				userDefinedTypes,
-				ignoreUdfUdpTriggers,
 			),
 		);
 
 		const views = await mapPromises(
 			viewsNames,
-			_.bind(this._retrieveSingleViewData, this, schemaOid, schemaName, ignoreUdfUdpTriggers),
+			_.bind(this._retrieveSingleViewData, this, schemaOid, schemaName),
 		);
 
 		return { views, tables, modelDefinitions: getJsonSchema(userDefinedTypes) };
@@ -261,7 +257,6 @@ module.exports = {
 		schemaOid,
 		schemaName,
 		userDefinedTypes,
-		ignoreUdfUdpTriggers,
 		{ tableName, isParentPartitioned },
 	) {
 		logger.progress('Get table data', schemaName, tableName);
@@ -285,7 +280,6 @@ module.exports = {
 		const tableConstraintsResult = await db.queryTolerant(queryConstants.GET_TABLE_CONSTRAINTS, [tableOid]);
 		const tableIndexesResult = await db.queryTolerant(getGetIndexesQuery(version), [tableOid]);
 		const tableForeignKeys = await db.queryTolerant(queryConstants.GET_TABLE_FOREIGN_KEYS, [tableOid]);
-		const triggers = await this._getTriggers(schemaName, tableName, schemaOid, tableOid, ignoreUdfUdpTriggers);
 
 		logger.info('Table data retrieved', {
 			schemaName,
@@ -304,7 +298,6 @@ module.exports = {
 		const tableData = {
 			partitioning,
 			description,
-			triggers,
 			Indxs: tableIndexes,
 			...tableLevelProperties,
 			...tableConstraint,
@@ -332,22 +325,6 @@ module.exports = {
 			documents,
 			relationships,
 		};
-	},
-
-	async _getTriggers(schemaName, objectName, schemaOid, objectOid, ignoreUdfUdpTriggers) {
-		if (ignoreUdfUdpTriggers) {
-			logger.info('Triggers ignored');
-
-			return [];
-		}
-
-		const triggersData = await db.queryTolerant(queryConstants.GET_TRIGGERS, [schemaName, objectName]);
-		const triggersAdditionalData = await db.queryTolerant(queryConstants.GET_TRIGGERS_ADDITIONAL_DATA, [
-			schemaOid,
-			objectOid,
-		]);
-
-		return getTriggers(triggersData, triggersAdditionalData);
 	},
 
 	async _getTableColumns(tableName, schemaName, tableOid) {
@@ -393,7 +370,7 @@ module.exports = {
 		return await db.queryTolerant(queryConstants.GET_SAMPLED_DATA(fullTableName, jsonColumnsString), [limit]);
 	},
 
-	async _retrieveSingleViewData(schemaOid, schemaName, ignoreUdfUdpTriggers, viewName) {
+	async _retrieveSingleViewData(schemaOid, schemaName, viewName) {
 		logger.progress('Get view data', schemaName, viewName);
 
 		viewName = removeViewNameSuffix(viewName);
@@ -403,16 +380,9 @@ module.exports = {
 			!viewData.view_definition &&
 			(await db.queryTolerant(queryConstants.GET_VIEW_SELECT_STMT_FALLBACK, [viewName, schemaName], true));
 		const viewOptions = await db.queryTolerant(queryConstants.GET_VIEW_OPTIONS, [viewName, schemaOid], true);
-		const triggers = await this._getTriggers(
-			schemaName,
-			viewName,
-			schemaOid,
-			viewOptions?.oid,
-			ignoreUdfUdpTriggers,
-		);
 
 		const script = generateCreateViewScript(viewName, viewData, viewDefinitionFallback);
-		const data = prepareViewData(viewData, viewOptions, triggers);
+		const data = prepareViewData(viewData, viewOptions);
 
 		if (!script) {
 			logger.info('View select statement was not retrieved', { schemaName, viewName });

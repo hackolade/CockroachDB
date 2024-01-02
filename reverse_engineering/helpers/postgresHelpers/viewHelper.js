@@ -23,7 +23,7 @@ const generateCreateViewScript = (viewName, viewData, viewDefinitionFallback = {
 	return `CREATE VIEW ${wrapInQuotes(viewName)} AS ${selectStatement}`;
 };
 
-const prepareViewData = (viewData, viewOptions, triggers) => {
+const prepareViewData = (viewData, viewOptions) => {
 	const data = {
 		withCheckOption: viewData.check_option !== 'NONE' || _.isNil(viewData.check_option),
 		checkTestingScope: getCheckTestingScope(viewData.check_option),
@@ -31,7 +31,6 @@ const prepareViewData = (viewData, viewOptions, triggers) => {
 		temporary: viewOptions?.persistence === 't',
 		recursive: isViewRecursive(viewData),
 		description: viewOptions?.description,
-		triggers,
 	};
 
 	return clearEmptyPropertiesInObject(data);
