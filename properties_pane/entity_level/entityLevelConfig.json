@@ -601,7 +601,6 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Tablespace",
 				"propertyKeyword": "table_tablespace_name",
 				"propertyTooltip": "Enter the name of an existing tablespace location for the database, or pg_default",
-				"defaultValue": "pg_default",
 				"propertyType": "text"
 			},
 			{
@@ -1191,7 +1190,6 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "Tablespace",
 						"propertyKeyword": "index_tablespace_name",
 						"propertyTooltip": "Enter the name of an existing tablespace location for the database, or pg_default",
-						"defaultValue": "pg_default",
 						"propertyType": "text"
 					},
 					{
