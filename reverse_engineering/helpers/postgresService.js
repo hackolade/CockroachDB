@@ -145,22 +145,14 @@ module.exports = {
 		schemaName,
 		entitiesNames,
 		recordSamplingSettings,
-		includePartitions = false,
 	) {
 		const userDefinedTypes = await this._retrieveUserDefinedTypes(schemaName);
 		const schemaOidResult = await db.queryTolerant(queryConstants.GET_NAMESPACE_OID, [schemaName], true);
 		const schemaOid = schemaOidResult?.oid;
-		const partitions = includePartitions ? await db.queryTolerant(queryConstants.GET_PARTITIONS, [schemaOid]) : [];
 
 		const [viewsNames, tablesNames] = _.partition(entitiesNames, isViewByName);
 
-		const allTablesList = tablesNames.flatMap(tableName => [
-			{ tableName },
-			..._.filter(partitions, { parent_name: tableName }).map(({ child_name, is_parent_partitioned }) => ({
-				isParentPartitioned: is_parent_partitioned,
-				tableName: child_name,
-			})),
-		]);
+		const allTablesList = tablesNames.map(tableName => ({ tableName }));
 
 		const tables = await mapPromises(
 			_.uniq(allTablesList),
@@ -246,7 +238,7 @@ module.exports = {
 		schemaOid,
 		schemaName,
 		userDefinedTypes,
-		{ tableName, isParentPartitioned },
+		{ tableName },
 	) {
 		logger.progress('Get table data', schemaName, tableName);
 

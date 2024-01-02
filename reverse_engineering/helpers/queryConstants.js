@@ -303,15 +303,6 @@ const queryConstants = {
     GET_DATABASES:
 		'SELECT datname AS database_name FROM pg_catalog.pg_database WHERE datistemplate != TRUE AND datallowconn = TRUE;',
 
-    GET_PARTITIONS: `
-        SELECT
-        	inher_child.relname AS child_name,
-        	inher_parent.relname AS parent_name,
-                CASE WHEN inher_parent.relkind = 'p' THEN TRUE ELSE FALSE END AS is_parent_partitioned
-        FROM pg_inherits
-        LEFT JOIN pg_class AS inher_child ON (inher_child.oid = pg_inherits.inhrelid)
-        LEFT JOIN pg_class AS inher_parent ON (inher_parent.oid = pg_inherits.inhparent)
-        WHERE inher_parent.relnamespace = $1;`,
 };
 
 const getQueryName = query => {
