@@ -226,7 +226,6 @@ module.exports = {
 		logger.progress('Get User-Defined Types', schemaName);
 
 		const userDefinedTypes = await db.queryTolerant(queryConstants.GET_USER_DEFINED_TYPES, [schemaName]);
-		const domainTypes = await db.queryTolerant(queryConstants.GET_DOMAIN_TYPES, [schemaName]);
 
 		const udtsWithColumns = await mapPromises(userDefinedTypes, async typeData => {
 			if (isTypeComposite(typeData)) {
@@ -239,17 +238,7 @@ module.exports = {
 			return typeData;
 		});
 
-		const domainTypesWithConstraints = await mapPromises(domainTypes, async typeData => {
-			return {
-				...typeData,
-				constraints: await db.queryTolerant(queryConstants.GET_DOMAIN_TYPES_CONSTRAINTS, [
-					typeData.domain_name,
-					schemaName,
-				]),
-			};
-		});
-
-		return getUserDefinedTypes(udtsWithColumns, domainTypesWithConstraints);
+		return getUserDefinedTypes(udtsWithColumns);
 	},
 
 	async _retrieveSingleTableData(

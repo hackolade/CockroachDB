@@ -306,18 +306,6 @@ const queryConstants = {
 
     GET_DB_COLLATE_NAME: 'SELECT default_collate_name FROM information_schema.character_sets;',
 
-    GET_DOMAIN_TYPES: 'SELECT * FROM information_schema.domains WHERE domain_schema = $1',
-
-    GET_DOMAIN_TYPES_CONSTRAINTS: `
-        SELECT pg_type.typname AS type_name,
-        	pg_type.typnotnull AS not_null,
-        	pg_constraint.conname AS constraint_name,
-        	pg_catalog.pg_get_expr(pg_constraint.conbin, pg_constraint.conrelid) AS expression
-        FROM pg_catalog.pg_type AS pg_type
-        LEFT JOIN pg_catalog.pg_constraint AS pg_constraint ON (pg_constraint.contypid = pg_type.oid)
-        LEFT JOIN pg_catalog.pg_namespace AS pg_namespace ON (pg_namespace.oid = pg_type.typnamespace)
-        WHERE pg_type.typname = $1 AND pg_namespace.nspname = $2 AND pg_constraint.contype = 'c';`,
-
     GET_DATABASES:
 		'SELECT datname AS database_name FROM pg_catalog.pg_database WHERE datistemplate != TRUE AND datallowconn = TRUE;',
 
