@@ -719,16 +719,13 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "mode",
 				"propertyType": "select",
 				"options": [
-					"smallint",
-					"integer",
-					"bigint",
-					"numeric",
+					"int",
+					"int2",
+					"int4",
+					"decimal",
+					"float",
 					"real",
-					"double precision",
-					"smallserial",
-					"serial",
-					"bigserial",
-					"money"
+					"double precision"
 				],
 				"data": "options",
 				"valueType": "string"
@@ -743,7 +740,7 @@ making sure that you maintain a proper JSON format.
 				"dependency": {
 					"key": "mode",
 					"value": [
-						"numeric"
+						"decimal"
 					]
 				}
 			},
@@ -757,7 +754,7 @@ making sure that you maintain a proper JSON format.
 				"dependency": {
 					"key": "mode",
 					"value": [
-						"numeric"
+						"decimal"
 					]
 				}
 			},
@@ -792,31 +789,13 @@ making sure that you maintain a proper JSON format.
 				]
 			},
 			{
-				"propertyName": "Generated column",
+				"propertyName": "Computed column",
 				"propertyKeyword": "generatedColumn",
-				"propertyTooltip": "A generated column is a special column that is always computed from other columns",
-				"propertyType": "checkbox",
-				"dependency": {
-					"type": "not",
-					"values": {
-						"type": "or",
-						"values": [
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v10.x"
-							},
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v11.x"
-							}
-						]
-					}
-				}
+				"propertyTooltip": "A computed column is a special column that is always computed from other columns",
+				"propertyType": "checkbox"
 			},
 			{
-				"propertyName": "Generation expression",
+				"propertyName": "Computed column expression",
 				"propertyKeyword": "columnGenerationExpression",
 				"propertyTooltip": "An SQL statement for computing values for this column",
 				"propertyType": "details",
@@ -828,24 +807,6 @@ making sure that you maintain a proper JSON format.
 						{
 							"key": "generatedColumn",
 							"value": true
-						},
-						{
-							"type": "not",
-							"values": {
-								"type": "or",
-								"values": [
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v10.x"
-									},
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v11.x"
-									}
-								]
-							}
 						}
 					]
 				}
