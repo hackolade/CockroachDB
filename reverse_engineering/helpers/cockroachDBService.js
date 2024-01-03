@@ -27,7 +27,6 @@ const {
 	getSampleDocSize,
 	prepareTableLevelData,
 	prepareTableIndexes,
-	prepareTableInheritance,
 } = require('./cockroachDBHelpers/tableHelper');
 const {
 	setDependencies: setDependenciesInUserDefinedTypesHelper,

@@ -1,4 +1,4 @@
-const cockroachDBService = require('../reverse_engineering/helpers/postgresService');
+const cockroachDBService = require('../reverse_engineering/helpers/cockroachDBService');
 
 const applyToInstance = async (connectionInfo, logger, app) => {
 	try {

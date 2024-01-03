@@ -1,7 +1,7 @@
 'use strict';
 
 const { createLogger } = require('./helpers/loggerHelper');
-const cockroachDBService = require('./helpers/postgresService');
+const cockroachDBService = require('./helpers/cockroachDBService');
 
 module.exports = {
 	async disconnect(connectionInfo, logger, callback, app) {
