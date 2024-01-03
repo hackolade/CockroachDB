@@ -5,20 +5,20 @@ const {
 	setDependencies: setDependenciesInColumnHelper,
 	mapColumnData,
 	setSubtypeFromSampledJsonValues,
-} = require('./postgresHelpers/columnHelper');
+} = require('./cockroachDBHelpers/columnHelper');
 const {
 	setDependencies: setDependenciesInCommonHelper,
 	clearEmptyPropertiesInObject,
-} = require('./postgresHelpers/common');
+} = require('./cockroachDBHelpers/common');
 const {
 	setDependencies: setDependenciesInForeignKeysHelper,
 	prepareForeignKeys,
-} = require('./postgresHelpers/foreignKeysHelper');
+} = require('./cockroachDBHelpers/foreignKeysHelper');
 const {
 	setDependencies: setFunctionHelperDependencies,
 	mapFunctionData,
 	mapProcedureData,
-} = require('./postgresHelpers/functionHelper');
+} = require('./cockroachDBHelpers/functionHelper');
 const {
 	setDependencies: setDependenciesInTableHelper,
 	prepareTablePartition,
@@ -27,13 +27,12 @@ const {
 	getSampleDocSize,
 	prepareTableLevelData,
 	prepareTableIndexes,
-	prepareTableInheritance,
-} = require('./postgresHelpers/tableHelper');
+} = require('./cockroachDBHelpers/tableHelper');
 const {
 	setDependencies: setDependenciesInUserDefinedTypesHelper,
 	getUserDefinedTypes,
 	isTypeComposite,
-} = require('./postgresHelpers/userDefinedTypesHelper');
+} = require('./cockroachDBHelpers/userDefinedTypesHelper');
 const {
 	setDependencies: setViewDependenciesInViewHelper,
 	isViewByTableType,
@@ -42,9 +41,9 @@ const {
 	generateCreateViewScript,
 	setViewSuffix,
 	prepareViewData,
-} = require('./postgresHelpers/viewHelper');
+} = require('./cockroachDBHelpers/viewHelper');
 const queryConstants = require('./queryConstants');
-const { reorganizeConstraints } = require('./postgresHelpers/reorganizeConstraints');
+const { reorganizeConstraints } = require('./cockroachDBHelpers/reorganizeConstraints');
 
 let currentSshTunnel = null;
 let _ = null;

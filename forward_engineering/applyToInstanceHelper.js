@@ -1,11 +1,11 @@
-const postgresService = require('../reverse_engineering/helpers/postgresService');
+const cockroachDBService = require('../reverse_engineering/helpers/cockroachDBService');
 
 const applyToInstance = async (connectionInfo, logger, app) => {
 	try {
-		postgresService.setDependencies(app);
-		await postgresService.connect(connectionInfo, logger);
-		await postgresService.logVersion();
-		await postgresService.applyScript(removeCreateDbScript(connectionInfo.script));
+		cockroachDBService.setDependencies(app);
+		await cockroachDBService.connect(connectionInfo, logger);
+		await cockroachDBService.logVersion();
+		await cockroachDBService.applyScript(removeCreateDbScript(connectionInfo.script));
 	} catch (error) {
 		logger.error(error);
 		throw prepareError(error);

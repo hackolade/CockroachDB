@@ -1,11 +1,11 @@
 'use strict';
 
 const { createLogger } = require('./helpers/loggerHelper');
-const postgresService = require('./helpers/postgresService');
+const cockroachDBService = require('./helpers/cockroachDBService');
 
 module.exports = {
 	async disconnect(connectionInfo, logger, callback, app) {
-		await postgresService.disconnect();
+		await cockroachDBService.disconnect();
 
 		callback();
 	},
@@ -14,22 +14,22 @@ module.exports = {
 		try {
 			logInfo('Test connection', connectionInfo, logger);
 
-			const postgresLogger = createLogger({
+			const cockroachDBLogger = createLogger({
 				title: 'Test connection instance log',
 				hiddenKeys: connectionInfo.hiddenKeys,
 				logger,
 			});
 
-			postgresService.setDependencies(app);
-			await postgresService.connect(connectionInfo, postgresLogger);
-			await postgresService.pingDb();
-			await postgresService.logVersion();
+			cockroachDBService.setDependencies(app);
+			await cockroachDBService.connect(connectionInfo, cockroachDBLogger);
+			await cockroachDBService.pingDb();
+			await cockroachDBService.logVersion();
 			callback();
 		} catch (error) {
 			logger.log('error', prepareError(error), 'Test connection instance log');
 			callback(prepareError(error));
 		} finally {
-			await postgresService.disconnect();
+			await cockroachDBService.disconnect();
 		}
 	},
 
@@ -37,17 +37,17 @@ module.exports = {
 		try {
 			logInfo('Get databases', connectionInfo, logger);
 
-			const postgresLogger = createLogger({
+			const cockroachDBLogger = createLogger({
 				title: 'Get DB names',
 				hiddenKeys: connectionInfo.hiddenKeys,
 				logger,
 			});
 
-			postgresService.setDependencies(app);
-			await postgresService.connect(connectionInfo, postgresLogger);
-			await postgresService.logVersion();
+			cockroachDBService.setDependencies(app);
+			await cockroachDBService.connect(connectionInfo, cockroachDBLogger);
+			await cockroachDBService.logVersion();
 
-			const dbs = await postgresService.getDatabaseNames();
+			const dbs = await cockroachDBService.getDatabaseNames();
 			logger.log('info', dbs, 'All databases list', connectionInfo.hiddenKeys);
 			return cb(null, dbs);
 		} catch (err) {
@@ -64,21 +64,21 @@ module.exports = {
 		try {
 			logInfo('Get DB table names', connectionInfo, logger);
 
-			const postgresLogger = createLogger({
+			const cockroachDBLogger = createLogger({
 				title: 'Get DB collections names',
 				hiddenKeys: connectionInfo.hiddenKeys,
 				logger,
 			});
 
-			postgresService.setDependencies(app);
-			await postgresService.connect(connectionInfo, postgresLogger);
-			await postgresService.logVersion();
-			const schemasNames = await postgresService.getAllSchemasNames();
+			cockroachDBService.setDependencies(app);
+			await cockroachDBService.connect(connectionInfo, cockroachDBLogger);
+			await cockroachDBService.logVersion();
+			const schemasNames = await cockroachDBService.getAllSchemasNames();
 
 			const collections = await schemasNames.reduce(async (next, dbName) => {
 				const result = await next;
 				try {
-					const dbCollections = await postgresService.getTablesNames(dbName);
+					const dbCollections = await cockroachDBService.getTablesNames(dbName);
 
 					return result.concat({
 						dbName,
@@ -86,8 +86,8 @@ module.exports = {
 						isEmpty: dbCollections.length === 0,
 					});
 				} catch (error) {
-					postgresLogger.info(`Error reading database "${dbName}"`);
-					postgresLogger.error(error);
+					cockroachDBLogger.info(`Error reading database "${dbName}"`);
+					cockroachDBLogger.error(error);
 
 					return result.concat({
 						dbName,
@@ -102,7 +102,7 @@ module.exports = {
 		} catch (error) {
 			logger.log('error', prepareError(error), 'Get DB collections names');
 			callback(prepareError(error));
-			await postgresService.disconnect();
+			await cockroachDBService.disconnect();
 		}
 	},
 
@@ -110,32 +110,32 @@ module.exports = {
 		try {
 			logger.log('info', data, 'Retrieve tables data:', data.hiddenKeys);
 
-			const postgresLogger = createLogger({
+			const cockroachDBLogger = createLogger({
 				title: 'Get DB collections data log',
 				hiddenKeys: data.hiddenKeys,
 				logger,
 			});
 
-			postgresLogger.progress('Start reverse engineering...');
+			cockroachDBLogger.progress('Start reverse engineering...');
 
 			const collections = data.collectionData.collections;
 			const schemasNames = data.collectionData.dataBaseNames;
 
-			const modelData = await postgresService.getDbLevelData();
+			const modelData = await cockroachDBService.getDbLevelData();
 
 			const { packages, relationships } = await Promise.all(
 				schemasNames.map(async schemaName => {
-					const { tables, views, modelDefinitions } = await postgresService.retrieveEntitiesData(
+					const { tables, views, modelDefinitions } = await cockroachDBService.retrieveEntitiesData(
 						schemaName,
 						collections[schemaName],
 						data.recordSamplingSettings,
 					);
-					const { functions, procedures } = await postgresService.retrieveSchemaLevelData(
+					const { functions, procedures } = await cockroachDBService.retrieveSchemaLevelData(
 						schemaName,
 						data.ignoreUdfUdpTriggers,
 					);
 
-					postgresLogger.progress('Schema data fetched successfully', schemaName);
+					cockroachDBLogger.progress('Schema data fetched successfully', schemaName);
 
 					return {
 						schemaName,
@@ -192,7 +192,7 @@ module.exports = {
 				})
 				.then(({ packages, relationships }) => ({ packages: orderPackages(packages), relationships }));
 
-			postgresLogger.info('The data is processed and sent to the application', {
+			cockroachDBLogger.info('The data is processed and sent to the application', {
 				packagesLength: packages?.length,
 				relationshipsLength: relationships?.length,
 			});
@@ -201,7 +201,7 @@ module.exports = {
 			logger.log('error', prepareError(error), 'Retrieve tables data');
 			callback(prepareError(error));
 		} finally {
-			await postgresService.disconnect();
+			await cockroachDBService.disconnect();
 		}
 	},
 };

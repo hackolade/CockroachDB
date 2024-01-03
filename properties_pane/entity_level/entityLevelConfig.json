@@ -138,7 +138,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "If not exists",
 				"propertyKeyword": "ifNotExist",
-				"propertyTooltip": "When the IF NOT EXISTS clause is used, PostgreSQL will return a warning instead of an error if the specified table already exists. Cannot be used together with the OR REPLACE clause.",
+				"propertyTooltip": "When the IF NOT EXISTS clause is used, CockroachDB will return a warning instead of an error if the specified table already exists. Cannot be used together with the OR REPLACE clause.",
 				"propertyType": "checkbox",
 				"defaultValue": true
 			},
@@ -941,7 +941,7 @@ making sure that you maintain a proper JSON format.
 					{
 						"propertyName": "Concurrent build",
 						"propertyKeyword": "concurrently",
-						"propertyTooltip": "When this option is used, PostgreSQL will build the index without taking any locks that prevent concurrent inserts, updates, or deletes on the table; whereas a standard index build locks out writes (but not reads) on the table until it's done.",
+						"propertyTooltip": "When this option is used, CockroachDB will build the index without taking any locks that prevent concurrent inserts, updates, or deletes on the table; whereas a standard index build locks out writes (but not reads) on the table until it's done.",
 						"defaultValue": false,
 						"propertyType": "checkbox"
 					},

@@ -9,7 +9,7 @@
 		}
 	],
 	"hasUpdateScript": false,
-	"namePrefix": "PostgreSQL",
+	"namePrefix": "CockroachDB",
 	"level": {
 		"container": true,
 		"entity": true,

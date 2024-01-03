@@ -50,13 +50,13 @@ module.exports = {
             connectionInfo.hiddenKeys,
         );
 
-        const postgresLogger = createLogger({
+        const cockroachDBLogger = createLogger({
             title: 'Apply to instance',
             hiddenKeys: connectionInfo.hiddenKeys,
             logger,
         });
 
-        applyToInstanceHelper.applyToInstance(connectionInfo, postgresLogger, app).then(callback, callback);
+        applyToInstanceHelper.applyToInstance(connectionInfo, cockroachDBLogger, app).then(callback, callback);
     },
 
     testConnection(connectionInfo, logger, callback, app) {
