@@ -3,7 +3,7 @@ const ssh = require('tunnel-ssh');
 const pg = require('pg');
 
 const SSL_NOT_SUPPORTED_MESSAGE = 'The server does not support SSL connections';
-const POSTGRES_SSL_REQUIRED_ERROR_CODE = '28000';
+const COCKROACHDB_SSL_REQUIRED_ERROR_CODE = '28000';
 
 const getSshConfig = info => {
 	const config = {
@@ -145,7 +145,7 @@ const retryOnSslError = (config, logger, error) => {
 		);
 	}
 
-	if (error.code?.toString() === POSTGRES_SSL_REQUIRED_ERROR_CODE && config.sslType === 'allow') {
+	if (error.code?.toString() === COCKROACHDB_SSL_REQUIRED_ERROR_CODE && config.sslType === 'allow') {
 		logger.info("Retry connection with SSL (SSL mode 'allow')");
 		logger.error(error);
 

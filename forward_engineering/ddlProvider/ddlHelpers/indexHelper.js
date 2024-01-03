@@ -60,14 +60,14 @@ module.exports = ({ _, wrapInQuotes, checkAllKeysDeactivated, getColumnsList }) 
 
 		return _.chain(config)
 			.toPairs()
-			.map(([keyInModel, postgresKey]) => {
+			.map(([keyInModel, cockroachDBKey]) => {
 				const value = index.index_storage_parameter[keyInModel];
 
 				if (_.isNil(value) || value === '') {
 					return;
 				}
 
-				return `${postgresKey}=${getValue(value)}`;
+				return `${cockroachDBKey}=${getValue(value)}`;
 			})
 			.compact()
 			.join(',\n\t')
