@@ -8,9 +8,11 @@ const columnPropertiesMapper = {
 	column_default: 'default',
 	is_nullable: {
 		keyword: 'required',
-		values: {
-			YES: false,
-			NO: true,
+		map: (column, key, value) => {
+			return {
+				YES: false,
+				NO: true,
+			}[value];
 		},
 	},
 	not_null: 'required',
@@ -20,23 +22,34 @@ const columnPropertiesMapper = {
 	datetime_precision: 'timePrecision',
 	attribute_mode: {
 		keyword: 'timePrecision',
-		check: (column, value) => value !== -1 && canHaveTimePrecision(column.data_type),
+		check: (column, key, value) => value !== -1 && canHaveTimePrecision(column.data_type),
 	},
 	interval_type: 'intervalOptions',
 	collation_name: 'collationRule',
 	column_name: 'name',
 	number_of_array_dimensions: 'numberOfArrayDimensions',
 	udt_name: 'udt_name',
-	character_maximum_length: 'length',
+	character_maximum_length: {
+		keyword: 'length',
+		map: (column, key, value) => Number(value),
+	},
 	description: 'description',
 };
-
 const getColumnValue = (column, key, value) => {
-	if (columnPropertiesMapper[key]?.check) {
-		return columnPropertiesMapper[key].check(column, value) ? value : '';
+	const appropriateMapperConfig = columnPropertiesMapper[key];
+	if (!appropriateMapperConfig || typeof appropriateMapperConfig === 'string') {
+		return value;
 	}
 
-	return _.get(columnPropertiesMapper, `${key}.values.${value}`, value);
+	const checkFunction = appropriateMapperConfig.check || ((column, key, value) => true);
+	const mapFunction = appropriateMapperConfig.map || ((column, key, value) => value);
+
+	let resultValue = '';
+	if (checkFunction(column, key, value)) {
+		resultValue = value;
+	}
+
+	return mapFunction(column, key, resultValue);
 };
 
 const mapColumnData = userDefinedTypes => column => {

@@ -315,6 +315,7 @@ module.exports = {
 		return _.map(tableColumns, columnData => {
 			return {
 				...columnData,
+				ordinal_position: Number(columnData.ordinal_position),
 				...(_.find(tableColumnsAdditionalData, { name: columnData.column_name }) || {}),
 			};
 		});
