@@ -1,4 +1,4 @@
-const POSTGRES_RESERVED_WORDS = [
+const COCKROACHDB_RESERVED_WORDS = [
 	'ALL',
 	'ANALYSE',
 	'ANALYZE',
@@ -111,7 +111,7 @@ const clearEmptyPropertiesInObject = obj =>
 
 const getColumnNameByPosition = columns => position => _.find(columns, { ordinal_position: position })?.column_name;
 const wrapInQuotes = name =>
-	/\s|\W/.test(name) || _.includes(POSTGRES_RESERVED_WORDS, _.toUpper(name)) ? `"${name}"` : name;
+	/\s|\W/.test(name) || _.includes(COCKROACHDB_RESERVED_WORDS, _.toUpper(name)) ? `"${name}"` : name;
 
 module.exports = {
 	clearEmptyPropertiesInObject,

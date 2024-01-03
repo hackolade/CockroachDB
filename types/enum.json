@@ -11,6 +11,6 @@
 		"key": "type",
 		"value": "definitions"
 	},
-	"disabledTooltip": "For these datatypes, the PostgreSQL specification requires that you create first a UDT, then reference it in your model.",
+	"disabledTooltip": "For these datatypes, the CockroachDB specification requires that you create first a UDT, then reference it in your model.",
 	"defaultValues": {}
 }
