@@ -257,7 +257,7 @@ module.exports = {
 		const tableColumns = await this._getTableColumns(tableName, schemaName, tableOid);
 		const descriptionResult = await db.queryTolerant(queryConstants.GET_DESCRIPTION_BY_OID, [tableOid], true);
 		const tableConstraintsResult = await db.queryTolerant(queryConstants.GET_TABLE_CONSTRAINTS, [tableOid]);
-		const tableIndexesResult = await db.queryTolerant(getGetIndexesQuery(version), [tableOid]);
+		const tableIndexesResult = await db.queryTolerant(queryConstants.GET_TABLE_INDEXES, [tableOid]);
 		const tableForeignKeys = await db.queryTolerant(queryConstants.GET_TABLE_FOREIGN_KEYS, [tableOid]);
 
 		logger.info('Table data retrieved', {
@@ -411,16 +411,6 @@ const isSystemSchema = schema_name => {
 	}
 
 	return false;
-};
-
-const getGetIndexesQuery = postgresVersion => {
-	if (postgresVersion === 10) {
-		return queryConstants.GET_TABLE_INDEXES_V_10;
-	} else if (postgresVersion > 15) {
-		return queryConstants.GET_TABLE_INDEXES_V_15;
-	} else {
-		return queryConstants.GET_TABLE_INDEXES;
-	}
 };
 
 const getGetFunctionsAdditionalDataQuery = postgreVersion => {

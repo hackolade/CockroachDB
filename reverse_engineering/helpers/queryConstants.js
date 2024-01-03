@@ -1,79 +1,3 @@
-const getGET_TABLE_INDEXES = postgresVersion => {
-	return `
-        SELECT indexname,
-               index_method,
-               index_unique,
-               index_indnullsnotdistinct,
-               number_of_keys,
-               where_expression,
-               array_agg(attname
-                         ORDER BY ord)::text[] AS columns,
-               array_agg(coll
-                         ORDER BY ord) AS collations,
-               array_agg(opclass
-                         ORDER BY ord) AS opclasses,
-               array_agg(expression
-                         ORDER BY ord) AS expressions,
-               array_agg(ascending
-                         ORDER BY ord) AS ascendings,
-               array_agg(nulls_first
-                         ORDER BY ord) AS nulls_first,
-                reloptions AS storage_parameters,
-                tablespace_name
-        FROM
-            (SELECT ct.oid AS table_oid,
-                    c.relname AS indexname,
-                    m.amname AS index_method,
-                    indexes.indisunique AS index_unique,
-                    ${postgresVersion === 15 ? 'indexes.indnullsnotdistinct' : 'FALSE' } AS index_indnullsnotdistinct,
-                    indexes.ord,
-                    attribute.attname,
-                     c.reloptions,
-                     tablespace_t.spcname AS tablespace_name,
-                    indexes.${postgresVersion === 10 ? 'indnatts' : 'indnkeyatts'} AS number_of_keys,
-                    pg_catalog.pg_get_expr(indpred, indrelid) AS where_expression,
-                    CASE
-                        WHEN collation_namespace.nspname is not null THEN format('%I.%I',collation_namespace.nspname,collation_t.collname)
-                    END AS coll,
-                    CASE
-                        WHEN opclass_t.opcname is not null THEN format('%I.%I',opclas_namespace.nspname,opclass_t.opcname)
-                    END AS opclass,
-                    CASE
-                        WHEN indexes.ord > 0 THEN pg_catalog.pg_index_column_has_property(indexes.indexrelid, indexes.ord, 'asc')
-                    END AS ascending,
-                    CASE
-                        WHEN indexes.ord > 0 THEN pg_catalog.pg_index_column_has_property(indexes.indexrelid, indexes.ord, 'nulls_first')
-                    END AS nulls_first,
-                    pg_catalog.pg_get_indexdef(indexes.indexrelid, ord, false) AS expression
-             FROM
-                 (SELECT *,
-                         generate_series(1,array_length(i.indkey,1)) AS ord,
-                         unnest(i.indkey) AS key,
-                         unnest(i.indcollation) AS coll,
-                         unnest(i.indclass) AS class,
-                         unnest(i.indoption) AS option
-                  FROM pg_catalog.pg_index i) indexes
-             JOIN pg_catalog.pg_class c ON (c.oid=indexes.indexrelid)
-             JOIN pg_catalog.pg_class ct ON (ct.oid=indexes.indrelid)
-             JOIN pg_catalog.pg_am m ON (m.oid=c.relam)
-             LEFT JOIN pg_catalog.pg_attribute attribute ON (attribute.attrelid=indexes.indrelid
-                                                  AND attribute.attnum=indexes.key)
-             LEFT JOIN pg_catalog.pg_collation collation_t ON (collation_t.oid=indexes.coll)
-             LEFT JOIN pg_catalog.pg_namespace collation_namespace ON (collation_namespace.oid=collation_t.collnamespace)
-             LEFT JOIN pg_catalog.pg_opclass opclass_t ON (opclass_t.oid=indexes.class)
-             LEFT JOIN pg_catalog.pg_namespace opclas_namespace ON (opclas_namespace.oid=opclass_t.opcnamespace)
-             LEFT JOIN pg_catalog.pg_tablespace tablespace_t ON (tablespace_t.oid = c.reltablespace)) s2
-        WHERE table_oid = $1
-        GROUP BY indexname,
-                 index_method,
-                 index_unique,
-                 index_indnullsnotdistinct,
-                 reloptions,
-                 number_of_keys,
-                 where_expression,
-                 tablespace_name;
-        `;
-};
 
 const getGET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL = postgresVersion => {
 	const kindQuery =
@@ -182,11 +106,80 @@ const queryConstants = {
 	        ON pc.reltablespace = pt.oid
 	        WHERE pcon.conrelid = $1;`,
 
-    GET_TABLE_INDEXES: getGET_TABLE_INDEXES(),
-
-    GET_TABLE_INDEXES_V_10: getGET_TABLE_INDEXES(10),
-
-    GET_TABLE_INDEXES_V_15: getGET_TABLE_INDEXES(15),
+    GET_TABLE_INDEXES: `
+    SELECT indexname,
+           index_method,
+           index_unique,
+           index_indnullsnotdistinct,
+           number_of_keys,
+           where_expression,
+           array_agg(attname ORDER BY ord)::text[] AS columns,
+           array_agg(coll ORDER BY ord) AS collations,
+           array_agg(opclass ORDER BY ord) AS opclasses,
+           array_agg(expression ORDER BY ord) AS expressions,
+           array_agg(ascending ORDER BY ord) AS ascendings,
+           array_agg(nulls_first ORDER BY ord) AS nulls_first,
+           reloptions AS storage_parameters,
+           tablespace_name
+    FROM (
+        SELECT ct.oid AS table_oid,
+            c.relname AS indexname,
+            m.amname AS index_method,
+            indexes.indisunique AS index_unique,
+            indexes.indnullsnotdistinct AS index_indnullsnotdistinct,
+            indexes.ord,
+            attribute.attname,
+            c.reloptions,
+            tablespace_t.spcname AS tablespace_name,
+            indexes.indnkeyatts AS number_of_keys,
+            pg_catalog.pg_get_expr(indpred, indrelid) AS where_expression,
+            CASE
+                WHEN collation_namespace.nspname is not null THEN format('%I.%I',collation_namespace.nspname,collation_t.collname)
+            END AS coll,
+            CASE
+                WHEN opclass_t.opcname is not null THEN format('%I.%I',opclas_namespace.nspname,opclass_t.opcname)
+            END AS opclass,
+        CASE
+            WHEN NOT m.amcanorder THEN ''
+            WHEN indexes.indoption[indexes.ord - 1] & 1 = 1 THEN 'DESC' ELSE 'ASC'
+        END AS ascending,
+        CASE
+            WHEN NOT m.amcanorder THEN ''
+            WHEN indexes.indoption[indexes.ord - 1] & 2 = 2 THEN 'NULLS FIRST' ELSE 'NULLS LAST'
+        END AS nulls_first,
+        pg_catalog.pg_get_indexdef(indexes.indexrelid, ord, false) AS expression
+        FROM
+            (
+                SELECT *,
+                    generate_series(1,array_length(i.indkey,1)) AS ord,
+                    unnest(i.indkey) AS key,
+                    unnest(i.indcollation) AS coll,
+                    unnest(i.indclass) AS class,
+                    unnest(i.indoption) AS option
+                FROM pg_catalog.pg_index i
+            ) indexes
+        JOIN pg_catalog.pg_class c ON (c.oid=indexes.indexrelid)
+        JOIN pg_catalog.pg_class ct ON (ct.oid=indexes.indrelid)
+        JOIN pg_catalog.pg_am m ON (m.oid=c.relam)
+        LEFT JOIN pg_catalog.pg_attribute attribute
+            ON (attribute.attrelid=indexes.indrelid AND attribute.attnum=indexes.key)
+        LEFT JOIN pg_catalog.pg_collation collation_t ON (collation_t.oid=indexes.coll)
+        LEFT JOIN pg_catalog.pg_namespace collation_namespace ON (collation_namespace.oid=collation_t.collnamespace)
+        LEFT JOIN pg_catalog.pg_opclass opclass_t ON (opclass_t.oid=indexes.class)
+        LEFT JOIN pg_catalog.pg_namespace opclas_namespace ON (opclas_namespace.oid=opclass_t.opcnamespace)
+        LEFT JOIN pg_catalog.pg_tablespace tablespace_t ON (tablespace_t.oid = c.reltablespace)
+    ) s2
+    WHERE table_oid = $1
+    GROUP BY
+        indexname,
+        index_method,
+        index_unique,
+        index_indnullsnotdistinct,
+        reloptions,
+        number_of_keys,
+        where_expression,
+        tablespace_name;
+    `,
 
     GET_TABLE_FOREIGN_KEYS: `
         SELECT pcon.conname AS relationship_name, 

@@ -248,8 +248,8 @@ const mapIndexColumns = indexData => {
 				return;
 			}
 
-			const sortOrder = _.get(indexData, `ascendings.${itemIndex}`, false) ? 'ASC' : 'DESC';
-			const nullsOrder = getNullsOrder(_.get(indexData, `nulls_first.${itemIndex}`));
+			const sortOrder = _.get(indexData, `ascendings.${itemIndex}`, 'ASC');
+			const nullsOrder = _.get(indexData, `nulls_first.${itemIndex}`, 'NULLS FIRST');
 			const opclass = _.get(indexData, `opclasses.${itemIndex}`, '');
 			const collation = _.get(indexData, `collations.${itemIndex}`, '');
 
@@ -263,14 +263,6 @@ const mapIndexColumns = indexData => {
 		})
 		.compact()
 		.value();
-};
-
-const getNullsOrder = nulls_first => {
-	if (_.isNil(nulls_first)) {
-		return '';
-	}
-
-	return nulls_first ? 'NULLS FIRST' : 'NULLS LAST';
 };
 
 const getIndexStorageParameters = storageParameters => {
