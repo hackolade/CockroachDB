@@ -166,12 +166,6 @@ const queryConstants = {
         SELECT sum(pg_column_size(_hackolade_tmp_sampling_tbl.*)) AS _hackolade_tmp_sampling_tbl_size 
         FROM (SELECT ${jsonColumns} FROM ${fullTableName} LIMIT $1) AS _hackolade_tmp_sampling_tbl;`,
 
-    GET_INHERITS_PARENT_TABLE_NAME: `
-        SELECT pc.relname AS parent_table_name FROM pg_catalog.pg_inherits AS pi
-	        INNER JOIN pg_catalog.pg_class AS pc
-	        ON pc.oid = pi.inhparent
-	        WHERE pi.inhrelid = $1;`,
-
     GET_TABLE_CONSTRAINTS: `
         SELECT pcon.conname AS constraint_name, 
 	            pcon.contype AS constraint_type,
@@ -306,126 +300,9 @@ const queryConstants = {
 
     GET_DB_COLLATE_NAME: 'SELECT default_collate_name FROM information_schema.character_sets;',
 
-    GET_DOMAIN_TYPES: 'SELECT * FROM information_schema.domains WHERE domain_schema = $1',
-
-    GET_DOMAIN_TYPES_CONSTRAINTS: `
-        SELECT pg_type.typname AS type_name,
-        	pg_type.typnotnull AS not_null,
-        	pg_constraint.conname AS constraint_name,
-        	pg_catalog.pg_get_expr(pg_constraint.conbin, pg_constraint.conrelid) AS expression
-        FROM pg_catalog.pg_type AS pg_type
-        LEFT JOIN pg_catalog.pg_constraint AS pg_constraint ON (pg_constraint.contypid = pg_type.oid)
-        LEFT JOIN pg_catalog.pg_namespace AS pg_namespace ON (pg_namespace.oid = pg_type.typnamespace)
-        WHERE pg_type.typname = $1 AND pg_namespace.nspname = $2 AND pg_constraint.contype = 'c';`,
-
     GET_DATABASES:
 		'SELECT datname AS database_name FROM pg_catalog.pg_database WHERE datistemplate != TRUE AND datallowconn = TRUE;',
 
-    GET_TRIGGERS: `
-        SELECT trigger_name,
-                array_agg(event_manipulation::text) AS trigger_events,
-                event_object_schema,
-                event_object_table,
-                action_orientation,
-                action_timing,
-                action_reference_old_table,
-                action_reference_new_table,
-                action_condition,
-                action_statement
-        FROM
-            -- This is information_schema.triggers view but without permitions
-            (SELECT (current_database())::information_schema.sql_identifier AS trigger_catalog,
-                    (n.nspname)::information_schema.sql_identifier AS trigger_schema,
-                    (t.tgname)::information_schema.sql_identifier AS trigger_name,
-                    (em.text)::information_schema.character_data AS event_manipulation,
-                    (current_database())::information_schema.sql_identifier AS event_object_catalog,
-                    (n.nspname)::information_schema.sql_identifier AS event_object_schema,
-                    (c.relname)::information_schema.sql_identifier AS event_object_table,
-                    (rank() OVER (PARTITION BY (n.nspname)::information_schema.sql_identifier,
-                                               (c.relname)::information_schema.sql_identifier,
-                                               em.num, ((t.tgtype)::integer & 1), ((t.tgtype)::integer & 66)
-                                  ORDER BY t.tgname))::information_schema.cardinal_number AS action_order,
-                    (regexp_match(pg_get_triggerdef(t.oid), '.{35,} WHEN \((.+)\) EXECUTE FUNCTION'::text))[1]::information_schema.character_data AS action_condition,
-                    (SUBSTRING(pg_get_triggerdef(t.oid)
-                               FROM (POSITION(('EXECUTE FUNCTION'::text) IN (SUBSTRING(pg_get_triggerdef(t.oid)
-                                                                                       FROM 48))) + 47)))::information_schema.character_data AS action_statement,
-                    (CASE ((t.tgtype)::integer & 1)
-                         WHEN 1 THEN 'ROW'::text
-                         ELSE 'STATEMENT'::text
-                     END)::information_schema.character_data AS action_orientation,
-                    (CASE ((t.tgtype)::integer & 66)
-                         WHEN 2 THEN 'BEFORE'::text
-                         WHEN 64 THEN 'INSTEAD OF'::text
-                         ELSE 'AFTER'::text
-                     END)::information_schema.character_data AS action_timing,
-                    (t.tgoldtable)::information_schema.sql_identifier AS action_reference_old_table,
-                    (t.tgnewtable)::information_schema.sql_identifier AS action_reference_new_table,
-                    (NULL::timestamp with time zone)::information_schema.time_stamp AS created
-                FROM pg_namespace n,
-                        pg_class c,
-                        pg_trigger t, (VALUES (4,'INSERT'::text), (8,'DELETE'::text), (16,'UPDATE'::text)) em(num, text)
-                WHERE ((n.oid = c.relnamespace)
-                        AND (c.oid = t.tgrelid)
-                        AND (((t.tgtype)::integer & em.num) <> 0)
-                        AND (NOT t.tgisinternal)
-                        AND (NOT pg_is_other_temp_schema(n.oid)))) AS tmp_views
-        WHERE event_object_schema = $1 AND event_object_table = $2
-        GROUP BY
-                trigger_schema,
-                trigger_name,
-                event_object_schema,
-                event_object_table,
-                action_orientation,
-                action_timing,
-                action_reference_old_table,
-                action_reference_new_table,
-                action_condition,
-                action_statement;`,
-
-    GET_TRIGGERS_ADDITIONAL_DATA: `
-        SELECT
-                pg_catalog.obj_description(pg_trigger.oid, 'pg_trigger') AS description,
-        	pg_trigger.tgname AS trigger_name,
-        	pg_proc.proname AS function_name,
-        	CASE WHEN pg_trigger.tgconstraint != 0 THEN true ELSE false END AS "constraint",
-        	array_agg(pg_attribute.attname)::text[] AS update_attributes,
-        	tgdeferrable AS "deferrable",
-        	tginitdeferred AS deferred,
-                pg_class_referenced.relname AS referenced_table_name,
-                pg_namespace_referenced.nspname AS referenced_table_schema
-        FROM pg_catalog.pg_trigger as pg_trigger
-        LEFT JOIN pg_catalog.pg_proc AS pg_proc 
-        	ON (pg_trigger.tgfoid = pg_proc.oid)
-        LEFT JOIN pg_catalog.pg_attribute AS pg_attribute
-        	ON (pg_attribute.attnum = ANY(pg_trigger.tgattr::int2[]) AND pg_trigger.tgrelid = pg_attribute.attrelid)
-        INNER JOIN pg_catalog.pg_class AS pg_class
-        	ON (pg_class.oid = pg_trigger.tgrelid)
-        INNER JOIN pg_catalog.pg_namespace AS pg_namespace
-        	ON (pg_class.relnamespace = pg_namespace.oid)
-        LEFT JOIN pg_catalog.pg_class AS pg_class_referenced
-                ON(pg_class_referenced.oid = pg_trigger.tgconstrrelid)
-        LEFT JOIN pg_catalog.pg_namespace AS pg_namespace_referenced
-                ON(pg_namespace_referenced.oid = pg_class_referenced.relnamespace)
-        WHERE pg_class.relnamespace = $1 AND pg_class.oid = $2
-        GROUP BY 
-        	trigger_name,
-        	function_name,
-        	"constraint",
-        	"deferrable",
-        	deferred,
-                description,
-                referenced_table_name,
-                referenced_table_schema;`,
-
-    GET_PARTITIONS: `
-        SELECT
-        	inher_child.relname AS child_name,
-        	inher_parent.relname AS parent_name,
-                CASE WHEN inher_parent.relkind = 'p' THEN TRUE ELSE FALSE END AS is_parent_partitioned
-        FROM pg_inherits
-        LEFT JOIN pg_class AS inher_child ON (inher_child.oid = pg_inherits.inhrelid)
-        LEFT JOIN pg_class AS inher_parent ON (inher_parent.oid = pg_inherits.inhparent)
-        WHERE inher_parent.relnamespace = $1;`,
 };
 
 const getQueryName = query => {

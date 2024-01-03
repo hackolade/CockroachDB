@@ -43,7 +43,6 @@ const {
 	setViewSuffix,
 	prepareViewData,
 } = require('./postgresHelpers/viewHelper');
-const { setDependencies: setDependenciesInTriggerHelper, getTriggers } = require('./postgresHelpers/triggerHelper');
 const queryConstants = require('./queryConstants');
 const { reorganizeConstraints } = require('./postgresHelpers/reorganizeConstraints');
 
@@ -62,7 +61,6 @@ module.exports = {
 		setViewDependenciesInViewHelper(app);
 		setFunctionHelperDependencies(app);
 		setDependenciesInUserDefinedTypesHelper(app);
-		setDependenciesInTriggerHelper(app);
 	},
 
 	async connect(connectionInfo, specificLogger) {
@@ -147,23 +145,14 @@ module.exports = {
 		schemaName,
 		entitiesNames,
 		recordSamplingSettings,
-		includePartitions = false,
-		ignoreUdfUdpTriggers = false,
 	) {
 		const userDefinedTypes = await this._retrieveUserDefinedTypes(schemaName);
 		const schemaOidResult = await db.queryTolerant(queryConstants.GET_NAMESPACE_OID, [schemaName], true);
 		const schemaOid = schemaOidResult?.oid;
-		const partitions = includePartitions ? await db.queryTolerant(queryConstants.GET_PARTITIONS, [schemaOid]) : [];
 
 		const [viewsNames, tablesNames] = _.partition(entitiesNames, isViewByName);
 
-		const allTablesList = tablesNames.flatMap(tableName => [
-			{ tableName },
-			..._.filter(partitions, { parent_name: tableName }).map(({ child_name, is_parent_partitioned }) => ({
-				isParentPartitioned: is_parent_partitioned,
-				tableName: child_name,
-			})),
-		]);
+		const allTablesList = tablesNames.map(tableName => ({ tableName }));
 
 		const tables = await mapPromises(
 			_.uniq(allTablesList),
@@ -174,13 +163,12 @@ module.exports = {
 				schemaOid,
 				schemaName,
 				userDefinedTypes,
-				ignoreUdfUdpTriggers,
 			),
 		);
 
 		const views = await mapPromises(
 			viewsNames,
-			_.bind(this._retrieveSingleViewData, this, schemaOid, schemaName, ignoreUdfUdpTriggers),
+			_.bind(this._retrieveSingleViewData, this, schemaOid, schemaName),
 		);
 
 		return { views, tables, modelDefinitions: getJsonSchema(userDefinedTypes) };
@@ -230,7 +218,6 @@ module.exports = {
 		logger.progress('Get User-Defined Types', schemaName);
 
 		const userDefinedTypes = await db.queryTolerant(queryConstants.GET_USER_DEFINED_TYPES, [schemaName]);
-		const domainTypes = await db.queryTolerant(queryConstants.GET_DOMAIN_TYPES, [schemaName]);
 
 		const udtsWithColumns = await mapPromises(userDefinedTypes, async typeData => {
 			if (isTypeComposite(typeData)) {
@@ -243,17 +230,7 @@ module.exports = {
 			return typeData;
 		});
 
-		const domainTypesWithConstraints = await mapPromises(domainTypes, async typeData => {
-			return {
-				...typeData,
-				constraints: await db.queryTolerant(queryConstants.GET_DOMAIN_TYPES_CONSTRAINTS, [
-					typeData.domain_name,
-					schemaName,
-				]),
-			};
-		});
-
-		return getUserDefinedTypes(udtsWithColumns, domainTypesWithConstraints);
+		return getUserDefinedTypes(udtsWithColumns);
 	},
 
 	async _retrieveSingleTableData(
@@ -261,8 +238,7 @@ module.exports = {
 		schemaOid,
 		schemaName,
 		userDefinedTypes,
-		ignoreUdfUdpTriggers,
-		{ tableName, isParentPartitioned },
+		{ tableName },
 	) {
 		logger.progress('Get table data', schemaName, tableName);
 
@@ -281,11 +257,9 @@ module.exports = {
 		const partitionResult = await db.queryTolerant(queryConstants.GET_TABLE_PARTITION_DATA, [tableOid], true);
 		const tableColumns = await this._getTableColumns(tableName, schemaName, tableOid);
 		const descriptionResult = await db.queryTolerant(queryConstants.GET_DESCRIPTION_BY_OID, [tableOid], true);
-		const inheritsResult = await db.queryTolerant(queryConstants.GET_INHERITS_PARENT_TABLE_NAME, [tableOid]);
 		const tableConstraintsResult = await db.queryTolerant(queryConstants.GET_TABLE_CONSTRAINTS, [tableOid]);
 		const tableIndexesResult = await db.queryTolerant(getGetIndexesQuery(version), [tableOid]);
 		const tableForeignKeys = await db.queryTolerant(queryConstants.GET_TABLE_FOREIGN_KEYS, [tableOid]);
-		const triggers = await this._getTriggers(schemaName, tableName, schemaOid, tableOid, ignoreUdfUdpTriggers);
 
 		logger.info('Table data retrieved', {
 			schemaName,
@@ -296,7 +270,6 @@ module.exports = {
 		const partitioning = prepareTablePartition(partitionResult, tableColumns);
 		const tableLevelProperties = prepareTableLevelData(tableLevelData, tableToastOptions);
 		const description = getDescriptionFromResult(descriptionResult);
-		const inherits = prepareTableInheritance(schemaName, inheritsResult);
 		const tableConstraint = prepareTableConstraints(tableConstraintsResult, tableColumns, tableIndexesResult);
 		const tableIndexes = prepareTableIndexes(tableIndexesResult);
 		const relationships = prepareForeignKeys(tableForeignKeys, tableName, schemaName, tableColumns);
@@ -304,11 +277,9 @@ module.exports = {
 		const tableData = {
 			partitioning,
 			description,
-			triggers,
 			Indxs: tableIndexes,
 			...tableLevelProperties,
 			...tableConstraint,
-			...(isParentPartitioned ? { partitionOf: _.first(inherits)?.parentTable } : { inherits }),
 		};
 
 		const entityLevel = clearEmptyPropertiesInObject(tableData);
@@ -332,22 +303,6 @@ module.exports = {
 			documents,
 			relationships,
 		};
-	},
-
-	async _getTriggers(schemaName, objectName, schemaOid, objectOid, ignoreUdfUdpTriggers) {
-		if (ignoreUdfUdpTriggers) {
-			logger.info('Triggers ignored');
-
-			return [];
-		}
-
-		const triggersData = await db.queryTolerant(queryConstants.GET_TRIGGERS, [schemaName, objectName]);
-		const triggersAdditionalData = await db.queryTolerant(queryConstants.GET_TRIGGERS_ADDITIONAL_DATA, [
-			schemaOid,
-			objectOid,
-		]);
-
-		return getTriggers(triggersData, triggersAdditionalData);
 	},
 
 	async _getTableColumns(tableName, schemaName, tableOid) {
@@ -393,7 +348,7 @@ module.exports = {
 		return await db.queryTolerant(queryConstants.GET_SAMPLED_DATA(fullTableName, jsonColumnsString), [limit]);
 	},
 
-	async _retrieveSingleViewData(schemaOid, schemaName, ignoreUdfUdpTriggers, viewName) {
+	async _retrieveSingleViewData(schemaOid, schemaName, viewName) {
 		logger.progress('Get view data', schemaName, viewName);
 
 		viewName = removeViewNameSuffix(viewName);
@@ -403,16 +358,9 @@ module.exports = {
 			!viewData.view_definition &&
 			(await db.queryTolerant(queryConstants.GET_VIEW_SELECT_STMT_FALLBACK, [viewName, schemaName], true));
 		const viewOptions = await db.queryTolerant(queryConstants.GET_VIEW_OPTIONS, [viewName, schemaOid], true);
-		const triggers = await this._getTriggers(
-			schemaName,
-			viewName,
-			schemaOid,
-			viewOptions?.oid,
-			ignoreUdfUdpTriggers,
-		);
 
 		const script = generateCreateViewScript(viewName, viewData, viewDefinitionFallback);
-		const data = prepareViewData(viewData, viewOptions, triggers);
+		const data = prepareViewData(viewData, viewOptions);
 
 		if (!script) {
 			logger.info('View select statement was not retrieved', { schemaName, viewName });

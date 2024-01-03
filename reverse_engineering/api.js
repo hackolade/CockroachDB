@@ -129,10 +129,8 @@ module.exports = {
 						schemaName,
 						collections[schemaName],
 						data.recordSamplingSettings,
-						data.includePartitions,
-						data.ignoreUdfUdpTriggers,
 					);
-					const { functions, procedures, triggers } = await postgresService.retrieveSchemaLevelData(
+					const { functions, procedures } = await postgresService.retrieveSchemaLevelData(
 						schemaName,
 						data.ignoreUdfUdpTriggers,
 					);
@@ -146,7 +144,6 @@ module.exports = {
 						functions,
 						procedures,
 						modelDefinitions,
-						triggers,
 					};
 				}),
 			)
@@ -156,11 +153,10 @@ module.exports = {
 						.flat();
 
 					const packages = schemaData.flatMap(
-						({ schemaName, tables, views, functions, procedures, triggers, modelDefinitions }) => {
+						({ schemaName, tables, views, functions, procedures, modelDefinitions }) => {
 							const bucketInfo = {
 								UDFs: functions,
 								Procedures: procedures,
-								triggers,
 							};
 
 							const tablePackages = tables
