@@ -65,6 +65,42 @@
 		},
 		{
 			"schema": {
+				"mode": "int2"
+			},
+			"capacity": 2
+		},
+		{
+			"schema": {
+				"mode": "int4"
+			},
+			"capacity": 4
+		},
+		{
+			"schema": {
+				"mode": "decimal"
+			},
+			"mode": "decimal"
+		},
+		{
+			"schema": {
+				"mode": "float"
+			},
+			"mode": "float"
+		},
+		{
+			"schema": {
+				"mode": "int"
+			},
+			"capacity": 4
+		},
+		{
+			"schema": {
+				"mode": "int"
+			},
+			"mode": "integer"
+		},
+		{
+			"schema": {
 				"mode": "real"
 			},
 			"capacity": 4,
