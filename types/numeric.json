@@ -28,27 +28,15 @@
 	"descriptor": [
 		{
 			"schema": {
-				"mode": "int2"
-			},
-			"mode": "smallint"
-		},
-		{
-			"schema": {
-				"mode": "integer"
-			},
-			"capacity": 4
-		},
-		{
-			"schema": {
-				"mode": "integer"
-			},
-			"mode": "integer"
-		},
-		{
-			"schema": {
 				"mode": "int"
 			},
 			"capacity": 8
+		},
+		{
+			"schema": {
+				"mode": "int2"
+			},
+			"mode": "smallint"
 		},
 		{
 			"schema": {
@@ -61,6 +49,18 @@
 				"mode": "int4"
 			},
 			"capacity": 4
+		},
+		{
+			"schema": {
+				"mode": "int4"
+			},
+			"mode": "integer"
+		},
+		{
+			"schema": {
+				"mode": "int4"
+			},
+			"mode": "int"
 		},
 		{
 			"schema": {
@@ -79,18 +79,6 @@
 				"mode": "int"
 			},
 			"mode": "bigint"
-		},
-		{
-			"schema": {
-				"mode": "int"
-			},
-			"mode": "integer"
-		},
-		{
-			"schema": {
-				"mode": "int64"
-			},
-			"mode": "integer"
 		},
 		{
 			"schema": {
@@ -114,28 +102,28 @@
 		},
 		{
 			"schema": {
-				"mode": "smallserial"
+				"mode": "int2"
 			},
 			"capacity": 2,
 			"mode": "serial"
 		},
 		{
 			"schema": {
-				"mode": "serial"
+				"mode": "int4"
 			},
 			"capacity": 4,
 			"mode": "serial"
 		},
 		{
 			"schema": {
-				"mode": "bigserial"
+				"mode": "int"
 			},
 			"capacity": 8,
 			"mode": "serial"
 		},
 		{
 			"schema": {
-				"mode": "money"
+				"mode": "decimal"
 			},
 			"capacity": 8,
 			"mode": "decimal"
