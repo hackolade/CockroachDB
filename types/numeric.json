@@ -101,6 +101,18 @@
 		},
 		{
 			"schema": {
+				"mode": "int64"
+			},
+			"mode": "integer"
+		},
+		{
+			"schema": {
+				"mode": "dec"
+			},
+			"mode": "decimal"
+		},
+		{
+			"schema": {
 				"mode": "real"
 			},
 			"capacity": 4,
