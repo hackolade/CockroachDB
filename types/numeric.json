@@ -28,13 +28,7 @@
 	"descriptor": [
 		{
 			"schema": {
-				"mode": "smallint"
-			},
-			"capacity": 2
-		},
-		{
-			"schema": {
-				"mode": "smallint"
+				"mode": "int2"
 			},
 			"mode": "smallint"
 		},
@@ -52,16 +46,9 @@
 		},
 		{
 			"schema": {
-				"mode": "bigint"
+				"mode": "int"
 			},
 			"capacity": 8
-		},
-		{
-			"schema": {
-				"mode": "numeric"
-			},
-			"capacity": 12,
-			"mode": "decimal"
 		},
 		{
 			"schema": {
@@ -91,7 +78,7 @@
 			"schema": {
 				"mode": "int"
 			},
-			"capacity": 4
+			"mode": "bigint"
 		},
 		{
 			"schema": {
