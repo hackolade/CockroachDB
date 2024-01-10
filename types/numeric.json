@@ -28,12 +28,6 @@
 	"descriptor": [
 		{
 			"schema": {
-				"mode": "int"
-			},
-			"capacity": 8
-		},
-		{
-			"schema": {
 				"mode": "int2"
 			},
 			"mode": "smallint"
@@ -58,9 +52,9 @@
 		},
 		{
 			"schema": {
-				"mode": "int4"
+				"mode": "int"
 			},
-			"mode": "int"
+			"capacity": 8
 		},
 		{
 			"schema": {
@@ -70,21 +64,15 @@
 		},
 		{
 			"schema": {
+				"mode": "decimal"
+			},
+			"capacity": 8
+		},
+		{
+			"schema": {
 				"mode": "float"
 			},
-			"mode": "float"
-		},
-		{
-			"schema": {
-				"mode": "int"
-			},
-			"mode": "bigint"
-		},
-		{
-			"schema": {
-				"mode": "dec"
-			},
-			"mode": "decimal"
+			"mode": "floating"
 		},
 		{
 			"schema": {
@@ -100,6 +88,7 @@
 			"capacity": 8,
 			"mode": "floating"
 		},
+		/* "Serial" type descriptors are added to allow RE of these types from Postgres DDL */
 		{
 			"schema": {
 				"mode": "int2"
@@ -120,13 +109,6 @@
 			},
 			"capacity": 8,
 			"mode": "serial"
-		},
-		{
-			"schema": {
-				"mode": "decimal"
-			},
-			"capacity": 8,
-			"mode": "decimal"
 		}
 	]
 }
