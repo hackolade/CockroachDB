@@ -1,3 +1,6 @@
+// The keys of the exported object indicate which types are allowed in this target
+// The values are deprecated configs and they are unnecessary to write
+
 module.exports = {
 	char: {
 		size: 1,
@@ -218,6 +221,11 @@ module.exports = {
 	jsonb: {
 		format: 'semi-structured',
 	},
+	int: {},
+	int2: {},
+	int4: {},
+	decimal: {},
+	float: {},
 	composite: {
 		format: 'semi-structured',
 		mode: 'object',

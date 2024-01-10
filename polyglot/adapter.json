@@ -82,7 +82,7 @@
 					"mode": "decimal"
 				},
 				"to": {
-					"mode": "numeric"
+					"mode": "decimal"
 				}
 			},
 			{
@@ -90,7 +90,7 @@
 					"mode": "dec"
 				},
 				"to": {
-					"mode": "numeric"
+					"mode": "decimal"
 				}
 			},
 			{
@@ -98,7 +98,95 @@
 					"mode": "fixed"
 				},
 				"to": {
+					"mode": "decimal"
+				}
+			},
+			{
+				"from": {
 					"mode": "numeric"
+				},
+				"to": {
+					"mode": "decimal"
+				}
+			},
+			{
+				"from": {
+					"mode": "mediumint"
+				},
+				"to": {
+					"mode": "int4"
+				}
+			},
+			{
+				"from": {
+					"mode": "int8"
+				},
+				"to": {
+					"mode": "int2"
+				}
+			},
+			{
+				"from": {
+					"mode": "int16"
+				},
+				"to": {
+					"mode": "int2"
+				}
+			},
+			{
+				"from": {
+					"mode": "int32"
+				},
+				"to": {
+					"mode": "int4"
+				}
+			},
+			{
+				"from": {
+					"mode": "int64"
+				},
+				"to": {
+					"mode": "int"
+				}
+			},
+			{
+				"from": {
+					"mode": "int96"
+				},
+				"to": {
+					"mode": "decimal"
+				}
+			},
+			{
+				"from": {
+					"mode": "smallint"
+				},
+				"to": {
+					"mode": "int2"
+				}
+			},
+			{
+				"from": {
+					"mode": "tinyint"
+				},
+				"to": {
+					"mode": "int2"
+				}
+			},
+			{
+				"from": {
+					"mode": "byteint"
+				},
+				"to": {
+					"mode": "int2"
+				}
+			},
+			{
+				"from": {
+					"mode": "bigint"
+				},
+				"to": {
+					"mode": "int"
 				}
 			},
 			{
@@ -106,7 +194,7 @@
 					"mode": "long"
 				},
 				"to": {
-					"mode": "bigint"
+					"mode": "int"
 				}
 			},
 			{

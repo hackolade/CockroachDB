@@ -45,9 +45,9 @@ module.exports = ({ _, assignTemplates, templates, commentIfDeactivated, wrapCom
 	};
 
 	const canHaveLength = type => ['char', 'varchar', 'bit', 'varbit'].includes(type);
-	const canHavePrecision = type => type === 'numeric';
+	const canHavePrecision = type => ['numeric', 'decimal'].includes(type);
 	const canHaveTimePrecision = type => ['time', 'timestamp'].includes(type);
-	const canHaveScale = type => type === 'numeric';
+	const canHaveScale = type => ['numeric', 'decimal'].includes(type);
 	const canHaveTypeModifier = type => ['geography', 'geometry'].includes(type);
 
 	const decorateType = (type, columnDefinition) => {

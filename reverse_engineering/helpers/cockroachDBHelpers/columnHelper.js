@@ -93,23 +93,28 @@ const getArrayType = (userDefinedTypes, column) => {
 
 const mapType = (userDefinedTypes, type) => {
 	switch (type) {
-		case 'bigint':
 		case 'bigserial':
-		case 'smallint':
-		case 'integer':
-		case 'numeric':
 		case 'real':
 		case 'double precision':
 		case 'smallserial':
 		case 'serial':
 		case 'money':
 			return { type: 'numeric', mode: type };
-		case 'int8':
-			return { type: 'numeric', mode: 'bigint' };
+		case 'numeric':
+		case 'dec':
+		case 'decimal':
+			return { type: 'numeric', mode: 'decimal' };
 		case 'int2':
-			return { type: 'numeric', mode: 'smallint' };
+		case 'smallint':
+			return { type: 'numeric', mode: 'int2' };
 		case 'int4':
-			return { type: 'numeric', mode: 'integer' };
+		case 'integer':
+			return { type: 'numeric', mode: 'int4' };
+		case 'int':
+		case 'int8':
+		case 'int64':
+		case 'bigint':
+			return { type: 'numeric', mode: 'int' };
 		case 'float4':
 			return { type: 'numeric', mode: 'real' };
 		case 'float8':
