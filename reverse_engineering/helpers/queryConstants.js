@@ -80,7 +80,7 @@ const queryConstants = {
                                                                AND pg_description.objoid = pg_attribute.attrelid)
         WHERE pg_attribute.attrelid = $1;`,
 
-	GET_DESCRIPTION_BY_OID: `SELECT obj_description($1)`,
+	GET_DESCRIPTION_BY_OID: `SELECT obj_description($1, $2)`,
 
 	GET_ROWS_COUNT: fullTableName => `SELECT COUNT(*) AS quantity FROM ${fullTableName};`,
 
