@@ -40,13 +40,13 @@
 		},
 		{
 			"schema": {
-				"mode": "int4"
+				"mode": "int"
 			},
 			"capacity": 4
 		},
 		{
 			"schema": {
-				"mode": "int4"
+				"mode": "int"
 			},
 			"mode": "integer"
 		},
