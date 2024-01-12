@@ -501,11 +501,6 @@ making sure that you maintain a proper JSON format.
 						"markdown": false
 					},
 					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "indexTablespace",
-						"propertyType": "text"
-					},
-					{
 						"propertyName": "Deferrable",
 						"propertyKeyword": "deferrable",
 						"propertyTooltip": "\nA constraint that is not deferrable will be checked immediately after every command. Checking of constraints that are deferrable can be postponed until the end of the transaction",
@@ -643,11 +638,6 @@ making sure that you maintain a proper JSON format.
 						"template": "textarea",
 						"valueType": "string",
 						"markdown": false
-					},
-					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "indexTablespace",
-						"propertyType": "text"
 					},
 					{
 						"propertyName": "Deferrable",
@@ -1038,11 +1028,6 @@ making sure that you maintain a proper JSON format.
 						"markdown": false
 					},
 					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "indexTablespace",
-						"propertyType": "text"
-					},
-					{
 						"propertyName": "Deferrable",
 						"propertyKeyword": "deferrable",
 						"propertyTooltip": "\nA constraint that is not deferrable will be checked immediately after every command. Checking of constraints that are deferrable can be postponed until the end of the transaction",
@@ -1180,11 +1165,6 @@ making sure that you maintain a proper JSON format.
 						"template": "textarea",
 						"valueType": "string",
 						"markdown": false
-					},
-					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "indexTablespace",
-						"propertyType": "text"
 					},
 					{
 						"propertyName": "Deferrable",
@@ -1569,11 +1549,6 @@ making sure that you maintain a proper JSON format.
 						"markdown": false
 					},
 					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "indexTablespace",
-						"propertyType": "text"
-					},
-					{
 						"propertyName": "Deferrable",
 						"propertyKeyword": "deferrable",
 						"propertyTooltip": "\nA constraint that is not deferrable will be checked immediately after every command. Checking of constraints that are deferrable can be postponed until the end of the transaction",
@@ -1711,11 +1686,6 @@ making sure that you maintain a proper JSON format.
 						"template": "textarea",
 						"valueType": "string",
 						"markdown": false
-					},
-					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "indexTablespace",
-						"propertyType": "text"
 					},
 					{
 						"propertyName": "Deferrable",
@@ -2153,11 +2123,6 @@ making sure that you maintain a proper JSON format.
 						"markdown": false
 					},
 					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "indexTablespace",
-						"propertyType": "text"
-					},
-					{
 						"propertyName": "Deferrable",
 						"propertyKeyword": "deferrable",
 						"propertyTooltip": "\nA constraint that is not deferrable will be checked immediately after every command. Checking of constraints that are deferrable can be postponed until the end of the transaction",
@@ -2295,11 +2260,6 @@ making sure that you maintain a proper JSON format.
 						"template": "textarea",
 						"valueType": "string",
 						"markdown": false
-					},
-					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "indexTablespace",
-						"propertyType": "text"
 					},
 					{
 						"propertyName": "Deferrable",
@@ -2785,11 +2745,6 @@ making sure that you maintain a proper JSON format.
 						"markdown": false
 					},
 					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "indexTablespace",
-						"propertyType": "text"
-					},
-					{
 						"propertyName": "Deferrable",
 						"propertyKeyword": "deferrable",
 						"propertyTooltip": "\nA constraint that is not deferrable will be checked immediately after every command. Checking of constraints that are deferrable can be postponed until the end of the transaction",
@@ -2927,11 +2882,6 @@ making sure that you maintain a proper JSON format.
 						"template": "textarea",
 						"valueType": "string",
 						"markdown": false
-					},
-					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "indexTablespace",
-						"propertyType": "text"
 					},
 					{
 						"propertyName": "Deferrable",
@@ -3300,11 +3250,6 @@ making sure that you maintain a proper JSON format.
 						"markdown": false
 					},
 					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "indexTablespace",
-						"propertyType": "text"
-					},
-					{
 						"propertyName": "Deferrable",
 						"propertyKeyword": "deferrable",
 						"propertyTooltip": "\nA constraint that is not deferrable will be checked immediately after every command. Checking of constraints that are deferrable can be postponed until the end of the transaction",
@@ -3442,11 +3387,6 @@ making sure that you maintain a proper JSON format.
 						"template": "textarea",
 						"valueType": "string",
 						"markdown": false
-					},
-					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "indexTablespace",
-						"propertyType": "text"
 					},
 					{
 						"propertyName": "Deferrable",
@@ -3836,11 +3776,6 @@ making sure that you maintain a proper JSON format.
 						"markdown": false
 					},
 					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "indexTablespace",
-						"propertyType": "text"
-					},
-					{
 						"propertyName": "Deferrable",
 						"propertyKeyword": "deferrable",
 						"propertyTooltip": "\nA constraint that is not deferrable will be checked immediately after every command. Checking of constraints that are deferrable can be postponed until the end of the transaction",
@@ -3978,11 +3913,6 @@ making sure that you maintain a proper JSON format.
 						"template": "textarea",
 						"valueType": "string",
 						"markdown": false
-					},
-					{
-						"propertyName": "Tablespace",
-						"propertyKeyword": "indexTablespace",
-						"propertyType": "text"
 					},
 					{
 						"propertyName": "Deferrable",

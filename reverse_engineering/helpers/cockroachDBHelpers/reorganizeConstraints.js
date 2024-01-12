@@ -82,7 +82,6 @@ const getOptions = key => {
 			constraintName: key.constraintName,
 			indexInclude: key.indexInclude,
 			indexStorageParameters: key.indexStorageParameters,
-			indexTablespace: key.indexTablespace,
 			indexComment: key.indexComment,
 		},
 	];

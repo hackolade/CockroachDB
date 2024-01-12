@@ -115,7 +115,6 @@ module.exports = (baseProvider, options, app) => {
 				locale: locale ? `\n\tLOCALE '${modelData.locale}'` : '',
 				collate: collate ? `\n\tLC_COLLATE '${modelData.collate}'` : '',
 				characterClassification: characterClassification ? `\n\tLC_CTYPE '${characterClassification}'` : '',
-				tablespace: modelData.tablespace ? `\n\tTABLESPACE '${modelData.tablespace}'` : '',
 			});
 		},
 
@@ -159,7 +158,6 @@ module.exports = (baseProvider, options, app) => {
 				on_commit,
 				partitioning,
 				storage_parameter,
-				table_tablespace_name,
 				temporary,
 				unlogged,
 				selectStatement,
@@ -222,7 +220,6 @@ module.exports = (baseProvider, options, app) => {
 					usingMethod,
 					on_commit,
 					storage_parameter,
-					table_tablespace_name,
 					selectStatement,
 					partitionBounds,
 				}),
@@ -604,7 +601,6 @@ module.exports = (baseProvider, options, app) => {
 
 			return {
 				databaseName: modelData.database_name,
-				tablespace: modelData.tablespace_name,
 				encoding: modelData.encoding,
 				template: modelData.template,
 				collate: modelData.LC_COLLATE,
@@ -757,7 +753,6 @@ module.exports = (baseProvider, options, app) => {
 					'usingMethod',
 					'on_commit',
 					'storage_parameter',
-					'table_tablespace_name',
 					'partitionBounds',
 				),
 			};
@@ -1156,7 +1151,6 @@ module.exports = (baseProvider, options, app) => {
 		 *              name: string,
 		 *         }>,
 		 *         storageParameters: string,
-		 *         tablespace: string,
 		 * }}
 		 * @return {{
 		 *     statement: string,

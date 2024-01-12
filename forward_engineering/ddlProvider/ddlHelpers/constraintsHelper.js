@@ -62,7 +62,6 @@ module.exports = ({
      *              name: string,
      *         }>,
      *         storageParameters: string,
-     *         tablespace: string,
      *     }
      * ) => {
      *     statement: string,
@@ -79,7 +78,6 @@ module.exports = ({
             ? ` INCLUDE${getColumnsList(keyData.include, isAllColumnsDeactivated, isParentActivated)}`
             : '';
         const storageParameters = keyData.storageParameters ? ` WITH (${keyData.storageParameters})` : '';
-        const tablespace = keyData.tablespace ? ` USING INDEX TABLESPACE ${wrapInQuotes(keyData.tablespace)}` : '';
         const deferrable = keyData?.deferrable ? ` ${keyData.deferrable}` : '';
         const deferrableConstraintCheckTime = keyData?.deferrable === 'DEFERRABLE' && keyData?.deferrableConstraintCheckTime
             ? ` ${keyData?.deferrableConstraintCheckTime}` : '';
@@ -91,7 +89,6 @@ module.exports = ({
                 columns,
                 includeNonKey,
                 storageParameters,
-                tablespace,
                 deferrable,
                 deferrableConstraintCheckTime,
             }),
