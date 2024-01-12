@@ -21,7 +21,6 @@ module.exports = ({ _, getColumnsList, checkAllKeysDeactivated }) => {
 			{ key: 'usingMethod', getValue: getBasicValue('USING') },
 			{ key: 'storage_parameter', getValue: getStorageParameters },
 			{ key: 'on_commit', getValue: getOnCommit },
-			{ key: 'table_tablespace_name', getValue: getBasicValue('TABLESPACE') },
 			{ key: 'selectStatement', getValue: getBasicValue('AS') },
 		]
 			.map(config => wrap(config.getValue(tableData[config.key], tableData)))

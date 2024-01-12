@@ -1,6 +1,6 @@
 module.exports = {
 	createDatabase:
-		'CREATE DATABASE ${name}${template}${encoding}${locale}${collate}${characterClassification}${tablespace};\n',
+		'CREATE DATABASE ${name}${template}${encoding}${locale}${collate}${characterClassification};\n',
 
 	createSchema: 'CREATE SCHEMA${ifNotExist} ${name};\nSET search_path TO ${name};\n\n${comment}\n',
 
@@ -24,7 +24,7 @@ module.exports = {
 
 	createForeignKeyConstraint: '${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})${match}${onDelete}${onUpdate}${deferrable}${deferrableConstraintCheckTime}',
 
-	createKeyConstraint: '${constraintName}${keyType}${columns}${includeNonKey}${storageParameters}${tablespace}${deferrable}${deferrableConstraintCheckTime}',
+	createKeyConstraint: '${constraintName}${keyType}${columns}${includeNonKey}${storageParameters}${deferrable}${deferrableConstraintCheckTime}',
 
 	alterColumnType: 'ALTER TABLE IF EXISTS ${tableName} ALTER COLUMN ${columnName} SET DATA TYPE ${dataType};',
 

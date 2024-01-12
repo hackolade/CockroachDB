@@ -690,12 +690,6 @@ making sure that you maintain a proper JSON format.
 						"addTimestampButton": false
 					},
 					{
-						"propertyName": "Index tablespace",
-						"propertyKeyword": "indexTablespace",
-						"propertyTooltip": "",
-						"propertyType": "text"
-					},
-					{
 						"propertyName": "Comment",
 						"propertyKeyword": "indexComment",
 						"propertyTooltip": "comment",
@@ -806,12 +800,6 @@ making sure that you maintain a proper JSON format.
 						"template": "textarea",
 						"markdown": false,
 						"addTimestampButton": false
-					},
-					{
-						"propertyName": "Index tablespace",
-						"propertyKeyword": "indexTablespace",
-						"propertyTooltip": "",
-						"propertyType": "text"
 					},
 					{
 						"propertyName": "Comment",

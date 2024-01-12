@@ -47,11 +47,6 @@ class AlterCollectionColumnPrimaryKeyOptionDto {
     indexStorageParameters
 
     /**
-     * @type {string}
-     * */
-    indexTablespace
-
-    /**
      * @type {Array<{
      *     keyId: string,
      *     type?: string,
@@ -240,14 +235,6 @@ class AlterCollectionRoleCompModDto {
     primaryKey
 
     /**
-     * @type {{
-     *     new: string,
-     *     old: string,
-     * }}
-     */
-    table_tablespace_name
-
-    /**
      * @type {Array<{
      *     [propertyName: string]: AlterCollectionColumnDto
      * }>}
@@ -313,11 +300,6 @@ class AlterCollectionRoleDto {
      * @type {string}
      */
     on_commit
-
-    /**
-     * @type {string}
-     */
-    table_tablespace_name
 
     /**
      * @type {string}

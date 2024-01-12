@@ -101,7 +101,6 @@ const extractOptionsForComparisonWithRegularPkOptions = (optionHolder) => {
     return {
         constraintName: optionHolder.constraintName,
         indexStorageParameters: optionHolder.indexStorageParameters,
-        indexTablespace: optionHolder.indexTablespace,
         indexInclude: optionHolder.indexInclude,
     }
 }
@@ -239,7 +238,6 @@ const getConstraintNameForCompositePk = (primaryKey, entityName) => {
  *              name: string,
  *         }>,
  *         storageParameters: string,
- *         tablespace: string,
  *      }
  *  }
  * */
@@ -257,13 +255,9 @@ const getCreateCompositePKDDLProviderConfig = (_) => (
         }));
 
     let storageParameters = '';
-    let indexTablespace = '';
     let includeColumns = [];
     if (primaryKey.indexStorageParameters) {
         storageParameters = primaryKey.indexStorageParameters;
-    }
-    if (primaryKey.indexTablespace) {
-        indexTablespace = primaryKey.indexTablespace;
     }
     if (primaryKey.indexInclude) {
         includeColumns = _.toPairs(entity.role.properties)
@@ -280,7 +274,6 @@ const getCreateCompositePKDDLProviderConfig = (_) => (
         columns: pkColumns,
         include: includeColumns,
         storageParameters,
-        tablespace: indexTablespace,
     }
 }
 
@@ -427,7 +420,6 @@ const getConstraintNameForRegularPk = (columnJsonSchema, entityName) => {
  *              name: string,
  *         }>,
  *         storageParameters: string,
- *         tablespace: string,
  *      }
  *  }
  * */
@@ -444,7 +436,6 @@ const getCreateRegularPKDDLProviderConfig = (_) => (
     }];
 
     let storageParameters = '';
-    let indexTablespace = '';
     let includeColumns = [];
     const constraintOptions = columnJsonSchema.primaryKeyOptions;
     if (constraintOptions?.length && constraintOptions?.length > 0) {
@@ -454,9 +445,6 @@ const getCreateRegularPKDDLProviderConfig = (_) => (
         const constraintOption = constraintOptions[0];
         if (constraintOption.indexStorageParameters) {
             storageParameters = constraintOption.indexStorageParameters;
-        }
-        if (constraintOption.indexTablespace) {
-            indexTablespace = constraintOption.indexTablespace;
         }
         if (constraintOption.indexInclude) {
             includeColumns = _.toPairs(entity.role.properties)
@@ -474,7 +462,6 @@ const getCreateRegularPKDDLProviderConfig = (_) => (
         columns: pkColumns,
         include: includeColumns,
         storageParameters,
-        tablespace: indexTablespace,
     }
 }
 
