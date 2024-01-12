@@ -184,7 +184,6 @@ const getPrimaryKeyConstraint = (constraint, tableColumns) => {
 		constraintName: constraint.constraint_name,
 		compositePrimaryKey: _.map(constraint.constraint_keys, getColumnNameByPosition(tableColumns)),
 		indexStorageParameters: _.join(constraint.storage_parameters, ','),
-		indexTablespace: constraint.tablespace,
 	};
 };
 
@@ -196,7 +195,6 @@ const getUniqueKeyConstraint = (constraint, tableColumns, tableIndexes) => {
 		constraintName: constraint.constraint_name,
 		compositeUniqueKey: _.map(constraint.constraint_keys, getColumnNameByPosition(tableColumns)),
 		indexStorageParameters: _.join(constraint.storage_parameters, ','),
-		indexTablespace: constraint.tablespace,
 		indexComment: constraint.description,
 		...(nullsDistinct && { nullsDistinct })
 	};
@@ -226,7 +224,6 @@ const prepareTableIndexes = tableIndexesResult => {
 			indxName: indexData.indexname,
 			index_method: indexData.index_method,
 			unique: indexData.index_unique ?? false,
-			index_tablespace_name: indexData.tablespace_name || '',
 			index_storage_parameter: getIndexStorageParameters(indexData.storage_parameters),
 			where: indexData.where_expression || '',
 			include,
@@ -289,14 +286,12 @@ const prepareTableLevelData = (tableLevelData, tableToastOptions) => {
 	const temporary = tableLevelData?.relpersistence === 't';
 	const unlogged = tableLevelData?.relpersistence === 'u';
 	const storage_parameter = prepareStorageParameters(tableLevelData?.reloptions, tableToastOptions);
-	const table_tablespace_name = tableLevelData?.spcname;
 	const partitionBounds = tableLevelData.partition_expr;
 
 	return {
 		temporary,
 		unlogged,
 		storage_parameter,
-		table_tablespace_name,
 		partitionBounds,
 	};
 };

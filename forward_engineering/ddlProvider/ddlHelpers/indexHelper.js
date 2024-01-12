@@ -24,10 +24,9 @@ module.exports = ({ _, wrapInQuotes, checkAllKeysDeactivated, getColumnsList }) 
 		const include = index.include?.length ? ` INCLUDE ${_.trim(includeKeys)}` : '';
 		const withOptionsString = getWithOptions(index);
 		const withOptions = withOptionsString ? ` WITH (\n\t${withOptionsString})` : '';
-		const tableSpace = index.index_tablespace_name ? ` TABLESPACE ${index.index_tablespace_name}` : '';
 		const whereExpression = index.where ? ` WHERE ${index.where}` : '';
 
-		return _.compact([' ', include, withOptions, tableSpace, whereExpression]).join('\n');
+		return _.compact([' ', include, withOptions, whereExpression]).join('\n');
 	};
 
 	const INDEX_STORAGE_OPTIONS_BY_METHOD = {

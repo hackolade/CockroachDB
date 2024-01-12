@@ -57,7 +57,6 @@ module.exports = (_, clean) => {
 			include: getKeys(options['indexInclude'] || [], jsonSchema),
 			storageParameters: options['indexStorageParameters'],
 			comment: options['indexComment'],
-			tablespace: options['indexTablespace'],
 			nullsDistinct: options['nullsDistinct'],
 			deferrable: options['deferrable'],
 			deferrableConstraintCheckTime: options['deferrableConstraintCheckTime'],
@@ -76,7 +75,6 @@ module.exports = (_, clean) => {
 			include: getKeys(options['indexInclude'] || [], jsonSchema),
 			storageParameters: options['indexStorageParameters'],
 			comment: options['indexComment'],
-			tablespace: options['indexTablespace'],
 			deferrable: options['deferrable'],
 			deferrableConstraintCheckTime: options['deferrableConstraintCheckTime'],
 		});

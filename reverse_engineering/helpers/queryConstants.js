@@ -97,13 +97,10 @@ const queryConstants = {
 	            pcon.conkey AS constraint_keys,
 	            pg_catalog.pg_get_expr(pcon.conbin, pcon.conrelid) AS expression,
 	            obj_description(pcon.oid, 'pg_constraint') AS description,
-	            pc.reloptions AS storage_parameters,
-	            pt.spcname AS tablespace
+	            pc.reloptions AS storage_parameters
 	        FROM pg_catalog.pg_constraint AS pcon
 	        LEFT JOIN pg_catalog.pg_class AS pc
 	        ON pcon.conindid = pc.oid
-	        LEFT JOIN pg_catalog.pg_tablespace AS pt
-	        ON pc.reltablespace = pt.oid
 	        WHERE pcon.conrelid = $1;`,
 
     GET_TABLE_INDEXES: `
@@ -120,7 +117,6 @@ const queryConstants = {
            array_agg(ascending ORDER BY ord) AS ascendings,
            array_agg(nulls_first ORDER BY ord) AS nulls_first,
            reloptions AS storage_parameters,
-           tablespace_name
     FROM (
         SELECT ct.oid AS table_oid,
             c.relname AS indexname,
@@ -130,7 +126,6 @@ const queryConstants = {
             indexes.ord,
             attribute.attname,
             c.reloptions,
-            tablespace_t.spcname AS tablespace_name,
             indexes.indnkeyatts AS number_of_keys,
             pg_catalog.pg_get_expr(indpred, indrelid) AS where_expression,
             CASE
@@ -167,7 +162,6 @@ const queryConstants = {
         LEFT JOIN pg_catalog.pg_namespace collation_namespace ON (collation_namespace.oid=collation_t.collnamespace)
         LEFT JOIN pg_catalog.pg_opclass opclass_t ON (opclass_t.oid=indexes.class)
         LEFT JOIN pg_catalog.pg_namespace opclas_namespace ON (opclas_namespace.oid=opclass_t.opcnamespace)
-        LEFT JOIN pg_catalog.pg_tablespace tablespace_t ON (tablespace_t.oid = c.reltablespace)
     ) s2
     WHERE table_oid = $1
     GROUP BY
@@ -177,8 +171,7 @@ const queryConstants = {
         index_indnullsnotdistinct,
         reloptions,
         number_of_keys,
-        where_expression,
-        tablespace_name;
+        where_expression;
     `,
 
     GET_TABLE_FOREIGN_KEYS: `
@@ -195,7 +188,6 @@ const queryConstants = {
                 foreign_table_namespace.nspname AS foreign_table_schema
             FROM pg_catalog.pg_constraint AS pcon
             LEFT JOIN pg_catalog.pg_class AS pc ON pcon.conindid = pc.oid
-            LEFT JOIN pg_catalog.pg_tablespace AS pt ON pc.reltablespace = pt.oid
             LEFT JOIN pg_catalog.pg_class AS pc_foreign_table ON (pcon.confrelid = pc_foreign_table.oid)
             JOIN pg_catalog.pg_namespace AS foreign_table_namespace ON (pc_foreign_table.relnamespace = foreign_table_namespace.oid)
             WHERE pcon.conrelid = $1 AND pcon.contype = 'f';`,
