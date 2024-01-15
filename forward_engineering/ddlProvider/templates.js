@@ -105,9 +105,4 @@ module.exports = {
 	createDomainType:
 		'CREATE DOMAIN ${name} AS ${underlyingType}${notNull}${collate}${default}${constraints};\n\n${comment}',
 
-	createTrigger:
-		'CREATE${orReplace}${constraint} TRIGGER ${name} ${actionTiming} ${events}\n' +
-		'\tON ${tableName}\n' +
-		'${options}' +
-		'\tEXECUTE ${functionKey} ${functionName};\n',
 };

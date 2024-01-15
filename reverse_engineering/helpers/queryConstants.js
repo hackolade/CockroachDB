@@ -250,10 +250,11 @@ const queryConstants = {
         LEFT JOIN pg_catalog.pg_proc AS range_canonical_proc ON (range_canonical_proc.oid = pg_range.rngcanonical)
         LEFT JOIN pg_catalog.pg_proc AS range_diff_proc ON (range_diff_proc.oid = pg_range.rngsubdiff)
         WHERE pg_namespace.nspname = $1
-         AND ((pg_type.typtype = 'c'
-               AND pg_class.relkind = 'c')
-              OR pg_type.typtype = 'e'
-              OR pg_type.typtype = 'r')
+         AND (
+                (pg_type.typtype = 'c' AND (pg_class.relkind = 'c' OR pg_class.relkind IS NULL))
+                OR pg_type.typtype = 'e'
+                OR pg_type.typtype = 'r'
+            )
         GROUP BY pg_class_oid,
               pg_type.typname,
               pg_type.typtype,

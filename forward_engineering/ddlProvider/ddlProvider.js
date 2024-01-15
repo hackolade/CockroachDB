@@ -89,15 +89,6 @@ module.exports = (baseProvider, options, app) => {
 			wrapComment,
 		});
 
-	const { getTriggersScript, hydrateTriggers } = require('./ddlHelpers/triggerHelper')({
-		_,
-		wrap,
-		assignTemplates,
-		templates,
-		getNamePrefixedWithSchemaName,
-		commentIfDeactivated,
-	});
-
 	const { getLocaleProperties } = require('./ddlHelpers/databaseHelper')();
 
 	return {
@@ -161,7 +152,6 @@ module.exports = (baseProvider, options, app) => {
 				temporary,
 				unlogged,
 				selectStatement,
-				triggers,
 				partitionOf,
 				partitionBounds,
 			},
@@ -230,14 +220,8 @@ module.exports = (baseProvider, options, app) => {
 				closeParenthesis,
 			});
 
-			const createTriggerStatements = getTriggersScript({
-				dbVersion: schemaData.dbVersion,
-				tableName,
-				triggers,
-			});
-
 			return commentIfDeactivated(
-				[tableStatement, createTriggerStatements].map(_.trim).join('\n\n').trim() + '\n',
+				[tableStatement].map(_.trim).join('\n\n').trim() + '\n',
 				{ isActivated },
 			);
 		},
@@ -554,13 +538,7 @@ module.exports = (baseProvider, options, app) => {
 				{ isActivated: !deactivatedWholeStatement },
 			);
 
-			const createTriggersStatements = getTriggersScript({
-				dbVersion: viewData.dbVersion,
-				tableName: viewName,
-				triggers: viewData.triggers,
-			});
-
-			return [createViewScript, createTriggersStatements].map(_.trim).join('\n\n').trim() + '\n';
+			return [createViewScript].map(_.trim).join('\n\n').trim() + '\n';
 		},
 
 		/**
@@ -732,13 +710,11 @@ module.exports = (baseProvider, options, app) => {
 			const partitionOf = partitionParent
 				? getNamePrefixedWithSchemaName(partitionParent.collectionName, partitionParent.bucketName)
 				: '';
-			const triggers = hydrateTriggers(entityData, tableData.relatedSchemas);
 			const { getDbVersion } = require('../utils/general')(_);
 			const dbVersion = getDbVersion(_.get(tableData, 'dbData.dbVersion', ''));
 
 			return {
 				...tableData,
-				triggers,
 				partitionOf,
 				keyConstraints: keyHelper.getTableKeyConstraints(jsonSchema, dbVersion),
 				inherits: parentTables,
@@ -770,7 +746,6 @@ module.exports = (baseProvider, options, app) => {
 
 		hydrateView({ viewData, entityData, relatedSchemas }) {
 			const detailsTab = entityData[0];
-			const triggers = hydrateTriggers(entityData, relatedSchemas);
 
 			return {
 				name: viewData.name,
@@ -784,7 +759,6 @@ module.exports = (baseProvider, options, app) => {
 				withCheckOption: detailsTab.withCheckOption,
 				checkTestingScope: detailsTab.withCheckOption ? detailsTab.checkTestingScope : '',
 				schemaName: viewData.schemaData.schemaName,
-				triggers,
 			};
 		},
 

@@ -22,8 +22,8 @@
 			"inputKeyword": "includePartitions"
 		},
 		{
-			"inputLabel": "Ignore Functions, Procedures and Triggers",
-			"inputTooltip": "Ignore reverse-engineering of function, procedures and triggers",
+			"inputLabel": "Ignore Functions and Procedures",
+			"inputTooltip": "Ignore reverse-engineering of function and procedures",
 			"inputKeyword": "ignoreUdfUdpTriggers"
 		}
 	]
