@@ -32,10 +32,8 @@ module.exports = ({ _, getColumnsList, checkAllKeysDeactivated }) => {
 
 	const getPartitioning = (value, { isActivated }) => {
 		if (value && value.partitionMethod) {
-			const expression =
-				value.partitionBy === 'keys'
-					? getPartitionKeys(value, isActivated)
-					: ` (${value.partitioning_expression})`;
+			const partitionKeys = getPartitionKeys(value, isActivated);
+			const expression = partitionKeys + ` (${value.partitioning_expression})`;
 
 			return `PARTITION BY ${value.partitionMethod}${expression}`;
 		}
