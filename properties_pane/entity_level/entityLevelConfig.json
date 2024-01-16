@@ -257,6 +257,86 @@ making sure that you maintain a proper JSON format.
 						"propertyKeyword": "sql_stats_forecasts_enabled",
 						"propertyType": "checkbox",
 						"propertyTooltip": "Enable forecasted statistics collection for this table."
+					},
+					{
+						"propertyName": "TTL storage parameters",
+						"propertyKeyword": "ttl_storage_parameters",
+						"propertyType": "block",
+						"propertyTooltip": "List of storage parameters that affect how Row-Level TTL works",
+						"structure": [
+							{
+								"propertyName": "TTL expiration expression",
+								"propertyKeyword": "ttl_expiration_expression",
+								"propertyTooltip": "SQL expression that defines the TTL expiration. Must evaluate to a TIMESTAMPTZ",
+								"propertyType": "details",
+								"markdown": false,
+								"template": "codeEditor",
+								"templateOptions": {
+									"editorDialect": "pgsql"
+								}
+							},
+							{
+								"propertyName": "TTL expire after",
+								"propertyKeyword": "ttl_expire_after",
+								"propertyTooltip": "The interval when a TTL will expire.",
+								"propertyType": "details",
+								"markdown": false,
+								"template": "codeEditor",
+								"templateOptions": {
+									"editorDialect": "pgsql"
+								}
+							},
+							{
+								"propertyName": "TTL select batch size",
+								"propertyKeyword": "ttl_select_batch_size",
+								"propertyTooltip": "How many rows to select at one time during the row expiration check",
+								"propertyType": "numeric",
+								"valueType": "number",
+								"minValue": 1,
+								"step": 1
+							},
+							{
+								"propertyName": "TTL delete batch size",
+								"propertyKeyword": "ttl_delete_batch_size",
+								"propertyTooltip": "How many rows to delete at a time.",
+								"propertyType": "numeric",
+								"valueType": "number",
+								"minValue": 1,
+								"step": 1
+							},
+							{
+								"propertyName": "TTL delete rate limit",
+								"propertyKeyword": "ttl_delete_rate_limit",
+								"propertyTooltip": "Maximum number of rows to be deleted per second.",
+								"propertyType": "numeric",
+								"valueType": "number",
+								"minValue": 0,
+								"step": 1
+							},
+							{
+								"propertyName": "TTL row stats poll interval",
+								"propertyKeyword": "ttl_row_stats_poll_interval",
+								"propertyTooltip": "If set, counts rows and expired rows on the table to report as Prometheus metrics while the TTL job is running.",
+								"propertyType": "checkbox"
+							},
+							{
+								"propertyName": "TTL pause",
+								"propertyKeyword": "ttl_pause",
+								"propertyTooltip": "If set, stops the TTL job from executing.",
+								"propertyType": "checkbox"
+							},
+							{
+								"propertyName": "TTL job cron",
+								"propertyKeyword": "ttl_job_cron",
+								"propertyTooltip": "Frequency at which the TTL job runs, specified using CRON syntax.",
+								"propertyType": "details",
+								"markdown": false,
+								"template": "codeEditor",
+								"templateOptions": {
+									"editorDialect": "pgsql"
+								}
+							}
+						]
 					}
 				]
 			},

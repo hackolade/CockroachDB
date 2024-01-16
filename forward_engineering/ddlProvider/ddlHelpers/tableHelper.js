@@ -59,36 +59,18 @@ module.exports = ({ _, getColumnsList, checkAllKeysDeactivated }) => {
 		}
 	};
 
-	const toastKeys = [
-		'toast_autovacuum_enabled',
-		'toast_vacuum_index_cleanup',
-		'toast_vacuum_truncate',
-		'toast_autovacuum_vacuum_threshold',
-		'toast_autovacuum_vacuum_scale_factor',
-		'toast_autovacuum_vacuum_insert_threshold',
-		'toast_autovacuum_vacuum_insert_scale_factor',
-		'toast_autovacuum_vacuum_cost_delay',
-		'toast_autovacuum_vacuum_cost_limit',
-		'toast_autovacuum_freeze_min_age',
-		'toast_autovacuum_freeze_max_age',
-		'toast_autovacuum_freeze_table_age',
-		'toast_autovacuum_multixact_freeze_min_age',
-		'toast_autovacuum_multixact_freeze_max_age',
-		'toast_autovacuum_multixact_freeze_table_age',
-		'toast_log_autovacuum_min_duration',
-	];
-
 	const getStorageParameters = value => {
 		if (_.isEmpty(value)) {
 			return '';
 		}
 
-		const keysToSkip = ['autovacuum', 'toast', 'id'];
+		const nestedProperties = ['ttl_storage_parameters'];
+		const keysToSkip = ['id', ...nestedProperties];
 
 		return _.chain(value)
 			.toPairs()
 			.flatMap(([key, value]) => {
-				if (key === 'autovacuum' || key === 'toast') {
+				if (nestedProperties.includes(key)) {
 					return _.toPairs(value);
 				}
 
@@ -98,10 +80,6 @@ module.exports = ({ _, getColumnsList, checkAllKeysDeactivated }) => {
 			.map(([key, value]) => {
 				if (!value && value !== 0) {
 					return;
-				}
-
-				if (_.includes(toastKeys, key)) {
-					return `toast.${key.slice('toast_'.length)}=${value}`;
 				}
 
 				return `${key}=${value}`;

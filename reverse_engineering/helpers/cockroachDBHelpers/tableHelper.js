@@ -1,4 +1,5 @@
 const { clearEmptyPropertiesInObject, getColumnNameByPosition } = require('./common');
+const {values} = require("pg/lib/native/query");
 
 let _ = null;
 
@@ -6,13 +7,31 @@ const setDependencies = app => {
 	_ = app.require('lodash');
 };
 
+const groupTtlStorageParams = (options) => {
+	const result = {};
+	for (const key of Object.keys(options)) {
+		if (key.startsWith('ttl')) {
+			if (!result.ttl_storage_parameters) {
+				result.ttl_storage_parameters = {};
+			}
+
+			result.ttl_storage_parameters[key] = options[key];
+		} else {
+			result[key] = options[key];
+		}
+	}
+	return result;
+}
+
 const prepareStorageParameters = (reloptions, tableToastOptions) => {
 	if (!reloptions && !tableToastOptions) {
 		return null;
 	}
 
 	const options = prepareOptions(reloptions);
-	return clearEmptyPropertiesInObject(options);
+	const nonEmptyOptions = clearEmptyPropertiesInObject(options);
+	const optionsWithGroupedTtl = groupTtlStorageParams(nonEmptyOptions);
+	return clearEmptyPropertiesInObject(optionsWithGroupedTtl);
 };
 
 const prepareTablePartition = (partitionResult, tableColumns) => {
