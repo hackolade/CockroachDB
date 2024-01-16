@@ -253,7 +253,7 @@ module.exports = {
 			[tableName, schemaOid],
 			true,
 		);
-		const partitionResult = await db.queryTolerant(queryConstants.GET_TABLE_PARTITION_DATA, [tableOid], true);
+		const partitionResult = await db.queryTolerant(queryConstants.GET_TABLE_PARTITION_DATA, [tableOid]);
 		const tableColumns = await this._getTableColumns(tableName, schemaName, tableOid);
 		const tableCommentsCatalog = 'pg_class';
 		const descriptionResult = await db.queryTolerant(queryConstants.GET_DESCRIPTION_BY_OID, [tableOid, tableCommentsCatalog], true);
@@ -267,7 +267,7 @@ module.exports = {
 			columnTypes: tableColumns.map(column => column.data_type),
 		});
 
-		const partitioning = prepareTablePartition(partitionResult, tableColumns);
+		const partitioning = prepareTablePartition(partitionResult);
 		const tableLevelProperties = prepareTableLevelData(tableLevelData, tableToastOptions);
 		const description = getDescriptionFromResult(descriptionResult);
 		const tableConstraint = prepareTableConstraints(tableConstraintsResult, tableColumns, tableIndexesResult);
