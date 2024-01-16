@@ -317,7 +317,12 @@ making sure that you maintain a proper JSON format.
 								"propertyName": "TTL row stats poll interval",
 								"propertyKeyword": "ttl_row_stats_poll_interval",
 								"propertyTooltip": "If set, counts rows and expired rows on the table to report as Prometheus metrics while the TTL job is running.",
-								"propertyType": "checkbox"
+								"propertyType": "details",
+								"markdown": false,
+								"template": "codeEditor",
+								"templateOptions": {
+									"editorDialect": "pgsql"
+								}
 							},
 							{
 								"propertyName": "TTL pause",
