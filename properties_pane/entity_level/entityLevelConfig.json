@@ -155,15 +155,7 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "Choose the desired partition method",
 						"propertyType": "select",
 						"defaultValue": "",
-						"options": ["", "RANGE", "LIST", "HASH"]
-					},
-					{
-						"propertyName": "Partition by",
-						"propertyKeyword": "partitionBy",
-						"propertyTooltip": "",
-						"propertyType": "select",
-						"defaultValue": "keys",
-						"options": ["keys", "expression"]
+						"options": ["", "RANGE", "LIST"]
 					},
 					{
 						"propertyName": "Partition key",
@@ -173,22 +165,17 @@ making sure that you maintain a proper JSON format.
 						"isCompositeKey": true,
 						"setPrimaryKey": false,
 						"template": "collectiontree",
-						"abbr": "PK",
-						"dependency": {
-							"key": "partitionBy",
-							"value": "keys"
-						}
+						"abbr": "PK"
 					},
 					{
 						"propertyName": "Expression",
 						"propertyKeyword": "partitioning_expression",
 						"propertyTooltip": "A SQL expression that returns a value from each row. In the simplest cases, it is a column name. This value is used to determine which partition should contain a row.",
 						"propertyType": "details",
-						"template": "textarea",
+						"template": "codeEditor",
 						"markdown": false,
-						"dependency": {
-							"key": "partitionBy",
-							"value": "expression"
+						"templateOptions": {
+							"editorDialect": "pgsql"
 						}
 					}
 				]

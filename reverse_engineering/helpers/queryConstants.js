@@ -59,11 +59,21 @@ const queryConstants = {
                  LIMIT 1)`,
 
     GET_TABLE_PARTITION_DATA: `
-        SELECT partstrat as partition_method,
-	            partattrs::int2[] as partition_attributes_positions,
-	            pg_catalog.pg_get_expr(partexprs, partrelid) AS expressions
-            FROM pg_catalog.pg_partitioned_table
-            WHERE partrelid = $1;`,
+        SELECT
+            partitions.name AS partition_name,
+            parent_name,
+            column_names,
+            list_value,
+            range_value,
+            schema_name,
+            tables.name AS table_name,
+            database_name
+        FROM crdb_internal.partitions
+            INNER JOIN crdb_internal.tables
+                ON partitions.table_id=tables.table_id
+                    AND tables.table_id = $1
+        ;
+    `,
 
 	GET_TABLE_COLUMNS: `
         SELECT * FROM information_schema.columns
