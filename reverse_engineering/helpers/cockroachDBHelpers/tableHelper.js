@@ -6,68 +6,31 @@ const setDependencies = app => {
     _ = app.require('lodash');
 };
 
+const groupTtlStorageParams = (options) => {
+    const result = {};
+    for (const key of Object.keys(options)) {
+        if (key.startsWith('ttl')) {
+            if (!result.ttl_storage_parameters) {
+                result.ttl_storage_parameters = {};
+            }
+
+            result.ttl_storage_parameters[key] = options[key];
+        } else {
+            result[key] = options[key];
+        }
+    }
+    return result;
+}
+
 const prepareStorageParameters = (reloptions, tableToastOptions) => {
     if (!reloptions && !tableToastOptions) {
         return null;
     }
 
     const options = prepareOptions(reloptions);
-    const toastOptions = prepareOptions(tableToastOptions?.toast_options);
-
-    const fillfactor = options.fillfactor;
-    const parallel_workers = options.parallel_workers;
-    const autovacuum_enabled = options.autovacuum_enabled;
-    const autovacuum = clearEmptyPropertiesInObject({
-        vacuum_index_cleanup: options.vacuum_index_cleanup,
-        vacuum_truncate: options.vacuum_truncate,
-        autovacuum_vacuum_threshold: options.autovacuum_vacuum_threshold,
-        autovacuum_vacuum_scale_factor: options.autovacuum_vacuum_scale_factor,
-        autovacuum_vacuum_insert_threshold: options.autovacuum_vacuum_insert_threshold,
-        autovacuum_vacuum_insert_scale_factor: options.autovacuum_vacuum_insert_scale_factor,
-        autovacuum_analyze_threshold: options.autovacuum_analyze_threshold,
-        autovacuum_analyze_scale_factor: options.autovacuum_analyze_scale_factor,
-        autovacuum_vacuum_cost_delay: options.autovacuum_vacuum_cost_delay,
-        autovacuum_vacuum_cost_limit: options.autovacuum_vacuum_cost_limit,
-        autovacuum_freeze_min_age: options.autovacuum_freeze_min_age,
-        autovacuum_freeze_max_age: options.autovacuum_freeze_max_age,
-        autovacuum_freeze_table_age: options.autovacuum_freeze_table_age,
-        autovacuum_multixact_freeze_min_age: options.autovacuum_multixact_freeze_min_age,
-        autovacuum_multixact_freeze_max_age: options.autovacuum_multixact_freeze_max_age,
-        autovacuum_multixact_freeze_table_age: options.autovacuum_multixact_freeze_table_age,
-        log_autovacuum_min_duration: options.log_autovacuum_min_duration,
-    });
-    const user_catalog_table = options.user_catalog_table;
-    const toast_autovacuum_enabled = toastOptions.autovacuum_enabled;
-    const toast = clearEmptyPropertiesInObject({
-        toast_tuple_target: options.toast_tuple_target,
-        toast_vacuum_index_cleanup: toastOptions.vacuum_index_cleanup,
-        toast_vacuum_truncate: toastOptions.vacuum_truncate,
-        toast_autovacuum_vacuum_threshold: toastOptions.autovacuum_vacuum_threshold,
-        toast_autovacuum_vacuum_scale_factor: toastOptions.autovacuum_vacuum_scale_factor,
-        toast_autovacuum_vacuum_insert_threshold: toastOptions.autovacuum_vacuum_insert_threshold,
-        toast_autovacuum_vacuum_insert_scale_factor: toastOptions.autovacuum_vacuum_insert_scale_factor,
-        toast_autovacuum_vacuum_cost_delay: toastOptions.autovacuum_vacuum_cost_delay,
-        toast_autovacuum_vacuum_cost_limit: toastOptions.autovacuum_vacuum_cost_limit,
-        toast_autovacuum_freeze_min_age: toastOptions.autovacuum_freeze_min_age,
-        toast_autovacuum_freeze_max_age: toastOptions.autovacuum_freeze_max_age,
-        toast_autovacuum_freeze_table_age: toastOptions.autovacuum_freeze_table_age,
-        toast_autovacuum_multixact_freeze_min_age: toastOptions.autovacuum_multixact_freeze_min_age,
-        toast_autovacuum_multixact_freeze_max_age: toastOptions.autovacuum_multixact_freeze_max_age,
-        toast_autovacuum_multixact_freeze_table_age: toastOptions.autovacuum_multixact_freeze_table_age,
-        toast_log_autovacuum_min_duration: toastOptions.log_autovacuum_min_duration,
-    });
-
-    const storage_parameter = {
-        fillfactor,
-        parallel_workers,
-        autovacuum_enabled,
-        autovacuum: _.isEmpty(autovacuum) ? null : autovacuum,
-        toast_autovacuum_enabled,
-        toast: _.isEmpty(toast) ? null : toast,
-        user_catalog_table,
-    };
-
-    return clearEmptyPropertiesInObject(storage_parameter);
+    const nonEmptyOptions = clearEmptyPropertiesInObject(options);
+    const optionsWithGroupedTtl = groupTtlStorageParams(nonEmptyOptions);
+    return clearEmptyPropertiesInObject(optionsWithGroupedTtl);
 };
 
 const prepareTablePartition = (partitionResult) => {
