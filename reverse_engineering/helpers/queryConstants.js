@@ -126,7 +126,7 @@ const queryConstants = {
            array_agg(expression ORDER BY ord) AS expressions,
            array_agg(ascending ORDER BY ord) AS ascendings,
            array_agg(nulls_first ORDER BY ord) AS nulls_first,
-           reloptions AS storage_parameters,
+           reloptions AS storage_parameters
     FROM (
         SELECT ct.oid AS table_oid,
             c.relname AS indexname,
