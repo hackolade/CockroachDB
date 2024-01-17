@@ -625,7 +625,7 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "",
 						"propertyType": "select",
 						"defaultValue": "btree",
-						"options": ["","btree", "hash", "gist", "spgist", "gin", "brin"]
+						"options": ["","btree", "hash", "gist", "gin"]
 					},
 					{
 						"propertyName": "Unique",
@@ -639,36 +639,6 @@ making sure that you maintain a proper JSON format.
 								{
 									"key": "index_method",
 									"value": "btree"
-								}
-							]
-						}
-					},
-					{
-						"propertyName": "Nulls Distinct",
-						"propertyKeyword": "nullsDistinct",
-						"propertyType": "select",
-						"defaultValue": "",
-						"options": ["", "NULLS DISTINCT", "NULLS NOT DISTINCT"],
-						"dependency": {
-							"type": "and",
-							"values": [
-								{
-									"key": "unique",
-									"value": true
-								},
-								{
-									"key": "index_method",
-									"value": "btree"
-								},
-								{
-									"type": "or",
-									"values": [
-										{
-											"level": "model",
-											"key": "dbVersion",
-											"value": "v15.x"
-										}
-									]
 								}
 							]
 						}
@@ -688,45 +658,17 @@ making sure that you maintain a proper JSON format.
 						"propertyType": "checkbox"
 					},
 					{
-						"propertyName": "Only",
-						"propertyKeyword": "only",
-						"propertyTooltip": "Indicates not to recurse creating indexes on partitions, if the table is partitioned.",
-						"defaultValue": true,
-						"propertyType": "checkbox"
-					},
-					{
 						"propertyName": "Columns",
 						"propertyKeyword": "columns",
 						"propertyType": "fieldList",
 						"template": "orderedList",
 						"propertyTooltip": "The name of a column of the table.",
 						"attributeList": {
-							"collation": {
-								"propertyType": "text",
-								"placeholder": "Collation",
-								"propertyTooltip": "The name of the collation to use for the index."
-							},
 							"opclass": {
 								"propertyType": "text",
 								"placeholder": "Opclass",
 								"propertyTooltip": "The name of an operator class."
-							}
-						},
-						"dependency": {
-							"type": "not",
-							"values": {
-								"key": "index_method",
-								"value": "btree"
-							}
-						}
-					},
-					{
-						"propertyName": "Columns",
-						"propertyKeyword": "columns",
-						"propertyType": "fieldList",
-						"template": "orderedList",
-						"propertyTooltip": "The name of a column of the table.",
-						"attributeList": {
+							},
 							"sortOrder": {
 								"propertyType": "select",
 								"options": ["ASC", "DESC"],
@@ -736,21 +678,7 @@ making sure that you maintain a proper JSON format.
 								"propertyType": "select",
 								"options": ["", "NULLS FIRST", "NULLS LAST"],
 								"propertyTooltip": "Specifies that nulls sort order"
-							},
-							"collation": {
-								"propertyType": "text",
-								"placeholder": "Collation",
-								"propertyTooltip": "The name of the collation to use for the index."
-							},
-							"opclass": {
-								"propertyType": "text",
-								"placeholder": "Opclass",
-								"propertyTooltip": "The name of an operator class."
 							}
-						},
-						"dependency": {
-							"key": "index_method",
-							"value": "btree"
 						}
 					},
 					{
@@ -781,7 +709,7 @@ making sure that you maintain a proper JSON format.
 						"structure": [
 							{
 								"propertyName": "Fill factor",
-								"propertyKeyword": "index_fillfactor",
+								"propertyKeyword": "fillfactor",
 								"propertyType": "numeric",
 								"valueType": "number",
 								"propertyTooltip": "A percentage between 10 and 100. The fillfactor for an index is a percentage that determines how full the index method will try to pack index pages.",
@@ -791,129 +719,89 @@ making sure that you maintain a proper JSON format.
 								"defaultValue": 100
 							},
 							{
-								"propertyName": "Deduplicate items",
-								"propertyKeyword": "deduplicate_items",
-								"propertyType": "checkbox",
-								"propertyTooltip": "Declare the table as an additional catalog table for purposes of logical replication.",
-								"defaultValue": true
-							}
-						],
-						"dependency": {
-							"key": "index_method",
-							"value": "btree"
-						}
-					},
-					{
-						"propertyName": "With storage parameters",
-						"propertyKeyword": "index_storage_parameter",
-						"propertyType": "block",
-						"propertyTooltip": "The optional WITH clause specifies storage parameters for the index. Each index method has its own set of allowed storage parameters.",
-						"structure": [
-							{
-								"propertyName": "Fill factor",
-								"propertyKeyword": "index_fillfactor",
+								"propertyName": "Bucket count",
+								"propertyKeyword": "bucket_count",
+								"propertyTooltip": "The number of buckets into which a hash-sharded index will split.",
 								"propertyType": "numeric",
 								"valueType": "number",
-								"propertyTooltip": "A percentage between 10 and 100. The fillfactor for an index is a percentage that determines how full the index method will try to pack index pages.",
-								"minValue": 10,
-								"maxValue": 100,
-								"step": 1,
-								"defaultValue": 100
-							}
-						],
-						"dependency": {
-							"key": "index_method",
-							"value": ["hash", "spgist"]
-						}
-					},
-					{
-						"propertyName": "With storage parameters",
-						"propertyKeyword": "index_storage_parameter",
-						"propertyType": "block",
-						"propertyTooltip": "The optional WITH clause specifies storage parameters for the index. Each index method has its own set of allowed storage parameters.",
-						"structure": [
-							{
-								"propertyName": "Fill factor",
-								"propertyKeyword": "index_fillfactor",
-								"propertyType": "numeric",
-								"valueType": "number",
-								"propertyTooltip": "A percentage between 10 and 100. The fillfactor for an index is a percentage that determines how full the index method will try to pack index pages.",
-								"minValue": 10,
-								"maxValue": 100,
-								"step": 1,
-								"defaultValue": 100
+								"minValue": 1,
+								"step": 1
 							},
 							{
-								"propertyName": "Buffering",
-								"propertyKeyword": "index_buffering",
-								"propertyType": "select",
-								"propertyTooltip": "Determines whether the buffering build technique is used to build the index.",
-								"options": ["AUTO", "OFF", "ON"],
-								"defaultValue": "AUTO"
-							}
-						],
-						"dependency": {
-							"key": "index_method",
-							"value": "gist"
-						}
-					},
-					{
-						"propertyName": "With storage parameters",
-						"propertyKeyword": "index_storage_parameter",
-						"propertyType": "block",
-						"propertyTooltip": "The optional WITH clause specifies storage parameters for the index. Each index method has its own set of allowed storage parameters.",
-						"structure": [
-							{
-								"propertyName": "Fast update",
-								"propertyKeyword": "fastupdate",
-								"propertyType": "checkbox",
-								"propertyTooltip": "This setting controls usage of the fast update technique.",
-								"defaultValue": true
+								"propertyName": "Geometry max X",
+								"propertyKeyword": "geometry_max_x",
+								"propertyTooltip": "The maximum X-value of the spatial reference system for the object(s) being covered.",
+								"propertyType": "details",
+								"markdown": false,
+								"template": "codeEditor",
+								"templateOptions": {
+									"editorDialect": "pgsql"
+								}
 							},
 							{
-								"propertyName": "Gin pending list limit",
-								"propertyKeyword": "gin_pending_list_limit",
-								"propertyType": "numeric",
-								"valueType": "number",
-								"propertyTooltip": "This value is specified in kilobytes. Sets the maximum size of a GIN index's pending list, which is used when fastupdate is enabled.",
-								"minValue": 0,
-								"step": 1,
-								"defaultValue": 4000
-							}
-						],
-						"dependency": {
-							"key": "index_method",
-							"value": "gin"
-						}
-					},
-					{
-						"propertyName": "With storage parameters",
-						"propertyKeyword": "index_storage_parameter",
-						"propertyType": "block",
-						"propertyTooltip": "The optional WITH clause specifies storage parameters for the index. Each index method has its own set of allowed storage parameters.",
-						"structure": [
-							{
-								"propertyName": "Pages per range",
-								"propertyKeyword": "pages_per_range",
-								"propertyType": "numeric",
-								"valueType": "number",
-								"propertyTooltip": "Defines the number of table blocks that make up one block range for each entry of a BRIN index.",
-								"minValue": 0,
-								"step": 1,
-								"defaultValue": 128
+								"propertyName": "Geometry max Y",
+								"propertyKeyword": "geometry_max_y",
+								"propertyTooltip": "The maximum Y-value of the spatial reference system for the object(s) being covered.",
+								"propertyType": "details",
+								"markdown": false,
+								"template": "codeEditor",
+								"templateOptions": {
+									"editorDialect": "pgsql"
+								}
 							},
 							{
-								"propertyName": "Auto summarize",
-								"propertyKeyword": "autosummarize",
-								"propertyType": "checkbox",
-								"propertyTooltip": "Defines whether a summarization run is invoked for the previous page range whenever an insertion is detected on the next one.",
-								"defaultValue": true
+								"propertyName": "Geometry min X",
+								"propertyKeyword": "geometry_min_x",
+								"propertyTooltip": "The minimum X-value of the spatial reference system for the object(s) being covered.",
+								"propertyType": "details",
+								"markdown": false,
+								"template": "codeEditor",
+								"templateOptions": {
+									"editorDialect": "pgsql"
+								}
+							},
+							{
+								"propertyName": "Geometry min Y",
+								"propertyKeyword": "geometry_min_y",
+								"propertyTooltip": "The minimum Y-value of the spatial reference system for the object(s) being covered.",
+								"propertyType": "details",
+								"markdown": false,
+								"template": "codeEditor",
+								"templateOptions": {
+									"editorDialect": "pgsql"
+								}
+							},
+							{
+								"propertyName": "S2 level mod",
+								"propertyKeyword": "s2_level_mod",
+								"propertyTooltip": "s2_max_level must be divisible by s2_level_mod.",
+								"propertyType": "numeric",
+								"valueType": "number",
+								"minValue": 1,
+								"maxValue": 3,
+								"step": 1
+							},
+							{
+								"propertyName": "S2 max cells",
+								"propertyKeyword": "s2_max_cells",
+								"propertyTooltip": "The maximum number of S2 cells used in the covering.",
+								"propertyType": "numeric",
+								"valueType": "number",
+								"minValue": 1,
+								"maxValue": 30,
+								"step": 1
+							},
+							{
+								"propertyName": "S2 max level",
+								"propertyKeyword": "s2_max_level",
+								"propertyTooltip": "The maximum level of S2 cell used in the covering.",
+								"propertyType": "numeric",
+								"valueType": "number",
+								"minValue": 1,
+								"maxValue": 30,
+								"step": 1
 							}
-						],
-						"dependency": {
-							"key": "index_method",
-							"value": "brin"
-						}
+						]
 					},
 					{
 						"propertyName": "Where constraint",
@@ -921,7 +809,10 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "Popup for multi-line text entry",
 						"propertyType": "details",
 						"markdown": false,
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						}
 					},
 					{
 						"propertyName": "Comment",
@@ -929,7 +820,10 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comment",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
 					}
 				]
 			}

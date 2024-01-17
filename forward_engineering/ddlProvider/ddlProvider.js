@@ -269,11 +269,7 @@ module.exports = (baseProvider, options, app) => {
 			const unique = isUnique ? ' UNIQUE' : '';
 			const concurrently = index.concurrently ? ' CONCURRENTLY' : '';
 			const ifNotExist = index.ifNotExist ? ' IF NOT EXISTS' : '';
-			const only = index.only ? ' ONLY' : '';
 			const using = index.index_method ? ` USING ${_.toUpper(index.index_method)}` : '';
-			const { getDbVersion } = require('../utils/general')(_);
-			const dbVersion = getDbVersion(_.get(dbData, 'dbVersion', ''));
-			const nullsDistinct = isUnique && index.nullsDistinct && dbVersion >= 15 ? `\n ${index.nullsDistinct}` : '';
 
 			const keys = getIndexKeys(
 				index.index_method === 'btree'
@@ -289,11 +285,9 @@ module.exports = (baseProvider, options, app) => {
 					concurrently,
 					ifNotExist,
 					name,
-					only,
 					using,
 					keys,
 					options,
-					nullsDistinct,
 					tableName: getNamePrefixedWithSchemaName(tableName, index.schemaName),
 				}),
 				{

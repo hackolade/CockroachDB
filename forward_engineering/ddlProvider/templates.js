@@ -77,7 +77,7 @@ module.exports = {
 
 	index:
 		'CREATE${unique} INDEX${concurrently}${ifNotExist} ${name}\n' +
-		' ON${only} ${tableName}${using}${keys}${nullsDistinct}${options};\n',
+		' ON ${tableName}${using}${keys}${options};\n',
 
 	createView:
 		'CREATE${orReplace}${temporary} VIEW ${name}${withOptions}\nAS ${selectStatement}${checkOption};\n\n${comment}\n',
