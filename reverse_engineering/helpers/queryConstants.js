@@ -184,6 +184,10 @@ const queryConstants = {
         where_expression;
     `,
 
+    GET_TABLE_INDEX_CREATE_STATEMENT: `
+        SELECT index_name, create_statement FROM crdb_internal.table_indexes WHERE descriptor_id = $1;
+    `,
+
     GET_TABLE_FOREIGN_KEYS: `
         SELECT pcon.conname AS relationship_name, 
                 pcon.conkey AS table_columns_positions,

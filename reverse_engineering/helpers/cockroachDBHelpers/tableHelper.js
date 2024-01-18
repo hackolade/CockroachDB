@@ -228,7 +228,22 @@ const getCheckConstraint = constraint => {
     };
 };
 
-const prepareTableIndexes = tableIndexesResult => {
+/**
+ * @return {string}
+ * */
+const getIndexCreateStatement = (
+    indexName,
+    tableIndexesCreateStatementsResult = []
+) => {
+    const createStatementResultRow = tableIndexesCreateStatementsResult
+        .find(result => result.index_name === indexName) || {};
+    return createStatementResultRow.create_statement || '';
+}
+
+const prepareTableIndexes = (
+    tableIndexesResult,
+    tableIndexesCreateStatementsResult = []
+) => {
     return _.map(tableIndexesResult, indexData => {
         const allColumns = mapIndexColumns(indexData);
         const columns = _.slice(allColumns, 0, indexData.number_of_keys);
@@ -238,12 +253,13 @@ const prepareTableIndexes = tableIndexesResult => {
             .value();
 
         const nullsDistinct = indexData.index_indnullsnotdistinct ? 'NULLS NOT DISTINCT' : '';
+        const createStatement = getIndexCreateStatement(indexData.indexname, tableIndexesCreateStatementsResult);
 
         const index = {
             indxName: indexData.indexname,
             index_method: indexData.index_method,
             unique: indexData.index_unique ?? false,
-            index_storage_parameter: getIndexStorageParameters(indexData.storage_parameters),
+            index_storage_parameter: getIndexStorageParameters(indexData.storage_parameters, createStatement),
             where: indexData.where_expression || '',
             include,
             columns:
@@ -281,24 +297,62 @@ const mapIndexColumns = indexData => {
         .value();
 };
 
-const getIndexStorageParameters = storageParameters => {
-    if (!storageParameters) {
-        return null;
-    }
-
-    const params = _.fromPairs(_.map(storageParameters, param => splitByEqualitySymbol(param)));
-
+/**
+ * @return {Object}
+ */
+const hydrateIndexStorageParameters = (parameters) => {
     const data = {
-        index_fillfactor: params.fillfactor,
-        deduplicate_items: params.deduplicate_items,
-        index_buffering: params.index_buffering,
-        fastupdate: params.fastupdate,
-        gin_pending_list_limit: params.gin_pending_list_limit,
-        pages_per_range: params.pages_per_range,
-        autosummarize: params.autosummarize,
+        fillfactor: parameters.fillfactor,
+        bucket_count: parameters.bucket_count,
+        geometry_max_x: parameters.geometry_max_x,
+        geometry_max_y: parameters.geometry_max_y,
+        geometry_min_x: parameters.geometry_min_x,
+        geometry_min_y: parameters.geometry_min_y,
+        s2_level_mod: parameters.s2_level_mod,
+        s2_max_cells: parameters.s2_max_cells,
+        s2_max_level: parameters.s2_max_level,
     };
 
     return clearEmptyPropertiesInObject(data);
+}
+
+/**
+ * @param createStatement {string}
+ * @return {Object | null}
+ * */
+const parseIndexStorageParametersFromDdl = (createStatement) => {
+    const storageParamsRegex = /\s+with\s+\(.*?\)/mi;
+    const match = createStatement.match(storageParamsRegex);
+    if (!match?.length) {
+        return null;
+    }
+    // In the form of " WITH (param1=1,param2=2)"
+    const rawStorageParamsClause = match[0];
+    // Remove " WITH ("
+    const indexToSubstringFrom = " WITH (".length;
+    // Remove the last ")"
+    const indexToSubstringTo = rawStorageParamsClause.length - 1;
+
+    const keyValuePairs = rawStorageParamsClause.substring(indexToSubstringFrom, indexToSubstringTo)
+        .split(',')
+        .map(pair => pair.trim());
+
+    const storageParameters = _.fromPairs(_.map(keyValuePairs, param => splitByEqualitySymbol(param)));
+    return hydrateIndexStorageParameters(storageParameters);
+}
+
+/**
+ * @param storageParameters {Object | undefined}
+ * @param createStatement {string}
+ * @return {Object | null}
+ * */
+const getIndexStorageParameters = (storageParameters, createStatement) => {
+    if (!storageParameters) {
+        return parseIndexStorageParametersFromDdl(createStatement);
+    }
+
+    const params = _.fromPairs(_.map(storageParameters, param => splitByEqualitySymbol(param)));
+    return hydrateIndexStorageParameters(params);
 };
 
 const prepareTableLevelData = (tableLevelData, tableToastOptions) => {

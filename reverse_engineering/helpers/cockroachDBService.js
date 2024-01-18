@@ -259,6 +259,7 @@ module.exports = {
 		const descriptionResult = await db.queryTolerant(queryConstants.GET_DESCRIPTION_BY_OID, [tableOid, tableCommentsCatalog], true);
 		const tableConstraintsResult = await db.queryTolerant(queryConstants.GET_TABLE_CONSTRAINTS, [tableOid]);
 		const tableIndexesResult = await db.queryTolerant(queryConstants.GET_TABLE_INDEXES, [tableOid]);
+		const tableIndexesCreateStatementsResult = await db.queryTolerant(queryConstants.GET_TABLE_INDEX_CREATE_STATEMENT, [tableOid]);
 		const tableForeignKeys = await db.queryTolerant(queryConstants.GET_TABLE_FOREIGN_KEYS, [tableOid]);
 
 		logger.info('Table data retrieved', {
@@ -271,7 +272,7 @@ module.exports = {
 		const tableLevelProperties = prepareTableLevelData(tableLevelData, tableToastOptions);
 		const description = getDescriptionFromResult(descriptionResult);
 		const tableConstraint = prepareTableConstraints(tableConstraintsResult, tableColumns, tableIndexesResult);
-		const tableIndexes = prepareTableIndexes(tableIndexesResult);
+		const tableIndexes = prepareTableIndexes(tableIndexesResult, tableIndexesCreateStatementsResult);
 		const relationships = prepareForeignKeys(tableForeignKeys, tableName, schemaName, tableColumns);
 
 		const tableData = {
