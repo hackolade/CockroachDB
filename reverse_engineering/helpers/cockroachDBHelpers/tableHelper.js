@@ -240,12 +240,25 @@ const getIndexCreateStatement = (
     return createStatementResultRow.create_statement || '';
 }
 
+/**
+ * @param method {string}
+ * @return {string}
+ * */
+const parseIndexMethod = (method) => {
+    if (method.toUpperCase() === 'INVERTED') {
+        return 'gin';
+    }
+    return method;
+}
+
 const prepareTableIndexes = (
     tableIndexesResult,
     tableIndexesCreateStatementsResult = []
 ) => {
     return _.map(tableIndexesResult, indexData => {
-        const allColumns = mapIndexColumns(indexData);
+        const createStatement = getIndexCreateStatement(indexData.indexname, tableIndexesCreateStatementsResult);
+
+        const allColumns = mapIndexColumns(indexData, createStatement);
         const columns = _.slice(allColumns, 0, indexData.number_of_keys);
         const include = _.chain(allColumns)
             .slice(indexData.number_of_keys)
@@ -253,19 +266,15 @@ const prepareTableIndexes = (
             .value();
 
         const nullsDistinct = indexData.index_indnullsnotdistinct ? 'NULLS NOT DISTINCT' : '';
-        const createStatement = getIndexCreateStatement(indexData.indexname, tableIndexesCreateStatementsResult);
 
         const index = {
             indxName: indexData.indexname,
-            index_method: indexData.index_method,
+            index_method: parseIndexMethod(indexData.index_method),
             unique: indexData.index_unique ?? false,
             index_storage_parameter: getIndexStorageParameters(indexData.storage_parameters, createStatement),
             where: indexData.where_expression || '',
             include,
-            columns:
-                indexData.index_method === 'btree'
-                    ? columns
-                    : _.map(columns, column => _.omit(column, 'sortOrder', 'nullsOrder')),
+            columns,
             ...(nullsDistinct && {nullsDistinct}),
         };
 
@@ -273,7 +282,91 @@ const prepareTableIndexes = (
     });
 };
 
-const mapIndexColumns = indexData => {
+/**
+ * @param columnName {string}
+ * @param createStatement {string}
+ * @return {number}
+ * */
+const getColumnDefinitionStart = ({createStatement, columnName}) => {
+    let indexOfColumnNamePosition = 0;
+    while(indexOfColumnNamePosition < createStatement.length) {
+        const indexOfColumnName = createStatement.indexOf(columnName, indexOfColumnNamePosition);
+        if (indexOfColumnName === -1) {
+            return -1;
+        }
+        const nextChar = createStatement.charAt(indexOfColumnName + columnName.length);
+        if (nextChar.match(/\s/)) {
+            return indexOfColumnName;
+        }
+        indexOfColumnNamePosition = indexOfColumnName + columnName.length;
+    }
+}
+
+/**
+ * @param createStatement {string}
+ * @param columnDefinitionStart {number}
+ * @return {number}
+ * */
+const getColumnDefinitionEnd = ({createStatement, columnDefinitionStart}) => {
+    const columnDefinitionWithRestOfTheQuery = createStatement.substring(columnDefinitionStart);
+    const indexOfFirstComma = columnDefinitionWithRestOfTheQuery.indexOf(',');
+    const indexOfFirstClosedParenthesis = columnDefinitionWithRestOfTheQuery.indexOf(')');
+    if (indexOfFirstComma === -1) {
+        return columnDefinitionStart + indexOfFirstClosedParenthesis;
+    }
+    return columnDefinitionStart + Math.min(indexOfFirstComma, indexOfFirstClosedParenthesis);
+}
+
+/**
+ * @param columnName {string}
+ * @param createStatement {string}
+ * @return {string}
+ * */
+const getIndexColumnQueryDefinition = ({createStatement, columnName}) => {
+    const columnDefinitionStart = getColumnDefinitionStart({ columnName, createStatement });
+    if (columnDefinitionStart === -1) {
+        return '';
+    }
+    const columnDefinitionEnd = getColumnDefinitionEnd({columnDefinitionStart, createStatement});
+    if (columnDefinitionEnd === -1) {
+        return '';
+    }
+
+    return createStatement.substring(columnDefinitionStart, columnDefinitionEnd);
+}
+
+/**
+ * @param indexData {Object}
+ * @param itemIndex {number}
+ * @param columnName {string}
+ * @param createStatement {string}
+ * @return {string}
+ * */
+const getIndexColumnOpClass = ({indexData, itemIndex, columnName, createStatement}) => {
+    const opclass = _.get(indexData, `opclasses.${itemIndex}`, '');
+    if (opclass) {
+        return opclass;
+    }
+    const columnDefinition = getIndexColumnQueryDefinition({ columnName, createStatement });
+    if (!columnDefinition) {
+        return '';
+    }
+
+    const definitionNoColumnName = columnDefinition.substring(columnName.length).trim();
+    if (!definitionNoColumnName) {
+        return '';
+    }
+    return definitionNoColumnName
+        .toUpperCase()
+        .replaceAll('ASC', '')
+        .replaceAll('DESC', '')
+        .replaceAll('NULLS FIRST', '')
+        .replaceAll('NULLS LAST', '')
+        .toLowerCase()
+        .trim();
+}
+
+const mapIndexColumns = (indexData, createStatement) => {
     return _.chain(indexData.columns)
         .map((columnName, itemIndex) => {
             if (!columnName) {
@@ -282,7 +375,12 @@ const mapIndexColumns = indexData => {
 
             const sortOrder = _.get(indexData, `ascendings.${itemIndex}`, 'ASC');
             const nullsOrder = _.get(indexData, `nulls_first.${itemIndex}`, 'NULLS FIRST');
-            const opclass = _.get(indexData, `opclasses.${itemIndex}`, '');
+            const opclass = getIndexColumnOpClass({
+                columnName,
+                createStatement,
+                itemIndex,
+                indexData
+            });
             const collation = _.get(indexData, `collations.${itemIndex}`, '');
 
             return {
