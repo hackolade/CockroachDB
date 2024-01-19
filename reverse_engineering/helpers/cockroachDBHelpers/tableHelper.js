@@ -229,15 +229,15 @@ const getCheckConstraint = constraint => {
 };
 
 /**
- * @return {string}
+ * @return {Object}
  * */
-const getIndexCreateStatement = (
+const getIndexCreateStatementRowByName = (
     indexName,
     tableIndexesCreateStatementsResult = []
 ) => {
     const createStatementResultRow = tableIndexesCreateStatementsResult
         .find(result => result.index_name === indexName) || {};
-    return createStatementResultRow.create_statement || '';
+    return createStatementResultRow || {};
 }
 
 /**
@@ -256,7 +256,8 @@ const prepareTableIndexes = (
     tableIndexesCreateStatementsResult = []
 ) => {
     return _.map(tableIndexesResult, indexData => {
-        const createStatement = getIndexCreateStatement(indexData.indexname, tableIndexesCreateStatementsResult);
+        const createStatementRow = getIndexCreateStatementRowByName(indexData.indexname, tableIndexesCreateStatementsResult);
+        const createStatement = createStatementRow.create_statement;
 
         const allColumns = mapIndexColumns(indexData, createStatement);
         const columns = _.slice(allColumns, 0, indexData.number_of_keys);
@@ -266,6 +267,7 @@ const prepareTableIndexes = (
             .value();
 
         const nullsDistinct = indexData.index_indnullsnotdistinct ? 'NULLS NOT DISTINCT' : '';
+        const visibility = createStatementRow.is_visible ? 'VISIBLE' : 'NOT VISIBLE';
 
         const index = {
             indxName: indexData.indexname,
@@ -275,6 +277,7 @@ const prepareTableIndexes = (
             where: indexData.where_expression || '',
             include,
             columns,
+            visibility,
             ...(nullsDistinct && {nullsDistinct}),
         };
 

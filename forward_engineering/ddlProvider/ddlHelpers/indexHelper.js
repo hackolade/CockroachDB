@@ -19,12 +19,16 @@ module.exports = ({ _, wrapInQuotes, checkAllKeysDeactivated, getColumnsList }) 
 			checkAllKeysDeactivated(index.include || []),
 			isParentActivated,
 		);
+		const indexesThatSupportHashing = ['btree'];
+
+		const usingHash = index.using_hash && indexesThatSupportHashing.includes(index.index_method) ? ' USING HASH' : '';
 		const include = index.include?.length ? ` INCLUDE ${_.trim(includeKeys)}` : '';
 		const withOptionsString = getWithOptions(index);
 		const withOptions = withOptionsString ? ` WITH (\n\t${withOptionsString})` : '';
 		const whereExpression = index.where ? ` WHERE ${index.where}` : '';
+		const visibility = index.visibility ? ` ${index.visibility}` : '';
 
-		return _.compact([' ', include, withOptions, whereExpression]).join('\n');
+		return _.compact([' ', usingHash, include, withOptions, whereExpression, visibility]).join('\n');
 	};
 
 	const getWithOptions = index => {

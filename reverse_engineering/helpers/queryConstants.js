@@ -185,7 +185,10 @@ const queryConstants = {
     `,
 
     GET_TABLE_INDEX_CREATE_STATEMENT: `
-        SELECT index_name, create_statement FROM crdb_internal.table_indexes WHERE descriptor_id = $1;
+        SELECT index_name,
+               is_visible,
+               create_statement
+        FROM crdb_internal.table_indexes WHERE descriptor_id = $1;
     `,
 
     GET_TABLE_FOREIGN_KEYS: `
