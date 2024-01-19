@@ -698,17 +698,8 @@ making sure that you maintain a proper JSON format.
 						"template": "orderedList",
 						"propertyTooltip": "The optional INCLUDE clause specifies a list of columns which will be included in the index as non-key columns.",
 						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"key": "index_method",
-									"value": "btree"
-								},
-								{
-									"key": "index_method",
-									"value": "gist"
-								}
-							]
+							"key": "index_method",
+							"value": "btree"
 						}
 					},
 					{
