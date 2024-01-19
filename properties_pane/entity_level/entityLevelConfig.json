@@ -712,6 +712,17 @@ making sure that you maintain a proper JSON format.
 						}
 					},
 					{
+						"propertyName": "Partitioning expression",
+						"propertyKeyword": "partitioning_expression",
+						"propertyTooltip": "An option that lets you define index partitions at the row level.",
+						"propertyType": "details",
+						"template": "codeEditor",
+						"markdown": false,
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						}
+					},
+					{
 						"propertyName": "With storage parameters",
 						"propertyKeyword": "index_storage_parameter",
 						"propertyType": "block",
