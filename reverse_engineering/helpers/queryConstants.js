@@ -184,8 +184,9 @@ const queryConstants = {
         where_expression;
     `,
 
-    GET_TABLE_INDEX_CREATE_STATEMENT: `
+    GET_TABLE_INDEX_CREATE_INFO: `
         SELECT index_name,
+               is_sharded,
                is_visible,
                create_statement
         FROM crdb_internal.table_indexes WHERE descriptor_id = $1;

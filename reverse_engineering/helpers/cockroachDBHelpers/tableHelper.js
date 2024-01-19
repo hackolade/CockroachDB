@@ -231,11 +231,11 @@ const getCheckConstraint = constraint => {
 /**
  * @return {Object}
  * */
-const getIndexCreateStatementRowByName = (
+const getIndexCreateInfoRowByName = (
     indexName,
-    tableIndexesCreateStatementsResult = []
+    tableIndexesCreateInfoResult = []
 ) => {
-    const createStatementResultRow = tableIndexesCreateStatementsResult
+    const createStatementResultRow = tableIndexesCreateInfoResult
         .find(result => result.index_name === indexName) || {};
     return createStatementResultRow || {};
 }
@@ -245,19 +245,23 @@ const getIndexCreateStatementRowByName = (
  * @return {string}
  * */
 const parseIndexMethod = (method) => {
-    if (method.toUpperCase() === 'INVERTED') {
-        return 'gin';
+    switch (method.toUpperCase()){
+        case 'INVERTED':
+            return 'gin';
+        case 'PREFIX':
+            return 'btree';
+        default:
+            return method;
     }
-    return method;
 }
 
 const prepareTableIndexes = (
     tableIndexesResult,
-    tableIndexesCreateStatementsResult = []
+    tableIndexesCreateInfoResult = []
 ) => {
     return _.map(tableIndexesResult, indexData => {
-        const createStatementRow = getIndexCreateStatementRowByName(indexData.indexname, tableIndexesCreateStatementsResult);
-        const createStatement = createStatementRow.create_statement;
+        const createInfoRow = getIndexCreateInfoRowByName(indexData.indexname, tableIndexesCreateInfoResult);
+        const createStatement = createInfoRow.create_statement;
 
         const allColumns = mapIndexColumns(indexData, createStatement);
         const columns = _.slice(allColumns, 0, indexData.number_of_keys);
@@ -267,7 +271,8 @@ const prepareTableIndexes = (
             .value();
 
         const nullsDistinct = indexData.index_indnullsnotdistinct ? 'NULLS NOT DISTINCT' : '';
-        const visibility = createStatementRow.is_visible ? 'VISIBLE' : 'NOT VISIBLE';
+        const visibility = createInfoRow.is_visible ? 'VISIBLE' : 'NOT VISIBLE';
+        const using_hash = Boolean(createInfoRow.is_sharded);
 
         const index = {
             indxName: indexData.indexname,
@@ -277,6 +282,7 @@ const prepareTableIndexes = (
             where: indexData.where_expression || '',
             include,
             columns,
+            using_hash,
             visibility,
             ...(nullsDistinct && {nullsDistinct}),
         };
