@@ -1,4 +1,5 @@
 const {clearEmptyPropertiesInObject, getColumnNameByPosition} = require('./common');
+const {preparePartition} = require("./partitioningHelper");
 
 let _ = null;
 
@@ -32,117 +33,6 @@ const prepareStorageParameters = (reloptions, tableToastOptions) => {
     const optionsWithGroupedTtl = groupTtlStorageParams(nonEmptyOptions);
     return clearEmptyPropertiesInObject(optionsWithGroupedTtl);
 };
-
-const prepareTablePartition = (partitionResult) => {
-    if (!partitionResult) {
-        return null;
-    }
-
-    const partitionMethod = getPartitionMethod(partitionResult);
-    const compositePartitionKey = getCompositePartitionKey(partitionResult);
-    const partitioning_expression = getPartitionExpression(partitionResult);
-
-    return [
-        {
-            partitionMethod,
-            compositePartitionKey,
-            partitioning_expression,
-        },
-    ];
-};
-
-/**
- * @return {string}
- */
-const getPartitionMethodByRow = (row = {}) => {
-    if (row.list_value) {
-        return 'LIST';
-    }
-    if (row.range_value) {
-        return 'RANGE';
-    }
-    return '';
-};
-
-const getParentPartitionRows = (partitionResult = []) => {
-    return partitionResult.filter(row => !row.parent_name);
-}
-
-const getChildPartitionRows = (partitionResult = [], parentName = null) => {
-    return partitionResult.filter(row => row.parent_name === parentName);
-}
-
-/**
- * @return {string}
- */
-const getPartitionMethod = (partitionResult = []) => {
-    const parentPartitionRows = getParentPartitionRows(partitionResult);
-    if (!parentPartitionRows.length) {
-        return '';
-    }
-    const firstRow = parentPartitionRows[0];
-    return getPartitionMethodByRow(firstRow);
-};
-
-const getCompositePartitionKey = (partitionResult = []) => {
-    const parentPartitionRows = partitionResult.filter(row => !row.parent_name);
-    const columnNames = parentPartitionRows
-        .flatMap(row => {
-            const columnNames = row.column_names || '';
-            return columnNames.split(',').map(name => name.trim());
-        })
-    return _.uniq(columnNames);
-}
-
-const getPartitionExpression = (partitionResult) => {
-    const parentPartitionRows = getParentPartitionRows(partitionResult);
-    if (!parentPartitionRows.length) {
-        return '';
-    }
-    const firstRow = parentPartitionRows[0];
-    const partitionMethod = getPartitionMethodByRow(firstRow);
-    const columnNames = firstRow.column_names || '';
-
-    const parentPartitions = parentPartitionRows
-        .map(row => getSinglePartitionExpression({
-            partition: row,
-            paddingFactor: 1,
-            partitionResult
-        }))
-        .join(',\n');
-    return `PARTITION BY ${partitionMethod} (${columnNames}) (
-${parentPartitions}
-)`
-};
-
-const getSinglePartitionExpression = ({
-                                          partition,
-                                          partitionResult,
-                                          paddingFactor
-                                      }) => {
-    const valuesClause = partition.list_value ? 'VALUES IN' : 'VALUES FROM';
-    const value = partition.list_value || partition.range_value || '';
-    const baseDdlPadding = '\t'.repeat(paddingFactor);
-    const baseDdl = `${baseDdlPadding}PARTITION ${partition.partition_name} ${valuesClause} ${value}`;
-
-    const children = getChildPartitionRows(partitionResult, partition.partition_name);
-    if (children.length) {
-        const childPartitions = children.map(child => getSinglePartitionExpression({
-            partition: child,
-            partitionResult,
-            paddingFactor: paddingFactor + 1,
-        }))
-            .join(',\n');
-
-        const firstChildRow = children[0];
-        const partitionMethod = getPartitionMethodByRow(firstChildRow);
-        const columnNames = firstChildRow.column_names || '';
-        return baseDdl + ` PARTITION BY ${partitionMethod} (${columnNames}) (\n`
-            + childPartitions + '\n'
-            + baseDdlPadding + ')'
-    }
-    return baseDdl;
-}
 
 const splitByEqualitySymbol = item => _.split(item, '=');
 
@@ -255,10 +145,21 @@ const parseIndexMethod = (method) => {
     }
 }
 
-const prepareTableIndexes = (
-    tableIndexesResult,
-    tableIndexesCreateInfoResult = []
-) => {
+/**
+ * @param tableIndexesPartitioningResult {Array<Object>}
+ * @param index {Object}
+ * @return {Array<Object>}
+ * */
+const getIndexPartitioningRows = (tableIndexesPartitioningResult, index) => {
+    return (tableIndexesPartitioningResult || [])
+        .filter(row => row.index_name === index.indexname && row.index_id === index.index_id);
+}
+
+const prepareTableIndexes = ({
+                                 tableIndexesResult,
+                                 tableIndexesCreateInfoResult = [],
+                                 tableIndexesPartitioningResult,
+                             }) => {
     return _.map(tableIndexesResult, indexData => {
         const createInfoRow = getIndexCreateInfoRowByName(indexData.indexname, tableIndexesCreateInfoResult);
         const createStatement = createInfoRow.create_statement;
@@ -274,12 +175,17 @@ const prepareTableIndexes = (
         const visibility = createInfoRow.is_visible ? 'VISIBLE' : 'NOT VISIBLE';
         const using_hash = Boolean(createInfoRow.is_sharded);
 
+        const partitionRowsForCurrentIndex = getIndexPartitioningRows(tableIndexesPartitioningResult, indexData);
+        const partitioning = preparePartition(_)(partitionRowsForCurrentIndex) || [{}];
+        const partitioning_expression = partitioning[0].partitioning_expression;
+
         const index = {
             indxName: indexData.indexname,
             index_method: parseIndexMethod(indexData.index_method),
             unique: indexData.index_unique ?? false,
             index_storage_parameter: getIndexStorageParameters(indexData.storage_parameters, createStatement),
             where: indexData.where_expression || '',
+            partitioning_expression,
             include,
             columns,
             using_hash,
@@ -296,15 +202,21 @@ const prepareTableIndexes = (
  * @param createStatement {string}
  * @return {number}
  * */
-const getColumnDefinitionStart = ({createStatement, columnName}) => {
+const getIndexColumnDefinitionStart = ({createStatement, columnName}) => {
+    // Index column definition follows either a "(" if it is the first column
+    // or a "," if it is not the first column
+    const allowedPreviousChars = ['(', ','];
+
     let indexOfColumnNamePosition = 0;
+
     while(indexOfColumnNamePosition < createStatement.length) {
         const indexOfColumnName = createStatement.indexOf(columnName, indexOfColumnNamePosition);
         if (indexOfColumnName === -1) {
             return -1;
         }
+        const previousChar = createStatement.charAt(indexOfColumnName - 1);
         const nextChar = createStatement.charAt(indexOfColumnName + columnName.length);
-        if (nextChar.match(/\s/)) {
+        if (nextChar.match(/\s/) && allowedPreviousChars.includes(previousChar)) {
             return indexOfColumnName;
         }
         indexOfColumnNamePosition = indexOfColumnName + columnName.length;
@@ -332,7 +244,7 @@ const getColumnDefinitionEnd = ({createStatement, columnDefinitionStart}) => {
  * @return {string}
  * */
 const getIndexColumnQueryDefinition = ({createStatement, columnName}) => {
-    const columnDefinitionStart = getColumnDefinitionStart({ columnName, createStatement });
+    const columnDefinitionStart = getIndexColumnDefinitionStart({ columnName, createStatement });
     if (columnDefinitionStart === -1) {
         return '';
     }
@@ -517,7 +429,6 @@ const prepareTableInheritance = (schemaName, inheritanceResult) => {
 
 module.exports = {
     prepareStorageParameters,
-    prepareTablePartition,
     setDependencies,
     checkHaveJsonTypes,
     prepareTableConstraints,

@@ -58,23 +58,6 @@ const queryConstants = {
                  WHERE relname=$1 AND relnamespace = $2
                  LIMIT 1)`,
 
-    GET_TABLE_PARTITION_DATA: `
-        SELECT
-            partitions.name AS partition_name,
-            parent_name,
-            column_names,
-            list_value,
-            range_value,
-            schema_name,
-            tables.name AS table_name,
-            database_name
-        FROM crdb_internal.partitions
-            INNER JOIN crdb_internal.tables
-                ON partitions.table_id=tables.table_id
-                    AND tables.table_id = $1
-        ;
-    `,
-
 	GET_TABLE_COLUMNS: `
         SELECT * FROM information_schema.columns
             WHERE table_name = $1 AND table_schema = $2
@@ -115,6 +98,7 @@ const queryConstants = {
 
     GET_TABLE_INDEXES: `
     SELECT indexname,
+           index_id,
            index_method,
            index_unique,
            index_indnullsnotdistinct,
@@ -137,6 +121,7 @@ const queryConstants = {
             attribute.attname,
             c.reloptions,
             indexes.indnkeyatts AS number_of_keys,
+            ti.index_id AS index_id,
             pg_catalog.pg_get_expr(indpred, indrelid) AS where_expression,
             CASE
                 WHEN collation_namespace.nspname is not null THEN format('%I.%I',collation_namespace.nspname,collation_t.collname)
@@ -172,16 +157,37 @@ const queryConstants = {
         LEFT JOIN pg_catalog.pg_namespace collation_namespace ON (collation_namespace.oid=collation_t.collnamespace)
         LEFT JOIN pg_catalog.pg_opclass opclass_t ON (opclass_t.oid=indexes.class)
         LEFT JOIN pg_catalog.pg_namespace opclas_namespace ON (opclas_namespace.oid=opclass_t.opcnamespace)
+        INNER JOIN crdb_internal.table_indexes ti ON (
+            indexes.indrelid = ti.descriptor_id
+            AND c.relname = ti.index_name
+        )
     ) s2
     WHERE table_oid = $1
     GROUP BY
         indexname,
+        index_id,
         index_method,
         index_unique,
         index_indnullsnotdistinct,
         reloptions,
         number_of_keys,
         where_expression;
+    `,
+
+    GET_TABLE_INDEX_PARTITIONING_DATA: `
+        SELECT
+            partitions.name AS partition_name,
+            partitions.index_id,
+            parent_name,
+            column_names,
+            list_value,
+            range_value,
+            index_name
+        FROM crdb_internal.partitions
+            INNER JOIN crdb_internal.table_indexes
+                ON partitions.table_id = table_indexes.descriptor_id
+                    AND partitions.index_id = table_indexes.index_id
+        WHERE table_indexes.descriptor_id = $1;
     `,
 
     GET_TABLE_INDEX_CREATE_INFO: `
