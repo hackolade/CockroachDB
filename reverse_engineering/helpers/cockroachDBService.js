@@ -21,7 +21,6 @@ const {
 } = require('./cockroachDBHelpers/functionHelper');
 const {
 	setDependencies: setDependenciesInTableHelper,
-	prepareTablePartition,
 	checkHaveJsonTypes,
 	prepareTableConstraints,
 	getSampleDocSize,
@@ -253,12 +252,13 @@ module.exports = {
 			[tableName, schemaOid],
 			true,
 		);
-		const partitionResult = await db.queryTolerant(queryConstants.GET_TABLE_PARTITION_DATA, [tableOid]);
 		const tableColumns = await this._getTableColumns(tableName, schemaName, tableOid);
 		const tableCommentsCatalog = 'pg_class';
 		const descriptionResult = await db.queryTolerant(queryConstants.GET_DESCRIPTION_BY_OID, [tableOid, tableCommentsCatalog], true);
 		const tableConstraintsResult = await db.queryTolerant(queryConstants.GET_TABLE_CONSTRAINTS, [tableOid]);
 		const tableIndexesResult = await db.queryTolerant(queryConstants.GET_TABLE_INDEXES, [tableOid]);
+		const tableIndexesPartitioningResult = await db.queryTolerant(queryConstants.GET_TABLE_INDEX_PARTITIONING_DATA, [tableOid]);
+		const tableIndexesCreateInfoResult = await db.queryTolerant(queryConstants.GET_TABLE_INDEX_CREATE_INFO, [tableOid]);
 		const tableForeignKeys = await db.queryTolerant(queryConstants.GET_TABLE_FOREIGN_KEYS, [tableOid]);
 
 		logger.info('Table data retrieved', {
@@ -267,15 +267,17 @@ module.exports = {
 			columnTypes: tableColumns.map(column => column.data_type),
 		});
 
-		const partitioning = prepareTablePartition(partitionResult);
 		const tableLevelProperties = prepareTableLevelData(tableLevelData, tableToastOptions);
 		const description = getDescriptionFromResult(descriptionResult);
 		const tableConstraint = prepareTableConstraints(tableConstraintsResult, tableColumns, tableIndexesResult);
-		const tableIndexes = prepareTableIndexes(tableIndexesResult);
+		const tableIndexes = prepareTableIndexes({
+			tableIndexesResult,
+			tableIndexesCreateInfoResult,
+			tableIndexesPartitioningResult,
+		});
 		const relationships = prepareForeignKeys(tableForeignKeys, tableName, schemaName, tableColumns);
 
 		const tableData = {
-			partitioning,
 			description,
 			Indxs: tableIndexes,
 			...tableLevelProperties,

@@ -1,12 +1,10 @@
 module.exports = ({ _, wrapInQuotes, checkAllKeysDeactivated, getColumnsList }) => {
-	const mapIndexKey = ({ name, sortOrder, nullsOrder, collation, opclass }) => {
+	const mapIndexKey = ({ name, sortOrder, nullsOrder, opclass }) => {
 		const sortOrderStr = sortOrder ? ` ${sortOrder}` : '';
 		const nullsOrderStr = nullsOrder ? ` ${nullsOrder}` : '';
-		const collate = _.includes(collation, '"') ? collation : `"${collation}"`;
-		const collationStr = collation ? ` COLLATE ${collate}` : '';
 		const opclassStr = opclass ? ` ${opclass}` : '';
 
-		return `${wrapInQuotes(name)}${collationStr}${opclassStr}${sortOrderStr}${nullsOrderStr}`;
+		return `${wrapInQuotes(name)}${opclassStr}${sortOrderStr}${nullsOrderStr}`;
 	};
 
 	const getIndexKeys = (columns = [], isParentActivated) => {
@@ -21,52 +19,30 @@ module.exports = ({ _, wrapInQuotes, checkAllKeysDeactivated, getColumnsList }) 
 			checkAllKeysDeactivated(index.include || []),
 			isParentActivated,
 		);
+		const indexesThatSupportHashing = ['btree'];
+
+		const usingHash = index.using_hash && indexesThatSupportHashing.includes(index.index_method) ? ' USING HASH' : '';
 		const include = index.include?.length ? ` INCLUDE ${_.trim(includeKeys)}` : '';
+		const partitioning = index.partitioning_expression || '';
 		const withOptionsString = getWithOptions(index);
 		const withOptions = withOptionsString ? ` WITH (\n\t${withOptionsString})` : '';
 		const whereExpression = index.where ? ` WHERE ${index.where}` : '';
+		const visibility = index.visibility ? ` ${index.visibility}` : '';
 
-		return _.compact([' ', include, withOptions, whereExpression]).join('\n');
-	};
-
-	const INDEX_STORAGE_OPTIONS_BY_METHOD = {
-		btree: {
-			index_fillfactor: 'fillfactor',
-			deduplicate_items: 'deduplicate_items',
-		},
-		hash: {
-			index_fillfactor: 'fillfactor',
-		},
-		spgist: {
-			index_fillfactor: 'fillfactor',
-		},
-		gist: {
-			index_fillfactor: 'fillfactor',
-			index_buffering: 'buffering',
-		},
-		gin: {
-			fastupdate: 'fastupdate',
-			gin_pending_list_limit: 'gin_pending_list_limit',
-		},
-		brin: {
-			pages_per_range: 'pages_per_range',
-			autosummarize: 'autosummarize',
-		},
+		return _.compact([' ', usingHash, include, partitioning, withOptions, whereExpression, visibility]).join('\n');
 	};
 
 	const getWithOptions = index => {
-		const config = INDEX_STORAGE_OPTIONS_BY_METHOD[index.index_method];
+		const keysToOmit = ['id'];
 
-		return _.chain(config)
+		return _.chain(index.index_storage_parameter)
 			.toPairs()
-			.map(([keyInModel, cockroachDBKey]) => {
-				const value = index.index_storage_parameter[keyInModel];
-
-				if (_.isNil(value) || value === '') {
+			.map(([key, value]) => {
+				if (keysToOmit.includes(key) || _.isNil(value) || value === '') {
 					return;
 				}
 
-				return `${cockroachDBKey}=${getValue(value)}`;
+				return `${key}=${getValue(value)}`;
 			})
 			.compact()
 			.join(',\n\t')
