@@ -300,7 +300,7 @@ module.exports = (baseProvider, options, app) => {
 			return assignTemplates(templates.checkConstraint, {
 				name: checkConstraint.name ? `CONSTRAINT ${wrapInQuotes(checkConstraint.name)}` : '',
 				expression: _.trim(checkConstraint.expression).replace(/^\(([\s\S]*)\)$/, '$1'),
-				noInherit: checkConstraint.noInherit ? ' NO INHERIT' : '',
+				notValid: checkConstraint.notValid ? ' NOT VALID' : '',
 			});
 		},
 
@@ -671,7 +671,7 @@ module.exports = (baseProvider, options, app) => {
 			return {
 				name: checkConstraint.chkConstrName,
 				expression: checkConstraint.constrExpression,
-				noInherit: checkConstraint.noInherit,
+				notValid: checkConstraint.notValid,
 			};
 		},
 
