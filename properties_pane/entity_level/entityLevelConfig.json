@@ -432,9 +432,12 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "With storage parameters",
 						"propertyKeyword": "indexStorageParameters",
 						"propertyType": "details",
-						"template": "textarea",
+						"addTimestampButton": false,
 						"markdown": false,
-						"addTimestampButton": false
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						}
 					},
 					{
 						"propertyName": "Comment",
@@ -442,26 +445,9 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comment",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
-					},
-					{
-						"propertyName": "Deferrable",
-						"propertyKeyword": "deferrable",
-						"propertyTooltip": "\nA constraint that is not deferrable will be checked immediately after every command. Checking of constraints that are deferrable can be postponed until the end of the transaction",
-						"propertyType": "select",
-						"defaultValue": "",
-						"options": ["", "DEFERRABLE", "NOT DEFERRABLE"]
-					},
-					{
-						"propertyName": "Check time",
-						"propertyKeyword": "deferrableConstraintCheckTime",
-						"propertyTooltip": "\nIf the constraint is INITIALLY IMMEDIATE, it is checked after each statement. This is the default. If the constraint is INITIALLY DEFERRED, it is checked only at the end of the transaction",
-						"propertyType": "select",
-						"defaultValue": "",
-						"options": ["", "INITIALLY IMMEDIATE", "INITIALLY DEFERRED"],
-						"dependency": {
-							"key": "deferrable",
-							"value": "DEFERRABLE"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
 						}
 					}
 				],
@@ -544,9 +530,12 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "With storage parameters",
 						"propertyKeyword": "indexStorageParameters",
 						"propertyType": "details",
-						"template": "textarea",
+						"addTimestampButton": false,
 						"markdown": false,
-						"addTimestampButton": false
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						}
 					},
 					{
 						"propertyName": "Comment",
@@ -554,43 +543,9 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comment",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
-					},
-					{
-						"propertyName": "Nulls Distinct",
-						"propertyKeyword": "nullsDistinct",
-						"propertyType": "select",
-						"defaultValue": "",
-						"options": ["", "NULLS DISTINCT", "NULLS NOT DISTINCT"],
-						"dependency": {
-							"type": "or",
-							"values": [
-								{
-									"level": "model",
-									"key": "dbVersion",
-									"value": "v15.x"
-								}
-							]
-						}
-					},
-					{
-						"propertyName": "Deferrable",
-						"propertyKeyword": "deferrable",
-						"propertyTooltip": "\nA constraint that is not deferrable will be checked immediately after every command. Checking of constraints that are deferrable can be postponed until the end of the transaction",
-						"propertyType": "select",
-						"defaultValue": "",
-						"options": ["", "DEFERRABLE", "NOT DEFERRABLE"]
-					},
-					{
-						"propertyName": "Check time",
-						"propertyKeyword": "deferrableConstraintCheckTime",
-						"propertyTooltip": "\nIf the constraint is INITIALLY IMMEDIATE, it is checked after each statement. This is the default. If the constraint is INITIALLY DEFERRED, it is checked only at the end of the transaction",
-						"propertyType": "select",
-						"defaultValue": "",
-						"options": ["", "INITIALLY IMMEDIATE", "INITIALLY DEFERRED"],
-						"dependency": {
-							"key": "deferrable",
-							"value": "DEFERRABLE"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
 						}
 					}
 				]

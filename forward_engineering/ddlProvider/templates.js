@@ -22,9 +22,9 @@ module.exports = {
 
 	checkConstraint: '${name} CHECK (${expression})${notValid}',
 
-	createForeignKeyConstraint: '${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})${match}${onDelete}${onUpdate}${deferrable}${deferrableConstraintCheckTime}',
+	createForeignKeyConstraint: '${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})${match}${onDelete}${onUpdate}',
 
-	createKeyConstraint: '${constraintName}${keyType}${columns}${includeNonKey}${storageParameters}${deferrable}${deferrableConstraintCheckTime}',
+	createKeyConstraint: '${constraintName}${keyType}${columns}${includeNonKey}${storageParameters}',
 
 	alterColumnType: 'ALTER TABLE IF EXISTS ${tableName} ALTER COLUMN ${columnName} SET DATA TYPE ${dataType};',
 
@@ -39,7 +39,7 @@ module.exports = {
 	dropConstraint: 'ALTER TABLE IF EXISTS ${tableName} DROP CONSTRAINT IF EXISTS ${constraintName};',
 
 	createForeignKey:
-		'ALTER TABLE IF EXISTS ${foreignTable} ADD CONSTRAINT ${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable}(${primaryKey})${match}${onDelete}${onUpdate}${deferrable}${deferrableConstraintCheckTime};',
+		'ALTER TABLE IF EXISTS ${foreignTable} ADD CONSTRAINT ${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable}(${primaryKey})${match}${onDelete}${onUpdate};',
 
 	dropForeignKey: 'ALTER TABLE ${tableName} DROP CONSTRAINT ${fkConstraintName};',
 

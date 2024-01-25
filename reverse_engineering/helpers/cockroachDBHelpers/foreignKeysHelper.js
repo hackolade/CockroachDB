@@ -29,8 +29,6 @@ const prepareMatch = value => {
 			return 'FULL';
 		case 's':
 			return 'SIMPLE';
-		case 'p':
-			return 'PARTIAL';
 		default:
 			return '';
 	}

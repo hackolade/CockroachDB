@@ -73,7 +73,7 @@ const prepareTableConstraints = (constraintsResult, attributesWithPositions, tab
                         ...entityConstraints,
                         uniqueKey: [
                             ...entityConstraints.uniqueKey,
-                            getUniqueKeyConstraint(constraint, attributesWithPositions, tableIndexes),
+                            getUniqueKeyConstraint(constraint, attributesWithPositions),
                         ],
                     };
                 default:
@@ -96,16 +96,12 @@ const getPrimaryKeyConstraint = (constraint, tableColumns) => {
     };
 };
 
-const getUniqueKeyConstraint = (constraint, tableColumns, tableIndexes) => {
-    const indexWithConstraint = _.find(tableIndexes, index => index.indexname === constraint.constraint_name);
-    const nullsDistinct = indexWithConstraint?.index_indnullsnotdistinct ? 'NULLS NOT DISTINCT' : '';
-
+const getUniqueKeyConstraint = (constraint, tableColumns) => {
     return {
         constraintName: constraint.constraint_name,
         compositeUniqueKey: _.map(constraint.constraint_keys, getColumnNameByPosition(tableColumns)),
         indexStorageParameters: _.join(constraint.storage_parameters, ','),
         indexComment: constraint.description,
-        ...(nullsDistinct && {nullsDistinct})
     };
 };
 
@@ -171,7 +167,6 @@ const prepareTableIndexes = ({
             .map(column => _.pick(column, 'name'))
             .value();
 
-        const nullsDistinct = indexData.index_indnullsnotdistinct ? 'NULLS NOT DISTINCT' : '';
         const visibility = createInfoRow.is_visible ? 'VISIBLE' : 'NOT VISIBLE';
         const using_hash = Boolean(createInfoRow.is_sharded);
 
@@ -190,7 +185,6 @@ const prepareTableIndexes = ({
             columns,
             using_hash,
             visibility,
-            ...(nullsDistinct && {nullsDistinct}),
         };
 
         return clearEmptyPropertiesInObject(index);

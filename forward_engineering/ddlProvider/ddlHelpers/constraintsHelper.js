@@ -78,9 +78,6 @@ module.exports = ({
             ? ` INCLUDE${getColumnsList(keyData.include, isAllColumnsDeactivated, isParentActivated)}`
             : '';
         const storageParameters = keyData.storageParameters ? ` WITH (${keyData.storageParameters})` : '';
-        const deferrable = keyData?.deferrable ? ` ${keyData.deferrable}` : '';
-        const deferrableConstraintCheckTime = keyData?.deferrable === 'DEFERRABLE' && keyData?.deferrableConstraintCheckTime
-            ? ` ${keyData?.deferrableConstraintCheckTime}` : '';
 
         return {
             statement: assignTemplates(templates.createKeyConstraint, {
@@ -89,8 +86,6 @@ module.exports = ({
                 columns,
                 includeNonKey,
                 storageParameters,
-                deferrable,
-                deferrableConstraintCheckTime,
             }),
             isActivated: !isAllColumnsDeactivated,
         };
@@ -118,24 +113,18 @@ module.exports = ({
      *     relationshipOnDelete?: string,
      *     relationshipOnUpdate?: string,
      *     relationshipMatch?: string,
-     *     deferrable?: "" | "DEFERRABLE" | "NOT DEFERRABLE",
-     *     deferrableConstraintCheckTime?: "" | "INITIALLY IMMEDIATE" | "INITIALLY DEFERRED",
      * }}
      * @return {{
      *     relationshipOnDelete: string,
      *     relationshipOnUpdate: string,
      *     relationshipMatch: string,
-     *     deferrable: string,
-     *     deferrableConstraintCheckTime: string,
      * }}
      * */
     const additionalPropertiesForForeignKey = relationshipCustomProperties => {
         const foreignOnDelete = _.get(relationshipCustomProperties, 'relationshipOnDelete', '');
         const foreignOnUpdate = _.get(relationshipCustomProperties, 'relationshipOnUpdate', '');
         const foreignMatch = _.get(relationshipCustomProperties, 'relationshipMatch', '');
-        const deferrable = _.get(relationshipCustomProperties, 'deferrable', '');
-        const deferrableConstraintCheckTime = _.get(relationshipCustomProperties, 'deferrableConstraintCheckTime', '');
-        return {foreignOnDelete, foreignOnUpdate, foreignMatch, deferrable, deferrableConstraintCheckTime};
+        return {foreignOnDelete, foreignOnUpdate, foreignMatch};
     };
 
     return {

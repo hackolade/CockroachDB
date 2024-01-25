@@ -100,7 +100,6 @@ const queryConstants = {
            index_id,
            index_method,
            index_unique,
-           index_indnullsnotdistinct,
            number_of_keys,
            where_expression,
            array_agg(attname ORDER BY ord)::text[] AS columns,
@@ -115,7 +114,6 @@ const queryConstants = {
             c.relname AS indexname,
             m.amname AS index_method,
             indexes.indisunique AS index_unique,
-            indexes.indnullsnotdistinct AS index_indnullsnotdistinct,
             indexes.ord,
             attribute.attname,
             c.reloptions,
@@ -167,7 +165,6 @@ const queryConstants = {
         index_id,
         index_method,
         index_unique,
-        index_indnullsnotdistinct,
         reloptions,
         number_of_keys,
         where_expression;

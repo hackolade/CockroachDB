@@ -37,16 +37,9 @@ module.exports = (_, clean) => {
 		return isPrimaryKey(column) && !_.first(column.primaryKeyOptions)?.constraintName;
 	};
 
-	const getUniqueKeyType = (options, dbVersion) => {
-		const nullsDistinct = options['nullsDistinct'];
-		const nullsDistinctExist = dbVersion >= 15 && nullsDistinct;
-
-		return `UNIQUE${nullsDistinctExist ? ` ${nullsDistinct}` : ''}`;
-	};
-
 	const hydrateUniqueOptions = ({ options, columnName, isActivated, jsonSchema, dbVersion }) =>
 		clean({
-			keyType: getUniqueKeyType(options, dbVersion),
+			keyType: 'UNIQUE',
 			name: options['constraintName'],
 			columns: [
 				{
@@ -57,9 +50,6 @@ module.exports = (_, clean) => {
 			include: getKeys(options['indexInclude'] || [], jsonSchema),
 			storageParameters: options['indexStorageParameters'],
 			comment: options['indexComment'],
-			nullsDistinct: options['nullsDistinct'],
-			deferrable: options['deferrable'],
-			deferrableConstraintCheckTime: options['deferrableConstraintCheckTime'],
 		});
 
 	const hydratePrimaryKeyOptions = (options, columnName, isActivated, jsonSchema) =>
@@ -75,8 +65,6 @@ module.exports = (_, clean) => {
 			include: getKeys(options['indexInclude'] || [], jsonSchema),
 			storageParameters: options['indexStorageParameters'],
 			comment: options['indexComment'],
-			deferrable: options['deferrable'],
-			deferrableConstraintCheckTime: options['deferrableConstraintCheckTime'],
 		});
 
 	const findName = (keyId, properties) => {
