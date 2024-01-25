@@ -122,7 +122,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "comments",
 				"propertyType": "details",
 				"addTimestampButton": false,
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			},
 			{
 				"propertyName": "Or replace",
@@ -176,8 +179,11 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "selectStatement",
 				"propertyType": "details",
 				"propertyTooltip": "A SELECT or VALUES command which will provide the columns and rows of the view.",
-				"template": "textarea",
-				"markdown": false
+				"markdown": false,
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "pgsql"
+				}
 			},
 			{
 				"propertyName": "With check option",
@@ -210,7 +216,10 @@ making sure that you maintain a proper JSON format.
 				"propertyType": "details",
 				"addTimestampButton": true,
 				"markdown": true,
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			},
 			{
 				"propertyKeyword": "pipeline",

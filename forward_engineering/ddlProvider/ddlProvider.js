@@ -566,7 +566,6 @@ module.exports = (baseProvider, options, app) => {
 				collate: modelData.LC_COLLATE,
 				characterClassification: modelData.LC_CTYPE,
 				dbVersion: modelData.dbVersion,
-				locale: modelData.locale,
 			};
 		},
 

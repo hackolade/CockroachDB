@@ -123,7 +123,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "comments",
 				"addTimestampButton": false,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			},
 			{
 				"propertyName": "Temporary",
@@ -348,7 +351,10 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "As Select statement",
 				"propertyKeyword": "selectStatement",
 				"propertyType": "details",
-				"template": "textarea",
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "pgsql"
+				},
 				"markdown": false
 			},
 			{
@@ -357,7 +363,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
 				"propertyType": "details",
-				"template": "textarea",
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				},
 				"valueType": "string"
 			}
 		],
