@@ -1,6 +1,6 @@
 module.exports = {
 	createDatabase:
-		'CREATE DATABASE ${name}${template}${encoding}${locale}${collate}${characterClassification};\n',
+		'CREATE DATABASE ${name}${template}${encoding}${collate}${characterClassification};\n',
 
 	createSchema: 'CREATE SCHEMA${ifNotExist} ${name};\nSET search_path TO ${name};\n\n${comment}\n',
 
