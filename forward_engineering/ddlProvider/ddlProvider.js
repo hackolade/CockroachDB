@@ -78,7 +78,7 @@ module.exports = (baseProvider, options, app) => {
 		getColumnsList,
 	});
 
-	const { decorateType, decorateDefault, getColumnComments, replaceTypeByVersion } =
+	const { decorateType, decorateDefault, getColumnComments } =
 		require('./ddlHelpers/columnDefinitionHelper')({
 			_,
 			wrap,
@@ -89,23 +89,20 @@ module.exports = (baseProvider, options, app) => {
 			wrapComment,
 		});
 
-	const { getLocaleProperties } = require('./ddlHelpers/databaseHelper')();
-
 	return {
 		createDatabase(modelData) {
 			if (!modelData.databaseName) {
 				return '';
 			}
 
-			const { locale, collate, characterClassification } = getLocaleProperties(modelData);
+			const { collate, characterClassification } = modelData;
 
 			return assignTemplates(templates.createDatabase, {
 				name: wrapInQuotes(modelData.databaseName),
 				template: modelData.template ? `\n\tTEMPLATE ${modelData.template}` : '',
-				encoding: modelData.encoding ? `\n\tENCODING ${modelData.encoding}` : '',
-				locale: locale ? `\n\tLOCALE '${modelData.locale}'` : '',
-				collate: collate ? `\n\tLC_COLLATE '${modelData.collate}'` : '',
-				characterClassification: characterClassification ? `\n\tLC_CTYPE '${characterClassification}'` : '',
+				encoding: modelData.encoding ? `\n\tENCODING = '${modelData.encoding}'` : '',
+				collate: collate ? `\n\tLC_COLLATE = '${modelData.collate}'` : '',
+				characterClassification: characterClassification ? `\n\tLC_CTYPE = '${characterClassification}'` : '',
 			});
 		},
 
@@ -227,7 +224,6 @@ module.exports = (baseProvider, options, app) => {
 		},
 
 		convertColumnDefinition(columnDefinition) {
-			const type = replaceTypeByVersion(columnDefinition.type, columnDefinition.dbVersion);
 			const notNull = columnDefinition.nullable ? '' : ' NOT NULL';
 			const primaryKey = columnDefinition.primaryKey
 				? ' ' + createKeyConstraint(templates, true)(columnDefinition.primaryKeyOptions).statement
@@ -238,7 +234,7 @@ module.exports = (baseProvider, options, app) => {
 			const collation = columnDefinition.collationRule ? ` COLLATE "${columnDefinition.collationRule}"` : '';
 			const isArrayType = Array.isArray(columnDefinition.array_type) && columnDefinition.array_type.length > 0;
 			const defaultValue = !_.isUndefined(columnDefinition.default)
-				? ' DEFAULT ' + decorateDefault(type, columnDefinition.default, isArrayType)
+				? ' DEFAULT ' + decorateDefault(columnDefinition.type, columnDefinition.default, isArrayType)
 				: '';
 			const generatedColumnClause = columnDefinition.dbVersion >= 12 && columnDefinition.generatedColumn && columnDefinition.columnGenerationExpression
 				? assignTemplates(templates.generatedColumnClause, {
@@ -249,7 +245,7 @@ module.exports = (baseProvider, options, app) => {
 			return commentIfDeactivated(
 				assignTemplates(templates.columnDefinition, {
 					name: wrapInQuotes(columnDefinition.name),
-					type: decorateType(type, columnDefinition),
+					type: decorateType(columnDefinition.type, columnDefinition),
 					generatedColumnClause,
 					notNull,
 					primaryKey,
@@ -570,7 +566,6 @@ module.exports = (baseProvider, options, app) => {
 				collate: modelData.LC_COLLATE,
 				characterClassification: modelData.LC_CTYPE,
 				dbVersion: modelData.dbVersion,
-				locale: modelData.locale,
 			};
 		},
 

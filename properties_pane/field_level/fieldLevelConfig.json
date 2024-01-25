@@ -193,59 +193,21 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Generated column",
 				"propertyKeyword": "generatedColumn",
 				"propertyTooltip": "A generated column is a special column that is always computed from other columns",
-				"propertyType": "checkbox",
-				"dependency": {
-					"type": "not",
-					"values": {
-						"type": "or",
-						"values": [
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v10.x"
-							},
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v11.x"
-							}
-						]
-					}
-				}
+				"propertyType": "checkbox"
 			},
 			{
 				"propertyName": "Generation expression",
 				"propertyKeyword": "columnGenerationExpression",
 				"propertyTooltip": "An SQL statement for computing values for this column",
 				"propertyType": "details",
-				"template": "textarea",
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "pgsql"
+				},
 				"markdown": false,
 				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"key": "generatedColumn",
-							"value": true
-						},
-						{
-							"type": "not",
-							"values": {
-								"type": "or",
-								"values": [
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v10.x"
-									},
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v11.x"
-									}
-								]
-							}
-						}
-					]
+					"key": "generatedColumn",
+					"value": true
 				}
 			},
 			{
@@ -287,7 +249,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "comments",
 				"addTimestampButton": false,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			},
 			{
 				"propertyName": "Primary key",
@@ -496,7 +461,10 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "With storage parameters",
 						"propertyKeyword": "indexStorageParameters",
 						"propertyType": "details",
-						"template": "textarea",
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						},
 						"valueType": "string",
 						"markdown": false
 					},
@@ -506,7 +474,10 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comment",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
 					}
 				]
 			},
@@ -615,7 +586,10 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "With storage parameters",
 						"propertyKeyword": "indexStorageParameters",
 						"propertyType": "details",
-						"template": "textarea",
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						},
 						"valueType": "string",
 						"markdown": false
 					},
@@ -625,7 +599,10 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comment",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
 					}
 				]
 			},
@@ -645,7 +622,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			}
 		],
 		"numeric": [
@@ -738,16 +718,14 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "columnGenerationExpression",
 				"propertyTooltip": "An SQL statement for computing values for this column",
 				"propertyType": "details",
-				"template": "textarea",
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "pgsql"
+				},
 				"markdown": false,
 				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"key": "generatedColumn",
-							"value": true
-						}
-					]
+					"key": "generatedColumn",
+					"value": true
 				}
 			},
 			{
@@ -763,7 +741,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "comments",
 				"addTimestampButton": false,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			},
 			{
 				"propertyName": "Primary key",
@@ -972,7 +953,10 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "With storage parameters",
 						"propertyKeyword": "indexStorageParameters",
 						"propertyType": "details",
-						"template": "textarea",
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						},
 						"valueType": "string",
 						"markdown": false
 					},
@@ -982,7 +966,10 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comment",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
 					}
 				]
 			},
@@ -1091,7 +1078,10 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "With storage parameters",
 						"propertyKeyword": "indexStorageParameters",
 						"propertyType": "details",
-						"template": "textarea",
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						},
 						"valueType": "string",
 						"markdown": false
 					},
@@ -1101,7 +1091,10 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comment",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
 					}
 				]
 			},
@@ -1125,7 +1118,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			}
 		],
 		"binary": [
@@ -1151,7 +1147,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "comments",
 				"addTimestampButton": false,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			},
 			{
 				"propertyName": "Array type",
@@ -1174,59 +1173,21 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Generated column",
 				"propertyKeyword": "generatedColumn",
 				"propertyTooltip": "A generated column is a special column that is always computed from other columns",
-				"propertyType": "checkbox",
-				"dependency": {
-					"type": "not",
-					"values": {
-						"type": "or",
-						"values": [
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v10.x"
-							},
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v11.x"
-							}
-						]
-					}
-				}
+				"propertyType": "checkbox"
 			},
 			{
 				"propertyName": "Generation expression",
 				"propertyKeyword": "columnGenerationExpression",
 				"propertyTooltip": "An SQL statement for computing values for this column",
 				"propertyType": "details",
-				"template": "textarea",
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "pgsql"
+				},
 				"markdown": false,
 				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"key": "generatedColumn",
-							"value": true
-						},
-						{
-							"type": "not",
-							"values": {
-								"type": "or",
-								"values": [
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v10.x"
-									},
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v11.x"
-									}
-								]
-							}
-						}
-					]
+					"key": "generatedColumn",
+					"value": true
 				}
 			},
 			{
@@ -1442,7 +1403,10 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "With storage parameters",
 						"propertyKeyword": "indexStorageParameters",
 						"propertyType": "details",
-						"template": "textarea",
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						},
 						"valueType": "string",
 						"markdown": false
 					},
@@ -1452,7 +1416,10 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comment",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
 					}
 				]
 			},
@@ -1561,7 +1528,10 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "With storage parameters",
 						"propertyKeyword": "indexStorageParameters",
 						"propertyType": "details",
-						"template": "textarea",
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						},
 						"valueType": "string",
 						"markdown": false
 					},
@@ -1571,7 +1541,10 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comment",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
 					}
 				]
 			},
@@ -1582,7 +1555,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			}
 		],
 		"datetime": [
@@ -1673,7 +1649,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "comments",
 				"addTimestampButton": false,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			},
 			{
 				"propertyName": "Array type",
@@ -1696,59 +1675,21 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Generated column",
 				"propertyKeyword": "generatedColumn",
 				"propertyTooltip": "A generated column is a special column that is always computed from other columns",
-				"propertyType": "checkbox",
-				"dependency": {
-					"type": "not",
-					"values": {
-						"type": "or",
-						"values": [
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v10.x"
-							},
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v11.x"
-							}
-						]
-					}
-				}
+				"propertyType": "checkbox"
 			},
 			{
 				"propertyName": "Generation expression",
 				"propertyKeyword": "columnGenerationExpression",
 				"propertyTooltip": "An SQL statement for computing values for this column",
 				"propertyType": "details",
-				"template": "textarea",
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "pgsql"
+				},
 				"markdown": false,
 				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"key": "generatedColumn",
-							"value": true
-						},
-						{
-							"type": "not",
-							"values": {
-								"type": "or",
-								"values": [
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v10.x"
-									},
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v11.x"
-									}
-								]
-							}
-						}
-					]
+					"key": "generatedColumn",
+					"value": true
 				}
 			},
 			{
@@ -1965,7 +1906,10 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "With storage parameters",
 						"propertyKeyword": "indexStorageParameters",
 						"propertyType": "details",
-						"template": "textarea",
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						},
 						"valueType": "string",
 						"markdown": false
 					},
@@ -1975,7 +1919,10 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comment",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
 					}
 				]
 			},
@@ -2084,7 +2031,10 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "With storage parameters",
 						"propertyKeyword": "indexStorageParameters",
 						"propertyType": "details",
-						"template": "textarea",
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						},
 						"valueType": "string",
 						"markdown": false
 					},
@@ -2094,7 +2044,10 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comment",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
 					}
 				]
 			},
@@ -2108,7 +2061,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			}
 		],
 		"boolean": [
@@ -2122,7 +2078,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "comments",
 				"addTimestampButton": false,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			},
 			{
 				"propertyName": "Array type",
@@ -2145,59 +2104,21 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Generated column",
 				"propertyKeyword": "generatedColumn",
 				"propertyTooltip": "A generated column is a special column that is always computed from other columns",
-				"propertyType": "checkbox",
-				"dependency": {
-					"type": "not",
-					"values": {
-						"type": "or",
-						"values": [
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v10.x"
-							},
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v11.x"
-							}
-						]
-					}
-				}
+				"propertyType": "checkbox"
 			},
 			{
 				"propertyName": "Generation expression",
 				"propertyKeyword": "columnGenerationExpression",
 				"propertyTooltip": "An SQL statement for computing values for this column",
 				"propertyType": "details",
-				"template": "textarea",
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "pgsql"
+				},
 				"markdown": false,
 				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"key": "generatedColumn",
-							"value": true
-						},
-						{
-							"type": "not",
-							"values": {
-								"type": "or",
-								"values": [
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v10.x"
-									},
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v11.x"
-									}
-								]
-							}
-						}
-					]
+					"key": "generatedColumn",
+					"value": true
 				}
 			},
 			{
@@ -2215,7 +2136,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			}
 		],
 		"___0": [],
@@ -2245,7 +2169,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "comments",
 				"addTimestampButton": false,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			},
 			{
 				"propertyName": "Array type",
@@ -2268,59 +2195,21 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Generated column",
 				"propertyKeyword": "generatedColumn",
 				"propertyTooltip": "A generated column is a special column that is always computed from other columns",
-				"propertyType": "checkbox",
-				"dependency": {
-					"type": "not",
-					"values": {
-						"type": "or",
-						"values": [
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v10.x"
-							},
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v11.x"
-							}
-						]
-					}
-				}
+				"propertyType": "checkbox"
 			},
 			{
 				"propertyName": "Generation expression",
 				"propertyKeyword": "columnGenerationExpression",
 				"propertyTooltip": "An SQL statement for computing values for this column",
 				"propertyType": "details",
-				"template": "textarea",
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "pgsql"
+				},
 				"markdown": false,
 				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"key": "generatedColumn",
-							"value": true
-						},
-						{
-							"type": "not",
-							"values": {
-								"type": "or",
-								"values": [
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v10.x"
-									},
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v11.x"
-									}
-								]
-							}
-						}
-					]
+					"key": "generatedColumn",
+					"value": true
 				}
 			},
 			{
@@ -2536,7 +2425,10 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "With options",
 						"propertyKeyword": "indexStorageParameters",
 						"propertyType": "details",
-						"template": "textarea",
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						},
 						"valueType": "string",
 						"markdown": false
 					},
@@ -2546,7 +2438,10 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comment",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
 					}
 				]
 			},
@@ -2655,7 +2550,10 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "With options",
 						"propertyKeyword": "indexStorageParameters",
 						"propertyType": "details",
-						"template": "textarea",
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						},
 						"valueType": "string",
 						"markdown": false
 					},
@@ -2665,7 +2563,10 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comment",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
 					}
 				]
 			},
@@ -2683,7 +2584,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			}
 		],
 		"uuid": [
@@ -2699,7 +2603,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "comments",
 				"addTimestampButton": false,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			},
 			{
 				"propertyName": "Array type",
@@ -2722,59 +2629,21 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Generated column",
 				"propertyKeyword": "generatedColumn",
 				"propertyTooltip": "A generated column is a special column that is always computed from other columns",
-				"propertyType": "checkbox",
-				"dependency": {
-					"type": "not",
-					"values": {
-						"type": "or",
-						"values": [
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v10.x"
-							},
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v11.x"
-							}
-						]
-					}
-				}
+				"propertyType": "checkbox"
 			},
 			{
 				"propertyName": "Generation expression",
 				"propertyKeyword": "columnGenerationExpression",
 				"propertyTooltip": "An SQL statement for computing values for this column",
 				"propertyType": "details",
-				"template": "textarea",
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "pgsql"
+				},
 				"markdown": false,
 				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"key": "generatedColumn",
-							"value": true
-						},
-						{
-							"type": "not",
-							"values": {
-								"type": "or",
-								"values": [
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v10.x"
-									},
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v11.x"
-									}
-								]
-							}
-						}
-					]
+					"key": "generatedColumn",
+					"value": true
 				}
 			},
 			{
@@ -2990,7 +2859,10 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "With options",
 						"propertyKeyword": "indexStorageParameters",
 						"propertyType": "details",
-						"template": "textarea",
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						},
 						"valueType": "string",
 						"markdown": false
 					},
@@ -3000,7 +2872,10 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comment",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
 					}
 				]
 			},
@@ -3109,7 +2984,10 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "With options",
 						"propertyKeyword": "indexStorageParameters",
 						"propertyType": "details",
-						"template": "textarea",
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						},
 						"valueType": "string",
 						"markdown": false
 					},
@@ -3119,7 +2997,10 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comment",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
 					}
 				]
 			},
@@ -3137,7 +3018,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			}
 		],
 		"oid": [
@@ -3174,7 +3058,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "comments",
 				"addTimestampButton": false,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			},
 			{
 				"propertyName": "Array type",
@@ -3197,59 +3084,21 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Generated column",
 				"propertyKeyword": "generatedColumn",
 				"propertyTooltip": "A generated column is a special column that is always computed from other columns",
-				"propertyType": "checkbox",
-				"dependency": {
-					"type": "not",
-					"values": {
-						"type": "or",
-						"values": [
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v10.x"
-							},
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v11.x"
-							}
-						]
-					}
-				}
+				"propertyType": "checkbox"
 			},
 			{
 				"propertyName": "Generation expression",
 				"propertyKeyword": "columnGenerationExpression",
 				"propertyTooltip": "An SQL statement for computing values for this column",
 				"propertyType": "details",
-				"template": "textarea",
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "pgsql"
+				},
 				"markdown": false,
 				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"key": "generatedColumn",
-							"value": true
-						},
-						{
-							"type": "not",
-							"values": {
-								"type": "or",
-								"values": [
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v10.x"
-									},
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v11.x"
-									}
-								]
-							}
-						}
-					]
+					"key": "generatedColumn",
+					"value": true
 				}
 			},
 			{
@@ -3465,7 +3314,10 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "With options",
 						"propertyKeyword": "indexStorageParameters",
 						"propertyType": "details",
-						"template": "textarea",
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						},
 						"valueType": "string",
 						"markdown": false
 					},
@@ -3475,7 +3327,10 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comment",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
 					}
 				]
 			},
@@ -3584,7 +3439,10 @@ making sure that you maintain a proper JSON format.
 						"propertyName": "With storage parameters",
 						"propertyKeyword": "indexStorageParameters",
 						"propertyType": "details",
-						"template": "textarea",
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						},
 						"valueType": "string",
 						"markdown": false
 					},
@@ -3594,7 +3452,10 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comment",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
 					}
 				]
 			},
@@ -3612,7 +3473,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			}
 		],
 		"json": [
@@ -3670,7 +3534,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "comments",
 				"addTimestampButton": false,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			},
 			{
 				"propertyName": "Array type",
@@ -3693,59 +3560,21 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "Generated column",
 				"propertyKeyword": "generatedColumn",
 				"propertyTooltip": "A generated column is a special column that is always computed from other columns",
-				"propertyType": "checkbox",
-				"dependency": {
-					"type": "not",
-					"values": {
-						"type": "or",
-						"values": [
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v10.x"
-							},
-							{
-								"level": "model",
-								"key": "dbVersion",
-								"value": "v11.x"
-							}
-						]
-					}
-				}
+				"propertyType": "checkbox"
 			},
 			{
 				"propertyName": "Generation expression",
 				"propertyKeyword": "columnGenerationExpression",
 				"propertyTooltip": "An SQL statement for computing values for this column",
 				"propertyType": "details",
-				"template": "textarea",
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "pgsql"
+				},
 				"markdown": false,
 				"dependency": {
-					"type": "and",
-					"values": [
-						{
-							"key": "generatedColumn",
-							"value": true
-						},
-						{
-							"type": "not",
-							"values": {
-								"type": "or",
-								"values": [
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v10.x"
-									},
-									{
-										"level": "model",
-										"key": "dbVersion",
-										"value": "v11.x"
-									}
-								]
-							}
-						}
-					]
+					"key": "generatedColumn",
+					"value": true
 				}
 			},
 			{
@@ -3763,7 +3592,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			}
 		],
 		"___1": [],
@@ -3798,7 +3630,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "comments",
 				"addTimestampButton": false,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			},
 			{
 				"propertyName": "Not null",
@@ -3817,7 +3652,10 @@ making sure that you maintain a proper JSON format.
 				"propertyTooltip": "remarks",
 				"addTimestampButton": true,
 				"propertyType": "details",
-				"template": "textarea"
+				"template": "codeEditor",
+				"templateOptions": {
+					"editorDialect": "markdown"
+				}
 			}
 		]
 	}
