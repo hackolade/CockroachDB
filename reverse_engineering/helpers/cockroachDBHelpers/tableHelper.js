@@ -113,7 +113,7 @@ const getCheckConstraint = constraint => {
     return {
         chkConstrName: constraint.constraint_name,
         constrExpression: constraint.expression,
-        noInherit: constraint.no_inherit,
+        notValid: constraint.notValid,
         constrDescription: constraint.description,
     };
 };

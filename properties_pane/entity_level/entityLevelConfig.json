@@ -872,20 +872,26 @@ making sure that you maintain a proper JSON format.
 						"propertyKeyword": "constrDescription",
 						"propertyTooltip": "description",
 						"propertyType": "details",
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
 					},
 					{
 						"propertyName": "Expression",
 						"propertyKeyword": "constrExpression",
 						"propertyTooltip": "Expression",
 						"propertyType": "details",
-						"template": "textarea",
-						"markdown": false
+						"markdown": false,
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "pgsql"
+						}
 					},
 					{
-						"propertyName": "No inherit",
-						"propertyKeyword": "noInherit",
-						"propertyTooltip": "No inherit",
+						"propertyName": "Not valid",
+						"propertyKeyword": "notValid",
+						"propertyTooltip": "When creating an unvalidated constraint, the system does not check that existing table data satisfies the constraint.",
 						"propertyType": "checkbox"
 					},
 					{
@@ -894,7 +900,10 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "comments",
 						"addTimestampButton": false,
 						"propertyType": "details",
-						"template": "textarea"
+						"template": "codeEditor",
+						"templateOptions": {
+							"editorDialect": "markdown"
+						}
 					}
 				]
 			}

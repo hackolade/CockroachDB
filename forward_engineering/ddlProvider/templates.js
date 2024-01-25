@@ -20,7 +20,7 @@ module.exports = {
 
 	columnDefinition: '${name} ${type}${collation}${generatedColumnClause}${primaryKey}${uniqueKey}${defaultValue}${notNull}',
 
-	checkConstraint: '${name} CHECK (${expression})${noInherit}',
+	checkConstraint: '${name} CHECK (${expression})${notValid}',
 
 	createForeignKeyConstraint: '${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})${match}${onDelete}${onUpdate}${deferrable}${deferrableConstraintCheckTime}',
 

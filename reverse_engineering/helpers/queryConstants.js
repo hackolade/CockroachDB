@@ -86,7 +86,6 @@ const queryConstants = {
     GET_TABLE_CONSTRAINTS: `
         SELECT pcon.conname AS constraint_name, 
 	            pcon.contype AS constraint_type,
-	            pcon.connoinherit AS no_inherit,
 	            pcon.conkey AS constraint_keys,
 	            pg_catalog.pg_get_expr(pcon.conbin, pcon.conrelid) AS expression,
 	            obj_description(pcon.oid, 'pg_constraint') AS description,
