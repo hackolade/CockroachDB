@@ -1,4 +1,3 @@
-
 const getGET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL = postgresVersion => {
 	const kindQuery =
 		postgresVersion === 10 ? `CASE WHEN proiswindow is true THEN 'w' ELSE '' END AS kind` : 'prokind AS kind';
@@ -21,9 +20,9 @@ const getGET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL = postgresVersion => {
 const queryConstants = {
 	PING: 'SELECT schema_name FROM information_schema.schemata LIMIT 1;',
 
-    GET_VERSION: 'SELECT version()',
+	GET_VERSION: 'SELECT version()',
 
-    GET_VERSION_AS_NUM: 'SHOW server_version_num;',
+	GET_VERSION_AS_NUM: 'SHOW server_version_num;',
 
 	GET_SCHEMA_NAMES: 'SELECT schema_name FROM information_schema.schemata;',
 
@@ -44,12 +43,12 @@ const queryConstants = {
 
 	GET_NAMESPACE_OID: 'SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = $1',
 
-    GET_TABLE_LEVEL_DATA: `
+	GET_TABLE_LEVEL_DATA: `
         SELECT pc.oid, pc.relpersistence, pc.reloptions, pg_get_expr(pc.relpartbound, pc.oid) AS partition_expr
             FROM pg_catalog.pg_class AS pc
             WHERE pc.relname = $1 AND pc.relnamespace = $2;`,
 
-    GET_TABLE_TOAST_OPTIONS: `
+	GET_TABLE_TOAST_OPTIONS: `
         SELECT reloptions AS toast_options
         FROM pg_catalog.pg_class
         WHERE oid =
@@ -79,11 +78,11 @@ const queryConstants = {
 
 	GET_SAMPLED_DATA: (fullTableName, jsonColumns) => `SELECT ${jsonColumns} FROM ${fullTableName} LIMIT $1;`,
 
-    GET_SAMPLED_DATA_SIZE: (fullTableName, jsonColumns) => `
+	GET_SAMPLED_DATA_SIZE: (fullTableName, jsonColumns) => `
         SELECT sum(pg_column_size(_hackolade_tmp_sampling_tbl.*)) AS _hackolade_tmp_sampling_tbl_size 
         FROM (SELECT ${jsonColumns} FROM ${fullTableName} LIMIT $1) AS _hackolade_tmp_sampling_tbl;`,
 
-    GET_TABLE_CONSTRAINTS: `
+	GET_TABLE_CONSTRAINTS: `
         SELECT pcon.conname AS constraint_name, 
 	            pcon.contype AS constraint_type,
 	            pcon.conkey AS constraint_keys,
@@ -95,7 +94,7 @@ const queryConstants = {
 	        ON pcon.conindid = pc.oid
 	        WHERE pcon.conrelid = $1;`,
 
-    GET_TABLE_INDEXES: `
+	GET_TABLE_INDEXES: `
     SELECT indexname,
            index_id,
            index_method,
@@ -170,7 +169,7 @@ const queryConstants = {
         where_expression;
     `,
 
-    GET_TABLE_INDEX_PARTITIONING_DATA: `
+	GET_TABLE_INDEX_PARTITIONING_DATA: `
         SELECT
             partitions.name AS partition_name,
             partitions.index_id,
@@ -186,7 +185,7 @@ const queryConstants = {
         WHERE table_indexes.descriptor_id = $1;
     `,
 
-    GET_TABLE_INDEX_CREATE_INFO: `
+	GET_TABLE_INDEX_CREATE_INFO: `
         SELECT index_name,
                is_sharded,
                is_visible,
@@ -194,7 +193,7 @@ const queryConstants = {
         FROM crdb_internal.table_indexes WHERE descriptor_id = $1;
     `,
 
-    GET_TABLE_FOREIGN_KEYS: `
+	GET_TABLE_FOREIGN_KEYS: `
         SELECT pcon.conname AS relationship_name, 
                 pcon.conkey AS table_columns_positions,
                 pcon.confdeltype AS relationship_on_delete,
@@ -212,11 +211,11 @@ const queryConstants = {
             JOIN pg_catalog.pg_namespace AS foreign_table_namespace ON (pc_foreign_table.relnamespace = foreign_table_namespace.oid)
             WHERE pcon.conrelid = $1 AND pcon.contype = 'f';`,
 
-    GET_VIEW_DATA: `SELECT * FROM information_schema.views WHERE table_name = $1 AND table_schema = $2;`,
+	GET_VIEW_DATA: `SELECT * FROM information_schema.views WHERE table_name = $1 AND table_schema = $2;`,
 
-    GET_VIEW_SELECT_STMT_FALLBACK: `SELECT definition FROM pg_views WHERE viewname = $1 AND schemaname = $2;`,
+	GET_VIEW_SELECT_STMT_FALLBACK: `SELECT definition FROM pg_views WHERE viewname = $1 AND schemaname = $2;`,
 
-    GET_VIEW_OPTIONS: `
+	GET_VIEW_OPTIONS: `
         SELECT oid, 
             reloptions AS view_options,
             relpersistence AS persistence,
@@ -224,7 +223,7 @@ const queryConstants = {
         FROM pg_catalog.pg_class 
         WHERE relname = $1 AND relnamespace = $2;`,
 
-    GET_FUNCTIONS_WITH_PROCEDURES: `
+	GET_FUNCTIONS_WITH_PROCEDURES: `
         SELECT specific_name,
             routine_name AS name,
             routine_type,
@@ -235,7 +234,7 @@ const queryConstants = {
 	    FROM information_schema.routines
 	    WHERE specific_schema=$1;`,
 
-    GET_FUNCTIONS_WITH_PROCEDURES_ARGS: `
+	GET_FUNCTIONS_WITH_PROCEDURES_ARGS: `
         SELECT parameter_name,
             parameter_mode,
             parameter_default,
@@ -245,11 +244,11 @@ const queryConstants = {
         WHERE specific_name = $1
         ORDER BY ordinal_position;`,
 
-    GET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL: getGET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL(),
+	GET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL: getGET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL(),
 
-    GET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL_V_10: getGET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL(10),
+	GET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL_V_10: getGET_FUNCTIONS_WITH_PROCEDURES_ADDITIONAL(10),
 
-    GET_USER_DEFINED_TYPES: `
+	GET_USER_DEFINED_TYPES: `
         SELECT pg_type.typrelid AS pg_class_oid,
             pg_type.typname AS name,
             pg_type.typtype AS type,
@@ -285,7 +284,7 @@ const queryConstants = {
               range_canonical_proc,
               range_diff_proc;`,
 
-    GET_COMPOSITE_TYPE_COLUMNS: `
+	GET_COMPOSITE_TYPE_COLUMNS: `
         SELECT pg_attribute.attname AS column_name,
            pg_type.typname AS data_type,
            pg_get_expr(pg_attrdef.adbin, pg_attrdef.adrelid) AS columns_default,
@@ -300,15 +299,14 @@ const queryConstants = {
         LEFT JOIN pg_catalog.pg_collation AS pg_collation ON (pg_collation.oid = pg_attribute.attcollation)
         WHERE pg_attribute.attrelid = $1`,
 
-    GET_DB_NAME: 'SELECT current_database();',
+	GET_DB_NAME: 'SELECT current_database();',
 
-    GET_DB_ENCODING: 'SHOW SERVER_ENCODING;',
+	GET_DB_ENCODING: 'SHOW SERVER_ENCODING;',
 
-    GET_DB_COLLATE_NAME: 'SELECT default_collate_name FROM information_schema.character_sets;',
+	GET_DB_COLLATE_NAME: 'SELECT default_collate_name FROM information_schema.character_sets;',
 
-    GET_DATABASES:
+	GET_DATABASES:
 		'SELECT datname AS database_name FROM pg_catalog.pg_database WHERE datistemplate != TRUE AND datallowconn = TRUE;',
-
 };
 
 const getQueryName = query => {

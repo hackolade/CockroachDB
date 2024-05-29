@@ -139,11 +139,7 @@ module.exports = {
 		});
 	},
 
-	async retrieveEntitiesData(
-		schemaName,
-		entitiesNames,
-		recordSamplingSettings,
-	) {
+	async retrieveEntitiesData(schemaName, entitiesNames, recordSamplingSettings) {
 		const userDefinedTypes = await this._retrieveUserDefinedTypes(schemaName);
 		const schemaOidResult = await db.queryTolerant(queryConstants.GET_NAMESPACE_OID, [schemaName], true);
 		const schemaOid = schemaOidResult?.oid;
@@ -164,10 +160,7 @@ module.exports = {
 			),
 		);
 
-		const views = await mapPromises(
-			viewsNames,
-			_.bind(this._retrieveSingleViewData, this, schemaOid, schemaName),
-		);
+		const views = await mapPromises(viewsNames, _.bind(this._retrieveSingleViewData, this, schemaOid, schemaName));
 
 		return { views, tables, modelDefinitions: getJsonSchema(userDefinedTypes) };
 	},
@@ -231,13 +224,7 @@ module.exports = {
 		return getUserDefinedTypes(udtsWithColumns);
 	},
 
-	async _retrieveSingleTableData(
-		recordSamplingSettings,
-		schemaOid,
-		schemaName,
-		userDefinedTypes,
-		{ tableName },
-	) {
+	async _retrieveSingleTableData(recordSamplingSettings, schemaOid, schemaName, userDefinedTypes, { tableName }) {
 		logger.progress('Get table data', schemaName, tableName);
 
 		const tableLevelData = await db.queryTolerant(
@@ -254,11 +241,20 @@ module.exports = {
 		);
 		const tableColumns = await this._getTableColumns(tableName, schemaName, tableOid);
 		const tableCommentsCatalog = 'pg_class';
-		const descriptionResult = await db.queryTolerant(queryConstants.GET_DESCRIPTION_BY_OID, [tableOid, tableCommentsCatalog], true);
+		const descriptionResult = await db.queryTolerant(
+			queryConstants.GET_DESCRIPTION_BY_OID,
+			[tableOid, tableCommentsCatalog],
+			true,
+		);
 		const tableConstraintsResult = await db.queryTolerant(queryConstants.GET_TABLE_CONSTRAINTS, [tableOid]);
 		const tableIndexesResult = await db.queryTolerant(queryConstants.GET_TABLE_INDEXES, [tableOid]);
-		const tableIndexesPartitioningResult = await db.queryTolerant(queryConstants.GET_TABLE_INDEX_PARTITIONING_DATA, [tableOid]);
-		const tableIndexesCreateInfoResult = await db.queryTolerant(queryConstants.GET_TABLE_INDEX_CREATE_INFO, [tableOid]);
+		const tableIndexesPartitioningResult = await db.queryTolerant(
+			queryConstants.GET_TABLE_INDEX_PARTITIONING_DATA,
+			[tableOid],
+		);
+		const tableIndexesCreateInfoResult = await db.queryTolerant(queryConstants.GET_TABLE_INDEX_CREATE_INFO, [
+			tableOid,
+		]);
 		const tableForeignKeys = await db.queryTolerant(queryConstants.GET_TABLE_FOREIGN_KEYS, [tableOid]);
 
 		logger.info('Table data retrieved', {
