@@ -45,7 +45,7 @@
     "icon_url": "logo.jpg",
     "disabled": false,
     "dependencies": {
-        "pg": "8.7.1",
+        "pg": "8.11.5",
         "tunnel-ssh": "4.1.6"
     },
     "lint-staged": {
