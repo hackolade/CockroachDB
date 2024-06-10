@@ -2,8 +2,9 @@ const cockroachDBService = require('../reverse_engineering/helpers/cockroachDBSe
 
 const applyToInstance = async (connectionInfo, logger, app) => {
 	try {
+		const sshService = app.require('@hackolade/ssh-service');
 		cockroachDBService.setDependencies(app);
-		await cockroachDBService.connect(connectionInfo, logger);
+		await cockroachDBService.connect(connectionInfo, sshService, logger);
 		await cockroachDBService.logVersion();
 		await cockroachDBService.applyScript(removeCreateDbScript(connectionInfo.script));
 	} catch (error) {

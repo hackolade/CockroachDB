@@ -5,12 +5,15 @@ const cockroachDBService = require('./helpers/cockroachDBService');
 
 module.exports = {
 	async disconnect(connectionInfo, logger, callback, app) {
-		await cockroachDBService.disconnect();
+		const sshService = app.require('@hackolade/ssh-service');
+		await cockroachDBService.disconnect(sshService);
 
 		callback();
 	},
 
 	async testConnection(connectionInfo, logger, callback, app) {
+		const sshService = app.require('@hackolade/ssh-service');
+
 		try {
 			logInfo('Test connection', connectionInfo, logger);
 
@@ -21,7 +24,7 @@ module.exports = {
 			});
 
 			cockroachDBService.setDependencies(app);
-			await cockroachDBService.connect(connectionInfo, cockroachDBLogger);
+			await cockroachDBService.connect(connectionInfo, sshService, cockroachDBLogger);
 			await cockroachDBService.pingDb();
 			await cockroachDBService.logVersion();
 			callback();
@@ -29,11 +32,13 @@ module.exports = {
 			logger.log('error', prepareError(error), 'Test connection instance log');
 			callback(prepareError(error));
 		} finally {
-			await cockroachDBService.disconnect();
+			await cockroachDBService.disconnect(sshService);
 		}
 	},
 
 	async getDatabases(connectionInfo, logger, cb, app) {
+		const sshService = app.require('@hackolade/ssh-service');
+
 		try {
 			logInfo('Get databases', connectionInfo, logger);
 
@@ -44,7 +49,7 @@ module.exports = {
 			});
 
 			cockroachDBService.setDependencies(app);
-			await cockroachDBService.connect(connectionInfo, cockroachDBLogger);
+			await cockroachDBService.connect(connectionInfo, sshService, cockroachDBLogger);
 			await cockroachDBService.logVersion();
 
 			const dbs = await cockroachDBService.getDatabaseNames();
@@ -61,6 +66,8 @@ module.exports = {
 	},
 
 	async getDbCollectionsNames(connectionInfo, logger, callback, app) {
+		const sshService = app.require('@hackolade/ssh-service');
+
 		try {
 			logInfo('Get DB table names', connectionInfo, logger);
 
@@ -71,7 +78,7 @@ module.exports = {
 			});
 
 			cockroachDBService.setDependencies(app);
-			await cockroachDBService.connect(connectionInfo, cockroachDBLogger);
+			await cockroachDBService.connect(connectionInfo, sshService, cockroachDBLogger);
 			await cockroachDBService.logVersion();
 			const schemasNames = await cockroachDBService.getAllSchemasNames();
 
@@ -102,11 +109,13 @@ module.exports = {
 		} catch (error) {
 			logger.log('error', prepareError(error), 'Get DB collections names');
 			callback(prepareError(error));
-			await cockroachDBService.disconnect();
+			await cockroachDBService.disconnect(sshService);
 		}
 	},
 
 	async getDbCollectionsData(data, logger, callback, app) {
+		const sshService = app.require('@hackolade/ssh-service');
+
 		try {
 			logger.log('info', data, 'Retrieve tables data:', data.hiddenKeys);
 
@@ -201,7 +210,7 @@ module.exports = {
 			logger.log('error', prepareError(error), 'Retrieve tables data');
 			callback(prepareError(error));
 		} finally {
-			await cockroachDBService.disconnect();
+			await cockroachDBService.disconnect(sshService);
 		}
 	},
 };
