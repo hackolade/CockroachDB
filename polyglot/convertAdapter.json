@@ -39,10 +39,10 @@
  * 		},
  * }
  */
- {
-    "modify": {
-        "field": [
-            {
+{
+	"modify": {
+		"field": [
+			{
 				"from": {
 					"type": "numeric",
 					"mode": "int"
@@ -53,6 +53,6 @@
 					"mode": "bigint"
 				}
 			}
-        ]
-    }
+		]
+	}
 }

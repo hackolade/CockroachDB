@@ -589,7 +589,7 @@ making sure that you maintain a proper JSON format.
 						"propertyTooltip": "",
 						"propertyType": "select",
 						"defaultValue": "btree",
-						"options": ["","btree", "gist", "gin"]
+						"options": ["", "btree", "gist", "gin"]
 					},
 					{
 						"propertyName": "Unique",
@@ -795,11 +795,7 @@ making sure that you maintain a proper JSON format.
 						"propertyKeyword": "visibility",
 						"propertyTooltip": "An optional VISIBLE or NOT VISIBLE clause that indicates whether an index is visible to the cost-based optimizer.",
 						"propertyType": "select",
-						"options": [
-							"",
-							"VISIBLE",
-							"NOT VISIBLE"
-						]
+						"options": ["", "VISIBLE", "NOT VISIBLE"]
 					},
 					{
 						"propertyName": "Comment",

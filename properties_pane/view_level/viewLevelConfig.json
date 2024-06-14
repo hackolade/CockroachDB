@@ -154,11 +154,7 @@ making sure that you maintain a proper JSON format.
 						"propertyKeyword": "check_option",
 						"propertyTooltip": "This option controls the behavior of automatically updatable views. When this option is specified, INSERT and UPDATE commands on the view will be checked to ensure that new rows satisfy the view-defining condition (that is, the new rows are checked to ensure that they are visible through the view). If they are not, the update will be rejected.",
 						"propertyType": "select",
-						"options": [
-							"",
-							"local",
-							"cascaded"
-						]
+						"options": ["", "local", "cascaded"]
 					},
 					{
 						"propertyName": "Security barrier",
@@ -196,17 +192,15 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "checkTestingScope",
 				"propertyTooltip": "This option controls the behavior of automatically updatable views. When this option is specified, INSERT and UPDATE commands on the view will be checked to ensure that new rows satisfy the view-defining condition (that is, the new rows are checked to ensure that they are visible through the view). If they are not, the update will be rejected.",
 				"propertyType": "select",
-				"options": [
-					"",
-					"LOCAL",
-					"CASCADED"
-				],
+				"options": ["", "LOCAL", "CASCADED"],
 				"dependency": {
 					"type": "or",
-					"values": [{
-						"key": "withCheckOption",
-						"value": true
-					}]
+					"values": [
+						{
+							"key": "withCheckOption",
+							"value": true
+						}
+					]
 				}
 			},
 			{

@@ -98,11 +98,11 @@ module.exports = (_, clean) => {
 				? {
 						...hydratePrimaryKeyOptions(primaryKey, null, null, jsonSchema),
 						columns: getKeys(primaryKey.compositePrimaryKey, jsonSchema),
-				  }
+					}
 				: {
 						name: primaryKey.constraintName,
 						errorMessage: 'A primary key constraint cannot be created without any primary key selected',
-				  },
+					},
 		);
 	};
 
@@ -122,11 +122,11 @@ module.exports = (_, clean) => {
 							dbVersion,
 						}),
 						columns: getKeys(uniqueKey.compositeUniqueKey, jsonSchema),
-				  }
+					}
 				: {
 						name: uniqueKey.constraintName,
 						errorMessage: 'A unique key constraint cannot be created without any unique key selected',
-				  },
+					},
 		);
 	};
 

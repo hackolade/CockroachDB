@@ -6,7 +6,7 @@ const setDependencies = app => {
 	_ = app.require('lodash');
 };
 
-const getUserDefinedTypes = (udtResponse) => {
+const getUserDefinedTypes = udtResponse => {
 	return _.chain(udtResponse)
 		.map(typeData => {
 			switch (typeData.type) {
@@ -55,7 +55,6 @@ const getCompositeType = typeData => {
 };
 
 const isTypeComposite = typeData => typeData.type === 'c';
-
 
 module.exports = {
 	setDependencies,
