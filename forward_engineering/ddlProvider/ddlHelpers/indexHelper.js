@@ -21,7 +21,8 @@ module.exports = ({ _, wrapInQuotes, checkAllKeysDeactivated, getColumnsList }) 
 		);
 		const indexesThatSupportHashing = ['btree'];
 
-		const usingHash = index.using_hash && indexesThatSupportHashing.includes(index.index_method) ? ' USING HASH' : '';
+		const usingHash =
+			index.using_hash && indexesThatSupportHashing.includes(index.index_method) ? ' USING HASH' : '';
 		const include = index.include?.length ? ` INCLUDE ${_.trim(includeKeys)}` : '';
 		const partitioning = index.partitioning_expression || '';
 		const withOptionsString = getWithOptions(index);

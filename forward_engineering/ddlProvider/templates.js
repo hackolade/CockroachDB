@@ -1,6 +1,5 @@
 module.exports = {
-	createDatabase:
-		'CREATE DATABASE ${name}${template}${encoding}${collate}${characterClassification};\n',
+	createDatabase: 'CREATE DATABASE ${name}${template}${encoding}${collate}${characterClassification};\n',
 
 	createSchema: 'CREATE SCHEMA${ifNotExist} ${name};\nSET search_path TO ${name};\n\n${comment}\n',
 
@@ -18,11 +17,13 @@ module.exports = {
 
 	generatedColumnClause: ' GENERATED ALWAYS AS (${generationExpression}) STORED',
 
-	columnDefinition: '${name} ${type}${collation}${generatedColumnClause}${primaryKey}${uniqueKey}${defaultValue}${notNull}',
+	columnDefinition:
+		'${name} ${type}${collation}${generatedColumnClause}${primaryKey}${uniqueKey}${defaultValue}${notNull}',
 
 	checkConstraint: '${name} CHECK (${expression})${notValid}',
 
-	createForeignKeyConstraint: '${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})${match}${onDelete}${onUpdate}',
+	createForeignKeyConstraint:
+		'${name} FOREIGN KEY (${foreignKey}) REFERENCES ${primaryTable} (${primaryKey})${match}${onDelete}${onUpdate}',
 
 	createKeyConstraint: '${constraintName}${keyType}${columns}${includeNonKey}${storageParameters}',
 
@@ -61,7 +62,8 @@ module.exports = {
 
 	alterTypeRenameAttribute: 'ALTER TYPE ${udtName} RENAME ATTRIBUTE ${oldAttributeName} TO ${newAttributeName};',
 
-	alterTypeChangeAttributeType: 'ALTER TYPE ${udtName} ALTER ATTRIBUTE ${attributeName} SET DATA TYPE ${newDataType};',
+	alterTypeChangeAttributeType:
+		'ALTER TYPE ${udtName} ALTER ATTRIBUTE ${attributeName} SET DATA TYPE ${newDataType};',
 
 	updateCommentOnTable: 'COMMENT ON TABLE ${tableName} IS ${comment};',
 
@@ -76,8 +78,7 @@ module.exports = {
 	dropSchema: 'DROP SCHEMA IF EXISTS ${schemaName};',
 
 	index:
-		'CREATE${unique} INDEX${concurrently}${ifNotExist} ${name}\n' +
-		' ON ${tableName}${using}${keys}${options};\n',
+		'CREATE${unique} INDEX${concurrently}${ifNotExist} ${name}\n' + ' ON ${tableName}${using}${keys}${options};\n',
 
 	createView:
 		'CREATE${orReplace}${temporary} VIEW ${name}${withOptions}\nAS ${selectStatement}${checkOption};\n\n${comment}\n',
@@ -104,5 +105,4 @@ module.exports = {
 	createRangeType: 'CREATE TYPE ${name} AS RANGE (\n\tSUBTYPE=${subtype}${options}\n);\n\n${comment}',
 	createDomainType:
 		'CREATE DOMAIN ${name} AS ${underlyingType}${notNull}${collate}${default}${constraints};\n\n${comment}',
-
 };

@@ -61,9 +61,7 @@ making sure that you maintain a proper JSON format.
 				"shouldValidate": false,
 				"propertyTooltip": "DB vendor",
 				"propertyType": "select",
-				"options": [
-					"CockroachDB"
-				],
+				"options": ["CockroachDB"],
 				"disabledOption": true
 			},
 			{
@@ -72,10 +70,7 @@ making sure that you maintain a proper JSON format.
 				"shouldValidate": false,
 				"propertyTooltip": "DB version",
 				"propertyType": "select",
-				"options": [
-					"v22.x",
-					"v23.x"
-				],
+				"options": ["v22.x", "v23.x"],
 				"disabledOption": false
 			},
 			{
@@ -89,10 +84,7 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "encoding",
 				"propertyTooltip": "Select from list of options",
 				"propertyType": "select",
-				"options": [
-					"",
-					"UTF-8"
-				]
+				"options": ["", "UTF-8"]
 			},
 			{
 				"propertyName": "Template",
@@ -133,37 +125,19 @@ making sure that you maintain a proper JSON format.
 				"propertyName": "On Delete",
 				"propertyKeyword": "relationshipOnDelete",
 				"propertyType": "select",
-				"options": [
-					"",
-					"NO ACTION",
-					"RESTRICT",
-					"CASCADE",
-					"SET NULL",
-					"SET DEFAULT"
-				]
+				"options": ["", "NO ACTION", "RESTRICT", "CASCADE", "SET NULL", "SET DEFAULT"]
 			},
 			{
 				"propertyName": "On Update",
 				"propertyKeyword": "relationshipOnUpdate",
 				"propertyType": "select",
-				"options": [
-					"",
-					"NO ACTION",
-					"RESTRICT",
-					"CASCADE",
-					"SET NULL",
-					"SET DEFAULT"
-				]
+				"options": ["", "NO ACTION", "RESTRICT", "CASCADE", "SET NULL", "SET DEFAULT"]
 			},
 			{
 				"propertyName": "Match",
 				"propertyKeyword": "relationshipMatch",
 				"propertyType": "select",
-				"options": [
-					"",
-					"SIMPLE",
-					"FULL"
-				]
+				"options": ["", "SIMPLE", "FULL"]
 			}
 		]
 	}
