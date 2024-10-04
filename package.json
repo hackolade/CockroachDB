@@ -1,6 +1,6 @@
 {
     "name": "CockroachDB",
-    "version": "0.2.8",
+    "version": "0.2.9",
     "author": "hackolade",
     "engines": {
         "hackolade": "7.7.10",
@@ -44,7 +44,8 @@
             },
             "FEScriptCommentsSupported": true,
             "enableFetchSystemEntitiesCheckbox": true,
-            "discoverRelationships": true
+            "discoverRelationships": true,
+            "enableKeysMultipleAbrr": true
         }
     },
     "description": "Hackolade plugin for CockroachDB",
