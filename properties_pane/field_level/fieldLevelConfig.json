@@ -240,6 +240,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Primary key",
 				"propertyKeyword": "compositePrimaryKey",
+				"propertyNameFull": "Composite Primary Key",
 				"propertyType": "checkbox",
 				"propertyTooltip": {
 					"disabled": [
@@ -478,6 +479,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "compositeUniqueKey",
+				"propertyNameFull": "Composite Unique Key",
 				"propertyType": "checkbox",
 				"dependency": {
 					"key": "compositeUniqueKey",
@@ -736,6 +738,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Primary key",
 				"propertyKeyword": "compositePrimaryKey",
+				"propertyNameFull": "Composite Primary Key",
 				"propertyType": "checkbox",
 				"propertyTooltip": {
 					"disabled": [
@@ -974,6 +977,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "compositeUniqueKey",
+				"propertyNameFull": "Composite Unique Key",
 				"propertyType": "checkbox",
 				"dependency": {
 					"key": "compositeUniqueKey",
@@ -1204,6 +1208,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Primary key",
 				"propertyKeyword": "compositePrimaryKey",
+				"propertyNameFull": "Composite Primary Key",
 				"propertyType": "checkbox",
 				"propertyTooltip": {
 					"disabled": [
@@ -1442,6 +1447,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "compositeUniqueKey",
+				"propertyNameFull": "Composite Unique Key",
 				"propertyType": "checkbox",
 				"dependency": {
 					"key": "compositeUniqueKey",
@@ -1711,6 +1717,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Primary key",
 				"propertyKeyword": "compositePrimaryKey",
+				"propertyNameFull": "Composite Primary Key",
 				"propertyType": "checkbox",
 				"propertyTooltip": {
 					"disabled": [
@@ -1949,6 +1956,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "compositeUniqueKey",
+				"propertyNameFull": "Composite Unique Key",
 				"propertyType": "checkbox",
 				"dependency": {
 					"key": "compositeUniqueKey",
@@ -2245,6 +2253,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Primary key",
 				"propertyKeyword": "compositePrimaryKey",
+				"propertyNameFull": "Composite Primary Key",
 				"propertyType": "checkbox",
 				"propertyTooltip": {
 					"disabled": [
@@ -2483,6 +2492,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "compositeUniqueKey",
+				"propertyNameFull": "Composite Unique Key",
 				"propertyType": "checkbox",
 				"dependency": {
 					"key": "compositeUniqueKey",
@@ -2699,6 +2709,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Primary key",
 				"propertyKeyword": "compositePrimaryKey",
+				"propertyNameFull": "Composite Primary Key",
 				"propertyType": "checkbox",
 				"propertyTooltip": {
 					"disabled": [
@@ -2937,6 +2948,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "compositeUniqueKey",
+				"propertyNameFull": "Composite Unique Key",
 				"propertyType": "checkbox",
 				"dependency": {
 					"key": "compositeUniqueKey",
@@ -3174,6 +3186,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Primary key",
 				"propertyKeyword": "compositePrimaryKey",
+				"propertyNameFull": "Composite Primary Key",
 				"propertyType": "checkbox",
 				"propertyTooltip": {
 					"disabled": [
@@ -3412,6 +3425,7 @@ making sure that you maintain a proper JSON format.
 			{
 				"propertyName": "Unique",
 				"propertyKeyword": "compositeUniqueKey",
+				"propertyNameFull": "Composite Unique Key",
 				"propertyType": "checkbox",
 				"dependency": {
 					"key": "compositeUniqueKey",
