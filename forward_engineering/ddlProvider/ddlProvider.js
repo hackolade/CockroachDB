@@ -71,7 +71,7 @@ module.exports = (baseProvider, options, app) => {
 		wrapComment,
 	});
 
-	const { getIndexKeys, getIndexOptions, getIndexName } = require('./ddlHelpers/indexHelper')({
+	const { getIndexKeys, getIndexOptions } = require('./ddlHelpers/indexHelper')({
 		_,
 		wrapInQuotes,
 		checkAllKeysDeactivated,
@@ -261,10 +261,7 @@ module.exports = (baseProvider, options, app) => {
 
 		createIndex(tableName, index, dbData, isParentActivated = true) {
 			const isUnique = index.unique && index.index_method === 'btree';
-			const name = getIndexName({
-				name: index.indxName,
-				schemaName: index.schemaName
-			})
+			const name = wrapInQuotes(index.indxName);
 			const unique = isUnique ? ' UNIQUE' : '';
 			const concurrently = index.concurrently ? ' CONCURRENTLY' : '';
 			const ifNotExist = index.ifNotExist ? ' IF NOT EXISTS' : '';
