@@ -13,12 +13,6 @@ module.exports = ({ _, wrapInQuotes, checkAllKeysDeactivated, getColumnsList }) 
 		return getColumnsList(columns, isAllColumnsDeactivated, isParentActivated, mapIndexKey);
 	};
 
-	const getIndexName = ({ name, schemaName }) => {
-		const indexName = wrapInQuotes(name);
-
-		return schemaName ? `${wrapInQuotes(schemaName)}.${indexName}` : indexName;
-	};
-
 	const getIndexOptions = (index, isParentActivated) => {
 		const includeKeys = getColumnsList(
 			index.include || [],
@@ -67,6 +61,5 @@ module.exports = ({ _, wrapInQuotes, checkAllKeysDeactivated, getColumnsList }) 
 	return {
 		getIndexKeys,
 		getIndexOptions,
-		getIndexName,
 	};
 };
