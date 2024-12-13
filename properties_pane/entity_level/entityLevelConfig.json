@@ -643,6 +643,10 @@ making sure that you maintain a proper JSON format.
 								"options": ["", "NULLS FIRST", "NULLS LAST"],
 								"propertyTooltip": "Specifies that nulls sort order"
 							}
+						},
+						"validation": {
+							"minLength": 1,
+							"required": true
 						}
 					},
 					{
