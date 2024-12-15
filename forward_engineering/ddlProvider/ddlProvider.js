@@ -260,7 +260,9 @@ module.exports = (baseProvider, options, app) => {
 		},
 
 		createIndex(tableName, index, dbData, isParentActivated = true) {
-			if (!index.columns.length) {
+			const isNameEmpty = !index.indxName && index.ifNotExist;
+
+			if (!index.columns.length || isNameEmpty) {
 				return '';
 			}
 
