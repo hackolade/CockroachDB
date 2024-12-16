@@ -260,6 +260,12 @@ module.exports = (baseProvider, options, app) => {
 		},
 
 		createIndex(tableName, index, dbData, isParentActivated = true) {
+			const isNameEmpty = !index.indxName && index.ifNotExist;
+
+			if (!index.columns.length || isNameEmpty) {
+				return '';
+			}
+
 			const isUnique = index.unique && index.index_method === 'btree';
 			const name = wrapInQuotes(index.indxName);
 			const unique = isUnique ? ' UNIQUE' : '';
