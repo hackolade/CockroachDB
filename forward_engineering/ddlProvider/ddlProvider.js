@@ -105,7 +105,7 @@ module.exports = (baseProvider, options, app) => {
 			});
 		},
 
-		createSchema({ schemaName, ifNotExist, comments, udfs, procedures, isActivated }) {
+		createSchema({ schemaName, ifNotExist, comments, udfs, procedures, isActivated = true }) {
 			const comment = assignTemplates(templates.comment, {
 				object: 'SCHEMA',
 				objectName: wrapInQuotes(schemaName),
@@ -679,7 +679,7 @@ module.exports = (baseProvider, options, app) => {
 				udfs: data?.udfs || [],
 				procedures: data?.procedures || [],
 				dbVersion,
-				isActivated: containerData.isActivated,
+				isActivated: containerData.isActivated ?? true,
 			};
 		},
 
