@@ -105,7 +105,7 @@ module.exports = (baseProvider, options, app) => {
 			});
 		},
 
-		createSchema({ schemaName, ifNotExist, comments, udfs, procedures }) {
+		createSchema({ schemaName, ifNotExist, comments, udfs, procedures, isActivated = true }) {
 			const comment = assignTemplates(templates.comment, {
 				object: 'SCHEMA',
 				objectName: wrapInQuotes(schemaName),
@@ -121,12 +121,13 @@ module.exports = (baseProvider, options, app) => {
 			const createFunctionStatement = getFunctionsScript(schemaName, udfs);
 			const createProceduresStatement = getProceduresScript(schemaName, procedures);
 
-			return _.chain([schemaStatement, createFunctionStatement, createProceduresStatement])
+			const statement = _.chain([schemaStatement, createFunctionStatement, createProceduresStatement])
 				.compact()
 				.map(_.trim)
 				.join('\n\n')
 				.trim()
 				.value();
+			return commentIfDeactivated(statement, { isActivated });
 		},
 
 		createTable(
@@ -678,6 +679,7 @@ module.exports = (baseProvider, options, app) => {
 				udfs: data?.udfs || [],
 				procedures: data?.procedures || [],
 				dbVersion,
+				isActivated: containerData.isActivated ?? true,
 			};
 		},
 
