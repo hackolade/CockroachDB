@@ -212,6 +212,15 @@
 				"to": {
 					"mode": "point"
 				}
+			},
+			{
+				"from": {
+					"type": "varchar",
+					"hasMaxLength": true
+				},
+				"to": {
+					"length": 10485760
+				}
 			}
 		]
 	}
