@@ -61,6 +61,24 @@
 				"to": {
 					"hasMaxLength": true
 				}
+			},
+			{
+				"from": {
+					"mode": "char",
+					"length": 10485760
+				},
+				"to": {
+					"hasMaxLength": true
+				}
+			},
+			{
+				"from": {
+					"mode": "varbit",
+					"length": 10485760
+				},
+				"to": {
+					"hasMaxLength": true
+				}
 			}
 		]
 	}
