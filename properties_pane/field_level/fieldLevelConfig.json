@@ -611,6 +611,32 @@ making sure that you maintain a proper JSON format.
 					}
 				]
 			},
+			{
+				"propertyName": "Alternate Key",
+				"propertyKeyword": "alternateKey",
+				"defaultValue": false,
+				"enableForReference": true,
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "or",
+					"values": [
+						{
+							"key": "unique",
+							"value": true
+						},
+						{
+							"key": "compositeUniqueKey",
+							"value": true
+						}
+					]
+				},
+				"disabledOnCondition": [
+					{
+						"key": "compositeUniqueKey",
+						"value": true
+					}
+				]
+			},
 			"foreignCollection",
 			"foreignField",
 			"relationshipType",
@@ -1109,6 +1135,32 @@ making sure that you maintain a proper JSON format.
 					}
 				]
 			},
+			{
+				"propertyName": "Alternate Key",
+				"propertyKeyword": "alternateKey",
+				"defaultValue": false,
+				"enableForReference": true,
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "or",
+					"values": [
+						{
+							"key": "unique",
+							"value": true
+						},
+						{
+							"key": "compositeUniqueKey",
+							"value": true
+						}
+					]
+				},
+				"disabledOnCondition": [
+					{
+						"key": "compositeUniqueKey",
+						"value": true
+					}
+				]
+			},
 			"foreignCollection",
 			"foreignField",
 			"relationshipType",
@@ -1576,6 +1628,32 @@ making sure that you maintain a proper JSON format.
 						"templateOptions": {
 							"editorDialect": "markdown"
 						}
+					}
+				]
+			},
+			{
+				"propertyName": "Alternate Key",
+				"propertyKeyword": "alternateKey",
+				"defaultValue": false,
+				"enableForReference": true,
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "or",
+					"values": [
+						{
+							"key": "unique",
+							"value": true
+						},
+						{
+							"key": "compositeUniqueKey",
+							"value": true
+						}
+					]
+				},
+				"disabledOnCondition": [
+					{
+						"key": "compositeUniqueKey",
+						"value": true
 					}
 				]
 			},
@@ -2088,6 +2166,32 @@ making sure that you maintain a proper JSON format.
 					}
 				]
 			},
+			{
+				"propertyName": "Alternate Key",
+				"propertyKeyword": "alternateKey",
+				"defaultValue": false,
+				"enableForReference": true,
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "or",
+					"values": [
+						{
+							"key": "unique",
+							"value": true
+						},
+						{
+							"key": "compositeUniqueKey",
+							"value": true
+						}
+					]
+				},
+				"disabledOnCondition": [
+					{
+						"key": "compositeUniqueKey",
+						"value": true
+					}
+				]
+			},
 			"pattern",
 			"enum",
 			"sample",
@@ -2163,6 +2267,32 @@ making sure that you maintain a proper JSON format.
 				"propertyKeyword": "required",
 				"enableForReference": true,
 				"propertyType": "checkbox"
+			},
+			{
+				"propertyName": "Alternate Key",
+				"propertyKeyword": "alternateKey",
+				"defaultValue": false,
+				"enableForReference": true,
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "or",
+					"values": [
+						{
+							"key": "unique",
+							"value": true
+						},
+						{
+							"key": "compositeUniqueKey",
+							"value": true
+						}
+					]
+				},
+				"disabledOnCondition": [
+					{
+						"key": "compositeUniqueKey",
+						"value": true
+					}
+				]
 			},
 			"default",
 			"sample",
@@ -2624,6 +2754,32 @@ making sure that you maintain a proper JSON format.
 					}
 				]
 			},
+			{
+				"propertyName": "Alternate Key",
+				"propertyKeyword": "alternateKey",
+				"defaultValue": false,
+				"enableForReference": true,
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "or",
+					"values": [
+						{
+							"key": "unique",
+							"value": true
+						},
+						{
+							"key": "compositeUniqueKey",
+							"value": true
+						}
+					]
+				},
+				"disabledOnCondition": [
+					{
+						"key": "compositeUniqueKey",
+						"value": true
+					}
+				]
+			},
 			"foreignCollection",
 			"foreignField",
 			"relationshipType",
@@ -3077,6 +3233,32 @@ making sure that you maintain a proper JSON format.
 						"templateOptions": {
 							"editorDialect": "markdown"
 						}
+					}
+				]
+			},
+			{
+				"propertyName": "Alternate Key",
+				"propertyKeyword": "alternateKey",
+				"defaultValue": false,
+				"enableForReference": true,
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "or",
+					"values": [
+						{
+							"key": "unique",
+							"value": true
+						},
+						{
+							"key": "compositeUniqueKey",
+							"value": true
+						}
+					]
+				},
+				"disabledOnCondition": [
+					{
+						"key": "compositeUniqueKey",
+						"value": true
 					}
 				]
 			},
@@ -3557,6 +3739,32 @@ making sure that you maintain a proper JSON format.
 					}
 				]
 			},
+			{
+				"propertyName": "Alternate Key",
+				"propertyKeyword": "alternateKey",
+				"defaultValue": false,
+				"enableForReference": true,
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "or",
+					"values": [
+						{
+							"key": "unique",
+							"value": true
+						},
+						{
+							"key": "compositeUniqueKey",
+							"value": true
+						}
+					]
+				},
+				"disabledOnCondition": [
+					{
+						"key": "compositeUniqueKey",
+						"value": true
+					}
+				]
+			},
 			"foreignCollection",
 			"foreignField",
 			"relationshipType",
@@ -3709,6 +3917,32 @@ making sure that you maintain a proper JSON format.
 				"templateOptions": {
 					"editorDialect": "markdown"
 				}
+			},
+			{
+				"propertyName": "Alternate Key",
+				"propertyKeyword": "alternateKey",
+				"defaultValue": false,
+				"enableForReference": true,
+				"propertyType": "checkbox",
+				"dependency": {
+					"type": "or",
+					"values": [
+						{
+							"key": "unique",
+							"value": true
+						},
+						{
+							"key": "compositeUniqueKey",
+							"value": true
+						}
+					]
+				},
+				"disabledOnCondition": [
+					{
+						"key": "compositeUniqueKey",
+						"value": true
+					}
+				]
 			}
 		],
 		"___1": [],
