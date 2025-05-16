@@ -1,3 +1,5 @@
+'use strict';
+
 const { createLogger } = require('./helpers/loggerHelper');
 const cockroachDBService = require('./helpers/cockroachDBService');
 
@@ -13,6 +15,8 @@ module.exports = {
 		const sshService = app.require('@hackolade/ssh-service');
 
 		try {
+			logInfo('Test connection', connectionInfo, logger);
+
 			const cockroachDBLogger = createLogger({
 				title: 'Test connection instance log',
 				hiddenKeys: connectionInfo.hiddenKeys,
@@ -36,6 +40,8 @@ module.exports = {
 		const sshService = app.require('@hackolade/ssh-service');
 
 		try {
+			logInfo('Get databases', connectionInfo, logger);
+
 			const cockroachDBLogger = createLogger({
 				title: 'Get DB names',
 				hiddenKeys: connectionInfo.hiddenKeys,
@@ -63,6 +69,8 @@ module.exports = {
 		const sshService = app.require('@hackolade/ssh-service');
 
 		try {
+			logInfo('Get DB table names', connectionInfo, logger);
+
 			const cockroachDBLogger = createLogger({
 				title: 'Get DB collections names',
 				hiddenKeys: connectionInfo.hiddenKeys,
@@ -109,6 +117,8 @@ module.exports = {
 		const sshService = app.require('@hackolade/ssh-service');
 
 		try {
+			logger.log('info', data, 'Retrieve tables data:', data.hiddenKeys);
+
 			const cockroachDBLogger = createLogger({
 				title: 'Get DB collections data log',
 				hiddenKeys: data.hiddenKeys,
@@ -209,6 +219,11 @@ const prepareError = error => {
 	error = JSON.stringify(error, Object.getOwnPropertyNames(error));
 	error = JSON.parse(error);
 	return error;
+};
+
+const logInfo = (step, connectionInfo, logger) => {
+	logger.clear();
+	logger.log('info', connectionInfo, 'connectionInfo', connectionInfo.hiddenKeys);
 };
 
 const orderPackages = packages => {
