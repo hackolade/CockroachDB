@@ -1,6 +1,6 @@
 {
     "name": "CockroachDB",
-    "version": "0.2.17",
+    "version": "0.2.18",
     "author": "hackolade",
     "engines": {
         "hackolade": "7.7.10",
@@ -13,8 +13,8 @@
             "versions": [
                 "v22.x",
                 "v23.x",
-				"v24.x",
-				"v25.x"
+                "v24.x",
+                "v25.x"
             ]
         },
         "features": {
