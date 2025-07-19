@@ -1,7 +1,7 @@
 {
 	"model": {
 		"modelName": "new_model",
-		"dbVersion": "v23.x",
+		"dbVersion": "v25.x",
 		"dbVendor": "CockroachDB"
 	},
 	"container": {

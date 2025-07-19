@@ -12,7 +12,9 @@
             "title": "CockroachDB",
             "versions": [
                 "v22.x",
-                "v23.x"
+                "v23.x",
+				"v24.x",
+				"v25.x"
             ]
         },
         "features": {
