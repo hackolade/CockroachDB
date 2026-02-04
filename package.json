@@ -56,7 +56,7 @@
     "icon_url": "logo.jpg",
     "disabled": false,
     "dependencies": {
-        "lodash": "4.17.21",
+        "lodash": "4.17.23",
         "pg": "8.11.5"
     },
     "lint-staged": {
