@@ -755,6 +755,14 @@ module.exports = (baseProvider, options, app) => {
 			return statement;
 		},
 
+		commentStatement(statement) {
+			return commentIfDeactivated(statement, { isActivated: false });
+		},
+
+		prepareName(name) {
+			return wrapInQuotes(name);
+		},
+
 		/**
 		 * @param tableName {string}
 		 * @param columnName {string}
