@@ -136,7 +136,7 @@ const wasCompositePkChangedInTransitionFromCompositeToRegular = _ => collection 
 		return PkTransitionDto.noTransition();
 	}
 	const idOfPkColumn = idsOfColumns[0];
-	const newColumnJsonSchema = Object.values(collection.role.properties).find(
+	const newColumnJsonSchema = Object.values(collection.properties || {}).find(
 		columnJsonSchema => columnJsonSchema.GUID === idOfPkColumn,
 	);
 	if (!newColumnJsonSchema) {
