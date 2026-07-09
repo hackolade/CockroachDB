@@ -907,6 +907,9 @@ making sure that you maintain a proper JSON format.
 						"template": "codeEditor",
 						"templateOptions": {
 							"editorDialect": "pgsql"
+						},
+						"validation": {
+							"required": true
 						}
 					},
 					{
