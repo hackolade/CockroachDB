@@ -6,6 +6,7 @@ const { AlterScriptDto } = require('../../types/AlterScriptDto');
 const getModifyNonNullColumnsScriptDtos = (_, ddlProvider) => collection => {
 	const { getFullTableName, wrapInQuotes } = require('../../../utils/general')(_);
 	const fullTableName = getFullTableName(collection);
+	const isCollectionActivated = collection.role?.isActivated !== false;
 
 	const currentRequiredColumnNames = collection.required || [];
 	const previousRequiredColumnNames = collection.role.required || [];
@@ -20,8 +21,11 @@ const getModifyNonNullColumnsScriptDtos = (_, ddlProvider) => collection => {
 			const shouldAddForNewName = columnNamesToAddNotNullConstraint.includes(name);
 			return shouldAddForNewName && !shouldRemoveForOldName;
 		})
-		.map(([columnName]) => ddlProvider.setNotNullConstraint(fullTableName, wrapInQuotes(columnName)))
-		.map(script => AlterScriptDto.getInstance([script], true, false));
+		.map(([columnName, jsonSchema]) => {
+			const script = ddlProvider.setNotNullConstraint(fullTableName, wrapInQuotes(columnName));
+			const isActivated = isCollectionActivated && jsonSchema.isActivated !== false;
+			return AlterScriptDto.getInstance([script], isActivated, false);
+		});
 
 	const removeNotNullConstraint = _.toPairs(collection.properties)
 		.filter(([name, jsonSchema]) => {
@@ -30,8 +34,11 @@ const getModifyNonNullColumnsScriptDtos = (_, ddlProvider) => collection => {
 			const shouldAddForNewName = columnNamesToAddNotNullConstraint.includes(name);
 			return shouldRemoveForOldName && !shouldAddForNewName;
 		})
-		.map(([name]) => ddlProvider.dropNotNullConstraint(fullTableName, wrapInQuotes(name)))
-		.map(script => AlterScriptDto.getInstance([script], true, true));
+		.map(([name, jsonSchema]) => {
+			const script = ddlProvider.dropNotNullConstraint(fullTableName, wrapInQuotes(name));
+			const isActivated = isCollectionActivated && jsonSchema.isActivated !== false;
+			return AlterScriptDto.getInstance([script], isActivated, true);
+		});
 
 	return [...addNotNullConstraintsScript, ...removeNotNullConstraint];
 };
