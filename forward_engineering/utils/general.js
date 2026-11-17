@@ -214,15 +214,25 @@ module.exports = _ => {
 		return keys.reduce(
 			(result, key) => {
 				if (!key.tableName) {
-					result.columns.push(getKeyWithAlias(key));
+					result.columns.push({
+						statement: getKeyWithAlias(key),
+						isActivated: key.isActivated,
+					});
 
 					return result;
 				}
 
 				const tableName = `${wrapInQuotes(key.dbName)}.${wrapInQuotes(key.tableName)}`;
+				const isKeyActivated = key.isActivated !== false;
+				const addedTable = result.tables.find(table => table.statement === tableName);
 
-				if (!result.tables.includes(tableName)) {
-					result.tables.push(tableName);
+				if (addedTable) {
+					addedTable.isActivated = addedTable.isActivated || isKeyActivated;
+				} else {
+					result.tables.push({
+						statement: tableName,
+						isActivated: isKeyActivated,
+					});
 				}
 
 				result.columns.push({
