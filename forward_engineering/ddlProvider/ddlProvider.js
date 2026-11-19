@@ -274,13 +274,15 @@ module.exports = (baseProvider, options, app) => {
 			const ifNotExist = index.ifNotExist ? ' IF NOT EXISTS' : '';
 			const using = index.index_method ? ` USING ${_.toUpper(index.index_method)}` : '';
 
+			const hasActiveColumns = !checkAllKeysDeactivated(index.columns);
+			const isActivated = isParentActivated && index.isActivated !== false && hasActiveColumns;
 			const keys = getIndexKeys(
 				index.index_method === 'btree'
 					? index.columns
 					: _.map(index.columns, column => _.omit(column, 'sortOrder', 'nullsOrder')),
-				isParentActivated,
+				isActivated,
 			);
-			const options = getIndexOptions(index, isParentActivated);
+			const options = getIndexOptions(index, isActivated);
 
 			return commentIfDeactivated(
 				assignTemplates(templates.index, {
@@ -294,7 +296,7 @@ module.exports = (baseProvider, options, app) => {
 					tableName: getNamePrefixedWithSchemaName(tableName, index.schemaName),
 				}),
 				{
-					isActivated: index.isActivated,
+					isActivated,
 				},
 			);
 		},
@@ -456,7 +458,7 @@ module.exports = (baseProvider, options, app) => {
 			};
 		},
 
-		createView(viewData, dbData, isActivated) {
+		createView(viewData, dbData, isViewActivated) {
 			const viewName = getNamePrefixedWithSchemaName(viewData.name, viewData.schemaName);
 
 			const comment = assignTemplates(templates.comment, {
@@ -465,27 +467,30 @@ module.exports = (baseProvider, options, app) => {
 				comment: wrapComment(viewData.comment),
 			});
 
-			const allDeactivated = checkAllKeysDeactivated(viewData.keys || []);
-			const deactivatedWholeStatement = allDeactivated || !isActivated;
 			const { columns, tables } = getViewData(viewData.keys);
-			let columnsAsString = columns.map(column => column.statement).join(',\n\t\t');
+			const hasActiveColumns = columns.some(column => column.isActivated !== false);
+			const hasCustomSelectStatement = Boolean(_.trim(viewData.selectStatement));
+			const isActivated = isViewActivated !== false && (hasCustomSelectStatement || hasActiveColumns);
 
-			if (!deactivatedWholeStatement) {
-				const dividedColumns = divideIntoActivatedAndDeactivated(columns, column => column.statement);
-				const deactivatedColumnsString = dividedColumns.deactivatedItems.length
-					? commentIfDeactivated(dividedColumns.deactivatedItems.join(',\n\t\t'), {
-							isActivated: false,
-							isPartOfLine: true,
-						})
-					: '';
-				columnsAsString = dividedColumns.activatedItems.join(',\n\t\t') + deactivatedColumnsString;
-			}
+			const joinViewItems = (items, separator) => {
+				if (!isActivated) {
+					return items.map(item => item.statement).join(separator);
+				}
 
-			const selectStatement = _.trim(viewData.selectStatement)
+				const dividedItems = divideIntoActivatedAndDeactivated(items, item => item.statement);
+				const deactivatedItemsString = commentIfDeactivated(dividedItems.deactivatedItems.join(separator), {
+					isActivated: false,
+					isPartOfLine: true,
+				});
+
+				return dividedItems.activatedItems.join(separator) + deactivatedItemsString;
+			};
+
+			const selectStatement = hasCustomSelectStatement
 				? _.trim(tab(viewData.selectStatement))
 				: assignTemplates(templates.viewSelectStatement, {
-						tableName: tables.join(', '),
-						keys: columnsAsString,
+						tableName: joinViewItems(tables, ', '),
+						keys: joinViewItems(columns, ',\n\t\t'),
 					});
 
 			const check_option = viewData.viewOptions?.check_option
@@ -524,7 +529,7 @@ module.exports = (baseProvider, options, app) => {
 					withOptions,
 					selectStatement,
 				}),
-				{ isActivated: !deactivatedWholeStatement },
+				{ isActivated },
 			);
 
 			return [createViewScript].map(_.trim).join('\n\n').trim() + '\n';
@@ -724,11 +729,14 @@ module.exports = (baseProvider, options, app) => {
 		},
 
 		hydrateViewColumn(data) {
+			const isSourceTableActivated = _.first(data.entityData)?.isActivated !== false;
+			const isSourceSchemaActivated = _.first(data.containerData)?.isActivated !== false;
+
 			return {
 				name: data.name,
 				tableName: data.entityName,
 				alias: data.alias,
-				isActivated: data.isActivated,
+				isActivated: data.isActivated !== false && isSourceTableActivated && isSourceSchemaActivated,
 				dbName: data.dbName,
 			};
 		},

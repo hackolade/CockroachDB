@@ -9,6 +9,28 @@ const getRelationshipName = relationship => {
 	return relationship.role.code || relationship.role.name;
 };
 
+const areFkFieldsActivated = fields => (fields || []).every(field => field?.isActivated !== false);
+
+const getFkFieldsForStatement = fields => {
+	if (areFkFieldsActivated(fields)) {
+		return fields;
+	}
+
+	return (fields || []).map(field => ({ ...field, isActivated: true }));
+};
+
+const isForeignKeyConstraintActivated = (relationship, isActivated) => {
+	const compMod = relationship.role?.compMod;
+
+	return (
+		isActivated &&
+		compMod?.parent?.collection?.isActivated !== false &&
+		compMod?.child?.collection?.isActivated !== false &&
+		areFkFieldsActivated(compMod?.parent?.collection?.fkFields) &&
+		areFkFieldsActivated(compMod?.child?.collection?.fkFields)
+	);
+};
+
 /**
  * @return {(relationship: AlterRelationshipDto) => string}
  * */
@@ -32,10 +54,10 @@ const getAddSingleForeignKeyStatementDto = (ddlProvider, _) => relationship => {
 
 	const relationshipName = compMod.code?.new || compMod.name?.new || getRelationshipName(relationship) || '';
 
-	return ddlProvider.createForeignKey({
+	const statementDto = ddlProvider.createForeignKey({
 		name: relationshipName,
-		foreignKey: compMod.child.collection.fkFields,
-		primaryKey: compMod.parent.collection.fkFields,
+		foreignKey: getFkFieldsForStatement(compMod.child.collection.fkFields),
+		primaryKey: getFkFieldsForStatement(compMod.parent.collection.fkFields),
 		customProperties: compMod.customProperties?.new,
 		foreignTable: compMod.child.collection.name,
 		foreignSchemaName: compMod.child.bucket.name,
@@ -45,6 +67,11 @@ const getAddSingleForeignKeyStatementDto = (ddlProvider, _) => relationship => {
 		primaryTableActivated: compMod.parent.collection.isActivated,
 		isActivated: Boolean(relationship.role?.compMod?.isActivated?.new),
 	});
+
+	return {
+		...statementDto,
+		isActivated: isForeignKeyConstraintActivated(relationship, statementDto.isActivated),
+	};
 };
 
 /**
@@ -101,7 +128,7 @@ const getDeleteSingleForeignKeyStatementDto = (ddlProvider, _) => relationship =
 	const isChildTableActivated = compMod.child.collection.isActivated;
 	return {
 		statement,
-		isActivated: isRelationshipActivated && isChildTableActivated,
+		isActivated: isForeignKeyConstraintActivated(relationship, isRelationshipActivated && isChildTableActivated),
 	};
 };
 
