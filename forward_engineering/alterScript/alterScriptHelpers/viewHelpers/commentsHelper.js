@@ -8,14 +8,14 @@ const extractDescription = view => {
  * @return {(view: Object) => AlterScriptDto | undefined}
  * */
 const getUpsertCommentsScriptDto = (_, ddlProvider) => view => {
-	const { getFullViewName, wrapComment } = require('../../../utils/general')(_);
+	const { getFullViewName, wrapComment, isViewActivated } = require('../../../utils/general')(_);
 
 	const description = extractDescription(view);
 	if (description.new && description.new !== description.old) {
 		const wrappedComment = wrapComment(description.new);
 		const viewName = getFullViewName(view);
 		const script = ddlProvider.updateViewComment(viewName, wrappedComment);
-		return AlterScriptDto.getInstance([script], true, false);
+		return AlterScriptDto.getInstance([script], isViewActivated(view), false);
 	}
 	return undefined;
 };
@@ -25,12 +25,12 @@ const getUpsertCommentsScriptDto = (_, ddlProvider) => view => {
  * */
 const getDropCommentsScriptDto = (_, ddlProvider) => view => {
 	const description = extractDescription(view);
-	const { getFullViewName } = require('../../../utils/general')(_);
+	const { getFullViewName, isViewActivated } = require('../../../utils/general')(_);
 
 	if (description.old && !description.new) {
 		const viewName = getFullViewName(view);
 		const script = ddlProvider.dropViewComment(viewName);
-		return AlterScriptDto.getInstance([script], true, true);
+		return AlterScriptDto.getInstance([script], isViewActivated(view), true);
 	}
 	return undefined;
 };
