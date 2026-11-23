@@ -18,6 +18,8 @@ module.exports = (baseProvider, options, app) => {
 		getNamePrefixedWithSchemaName,
 		getColumnsList,
 		getViewData,
+		isViewColumnSourceActivated,
+		isViewActivated,
 	} = require('../utils/general')(_);
 	const assignTemplates = require('../utils/assignTemplates');
 	const { joinActivatedAndDeactivatedStatements } = require('../utils/joinActivatedAndDeactivatedStatements');
@@ -458,7 +460,7 @@ module.exports = (baseProvider, options, app) => {
 			};
 		},
 
-		createView(viewData, dbData, isViewActivated) {
+		createView(viewData, dbData, viewIsActivated) {
 			const viewName = getNamePrefixedWithSchemaName(viewData.name, viewData.schemaName);
 
 			const comment = assignTemplates(templates.comment, {
@@ -468,9 +470,8 @@ module.exports = (baseProvider, options, app) => {
 			});
 
 			const { columns, tables } = getViewData(viewData.keys);
-			const hasActiveColumns = columns.some(column => column.isActivated !== false);
 			const hasCustomSelectStatement = Boolean(_.trim(viewData.selectStatement));
-			const isActivated = isViewActivated !== false && (hasCustomSelectStatement || hasActiveColumns);
+			const isActivated = isViewActivated(viewData, { isActivated: viewIsActivated });
 
 			const joinViewItems = (items, separator) => {
 				if (!isActivated) {
@@ -729,14 +730,11 @@ module.exports = (baseProvider, options, app) => {
 		},
 
 		hydrateViewColumn(data) {
-			const isSourceTableActivated = _.first(data.entityData)?.isActivated !== false;
-			const isSourceSchemaActivated = _.first(data.containerData)?.isActivated !== false;
-
 			return {
 				name: data.name,
 				tableName: data.entityName,
 				alias: data.alias,
-				isActivated: data.isActivated !== false && isSourceTableActivated && isSourceSchemaActivated,
+				isActivated: data.isActivated !== false && isViewColumnSourceActivated(data),
 				dbName: data.dbName,
 			};
 		},
