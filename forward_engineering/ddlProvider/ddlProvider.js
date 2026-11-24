@@ -520,20 +520,25 @@ module.exports = (baseProvider, options, app) => {
 				}
 			};
 
-			const createViewScript = commentIfDeactivated(
-				assignTemplates(templates.createView, {
-					name: viewName,
-					orReplace: viewData.orReplace ? ' OR REPLACE' : '',
-					temporary: viewData.temporary ? ' TEMPORARY' : '',
-					checkOption: getCheckOption(viewData),
-					comment: viewData.comment ? comment : '',
-					withOptions,
-					selectStatement,
-				}),
-				{ isActivated },
-			);
+			const createViewScript = assignTemplates(templates.createView, {
+				name: viewName,
+				orReplace: viewData.orReplace ? ' OR REPLACE' : '',
+				temporary: viewData.temporary ? ' TEMPORARY' : '',
+				checkOption: getCheckOption(viewData),
+				comment: viewData.comment ? comment : '',
+				withOptions,
+				selectStatement,
+			});
 
-			return [createViewScript].map(_.trim).join('\n\n').trim() + '\n';
+			const statement = [createViewScript].map(_.trim).join('\n\n').trim() + '\n';
+
+			// Only self-comment when the caller thinks the view is active but columns/sources
+			// make it inactive. When viewIsActivated is false, the caller comments the statement.
+			if (viewIsActivated && !isActivated) {
+				return commentIfDeactivated(statement, { isActivated: false });
+			}
+
+			return statement;
 		},
 
 		/**
